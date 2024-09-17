@@ -1,3 +1,4 @@
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,10 +14,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import br.senai.sp.jandira.vivaris.R
 
 @Composable
 fun Login(controleDeNavegacao: NavHostController) {
@@ -31,20 +38,34 @@ fun Login(controleDeNavegacao: NavHostController) {
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFFAAF2A3), // Verde claro
-                        Color(0xFF57C57A)  // Verde mais escuro
+                        Color(0xFF15A27A),
+                        Color(0xFF67DEBC)
                     )
                 )
-            ),
-        contentAlignment = Alignment.Center
+            )
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            // Alternador entre Psicólogo e Cliente
+            Spacer(modifier = Modifier.height(87.dp))
+
+            Image(
+                painter = painterResource(id = R.drawable.vivarislogo),
+                contentDescription = "Logo Vivaris",
+                modifier = Modifier
+                    .fillMaxWidth()
+
+                    .size(100.dp),
+                contentScale = ContentScale.Fit
+            )
+        Text("Logue-se", color = Color.White, fontSize = 48.sp, fontWeight = FontWeight.Bold)
+
+         Spacer(modifier = Modifier.height(32.dp))
+
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -52,40 +73,44 @@ fun Login(controleDeNavegacao: NavHostController) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Button(
-                    onClick = { /* Psicólogo */ },
+                    onClick = { },
                     shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.buttonColors(Color(0xFF57C57A))
+                    colors = ButtonDefaults.buttonColors(Color(0xFF296856)),
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text("Psicólogo", color = Color.White)
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(12.dp))
 
                 Button(
-                    onClick = { /* Cliente */ },
+                    onClick = {  },
                     shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.buttonColors(Color(0xFF57C57A))
+                    colors = ButtonDefaults.buttonColors(Color(0xFF296856)),
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text("Cliente", color = Color.White)
                 }
             }
 
-            // Campo de E-mail
+            Spacer(modifier = Modifier.height(16.dp))
+
+
             OutlinedTextField(
                 value = emailState.value,
                 onValueChange = { emailState.value = it },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth(0.9f),
+                label = { Text("Email", color = Color.White) },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF57C57A),
-                    unfocusedBorderColor = Color(0xFFA09C9C),
+                    focusedBorderColor = Color(0xFFFFFFFF),
+                    unfocusedBorderColor = Color(0xFFFFFFFF),
                     focusedTextColor = Color.Black
                 ),
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Filled.Email,
                         contentDescription = "Email Icon",
-                        tint = Color(0xFF57C57A)
+                        tint = Color(0xFFFFFFFF)
                     )
                 },
                 shape = RoundedCornerShape(16.dp)
@@ -93,58 +118,60 @@ fun Login(controleDeNavegacao: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo de Senha
+
             OutlinedTextField(
                 value = senhaState.value,
                 onValueChange = { senhaState.value = it },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Senha") },
+                modifier = Modifier.fillMaxWidth(0.9f),
+                label = { Text("Senha", color = Color.White) },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF57C57A),
-                    unfocusedBorderColor = Color(0xFFA09C9C),
+                    focusedBorderColor = Color(0xFFFFFFFF),
+                    unfocusedBorderColor = Color(0xFFFFFFFF),
                     focusedTextColor = Color.Black
                 ),
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Filled.Lock,
                         contentDescription = "Lock Icon",
-                        tint = Color(0xFF57C57A)
+                        tint = Color(0xFFFFFFFF)
                     )
                 },
                 shape = RoundedCornerShape(16.dp)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
-            // Botão de Entrar
+
             Button(
                 onClick = {
                     if (emailState.value == "teste@gmail.com" && senhaState.value == "1234") {
-                       // controleDeNavegacao!!.navigate("home")
+                        // controleDeNavegacao!!.navigate("home")
                     } else {
                         erroState.value = true
                         mensagemErroState.value = "Usuário e senha incorretos!"
                     }
                 },
-                colors = ButtonDefaults.buttonColors(Color(0xFF57C57A)),
+                colors = ButtonDefaults.buttonColors(Color(0x4D19493B)),
                 shape = RoundedCornerShape(13.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(51.3.dp)
             ) {
                 Text(text = "Entrar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            // Link de cadastro
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = "Não possui uma conta? ", color = Color.Gray)
+                Text(text = "Não possui uma conta? ", color = Color.White)
                 Text(
                     text = "Cadastre-se",
-                    color = Color(0xFF57C57A),
+                    color = Color.White,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable { controleDeNavegacao!!.navigate("cadastro") }
                 )
@@ -153,3 +180,9 @@ fun Login(controleDeNavegacao: NavHostController) {
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun PreviewLogin() {
+    val navController = rememberNavController()
+    Login(navController)
+}

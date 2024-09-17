@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.vivaris
 
+import Cadastro
 import Login
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,9 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import br.senai.sp.jandira.vivaris.screens.Cadastro
+
 
 import br.senai.sp.jandira.vivaris.ui.theme.VivarisTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     val controleDeNavegacao = rememberNavController()
                     NavHost(navController = controleDeNavegacao, startDestination = "login") {
                         composable(route = "login"){ Login(controleDeNavegacao)}
-                        composable(route = "cadastro"){ Cadastro(controleDeNavegacao) }
+                        composable(route = "cadastro"){  Cadastro(controleDeNavegacao) }
                     }
                 }
             }

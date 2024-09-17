@@ -1,139 +1,266 @@
-package br.senai.sp.jandira.vivaris.screens
-
-import br.senai.sp.jandira.mytrips.model.Usuarios
-import br.senai.sp.jandira.vivaris.R
-import br.senai.sp.jandira.vivaris.repository.UsuarioRepository
-
-
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-
-
+import androidx.navigation.compose.rememberNavController
+import br.senai.sp.jandira.vivaris.model.Usuario
+import android.widget.Toast
+import kotlinx.coroutines.launch
 
 @Composable
 fun Cadastro(controleDeNavegacao: NavHostController) {
 
-    var nomeState = remember { mutableStateOf("") }
-    var phoneState = remember { mutableStateOf("") }
-    var emailState = remember { mutableStateOf("") }
-    var dataNascimentoState = remember { mutableStateOf("") }
-    var passwordState = remember { mutableStateOf("") }
-    var sexoState = remember { mutableStateOf("") }
+    var nomeState by remember { mutableStateOf("") }
+    var telefoneState by remember { mutableStateOf("") }
+    var emailState by remember { mutableStateOf("") }
+    var dataNascimentoState by remember { mutableStateOf("") }
+    var senhaState by remember { mutableStateOf("") }
+    var sexoState by remember { mutableStateOf("") }
+    var crpState by remember { mutableStateOf("") }
+    var isPsicologoState by remember { mutableStateOf(false) }
 
-    val usuarioRepository = UsuarioRepository(LocalContext.current)
 
-    Column(
-        modifier = Modifier.padding(16.dp)
-    ) {
-        Text(
-            text = "Cadastre-se",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Red
-        )
+    val context = LocalContext.current
+    val usuarioRepository = UsuarioRepository(context)
+    val coroutineScope = rememberCoroutineScope()
 
-        Spacer(modifier = Modifier.height(24.dp))
 
-        // Nome
-        OutlinedTextField(
-            value = nomeState.value,
-            onValueChange = { nomeState.value = it },
-            label = { Text(text = "Nome Completo") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Telefone
-        OutlinedTextField(
-            value = phoneState.value,
-            onValueChange = { phoneState.value = it },
-            label = { Text(text = "Telefone") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // E-mail
-        OutlinedTextField(
-            value = emailState.value,
-            onValueChange = { emailState.value = it },
-            label = { Text(text = "E-mail") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Data de Nascimento
-        OutlinedTextField(
-            value = dataNascimentoState.value,
-            onValueChange = { dataNascimentoState.value = it },
-            label = { Text(text = "Data de Nascimento") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Senha
-        OutlinedTextField(
-            value = passwordState.value,
-            onValueChange = { passwordState.value = it },
-            label = { Text(text = "Senha") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Sexo
-        OutlinedTextField(
-            value = sexoState.value,
-            onValueChange = { sexoState.value = it },
-            label = { Text(text = "Sexo") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Botão de cadastro
-        Button(
-            onClick = {
-
-                // Criar um novo objeto de usuário
-                val novoUsuario = Usuarios(
-                    nome = nomeState.value,
-                    phone = phoneState.value,
-                    email = emailState.value,
-                    dataNascimento = dataNascimentoState.value,
-                    password = passwordState.value,
-                    sexo = sexoState.value
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF15A27A),
+                        Color(0xFF67DEBC)
+                    )
                 )
+            )
+    ) {
 
-                // Salvar o novo usuário no repositório
-                usuarioRepository.salvar(novoUsuario)
-
-                // Navegar para a tela "home" após o cadastro
-                controleDeNavegacao.navigate("home")
-            },
-            modifier = Modifier.fillMaxWidth()
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(text = "Salvar")
+            item {
+                Text(
+                    text = "Cadastre-se",
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(
+                        onClick = { isPsicologoState = true },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0x4D19493B)),
+                        shape = RoundedCornerShape(50),
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Psicólogo", color = Color.White)
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Button(
+                        onClick = { isPsicologoState = false },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0x4D19493B)),
+                        shape = RoundedCornerShape(50),
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Cliente", color = Color.White)
+                    }
+                }
+            }
+
+            item {
+                OutlinedTextField(
+                    value = nomeState,
+                    onValueChange = { nomeState = it },
+                    label = { Text("Nome Completo", color = Color.White) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFFFFFFF),
+                        unfocusedBorderColor = Color(0xFFFFFFFF),
+                        focusedTextColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+            }
+
+            item {
+                OutlinedTextField(
+                    value = telefoneState,
+                    onValueChange = { telefoneState = it },
+                    label = { Text("Telefone", color = Color.White) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFFFFFFF),
+                        unfocusedBorderColor = Color(0xFFFFFFFF),
+                        focusedTextColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+            }
+
+            item {
+                OutlinedTextField(
+                    value = emailState,
+                    onValueChange = { emailState = it },
+                    label = { Text("E-mail", color = Color.White) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFFFFFFF),
+                        unfocusedBorderColor = Color(0xFFFFFFFF),
+                        focusedTextColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+            }
+
+            item {
+                OutlinedTextField(
+                    value = dataNascimentoState,
+                    onValueChange = { dataNascimentoState = it },
+                    label = { Text("Data de Nascimento", color = Color.White) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFFFFFFF),
+                        unfocusedBorderColor = Color(0xFFFFFFFF),
+                        focusedTextColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+            }
+
+            item {
+                OutlinedTextField(
+                    value = senhaState,
+                    onValueChange = { senhaState = it },
+                    label = { Text("Senha", color = Color.White) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFFFFFFF),
+                        unfocusedBorderColor = Color(0xFFFFFFFF),
+                        focusedTextColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+            }
+
+            item {
+                OutlinedTextField(
+                    value = sexoState,
+                    onValueChange = { sexoState = it },
+                    label = { Text("Sexo", color = Color.White) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFFFFFFF),
+                        unfocusedBorderColor = Color(0xFFFFFFFF),
+                        focusedTextColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+            }
+
+            if (isPsicologoState) {
+                item {
+                    OutlinedTextField(
+                        value = crpState,
+                        onValueChange = { crpState = it },
+                        label = { Text("CRP", color = Color.White) },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFFFFFFF),
+                            unfocusedBorderColor = Color(0xFFFFFFFF),
+                            focusedTextColor = Color.Black
+                        ),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                }
+            }
+
+            item {
+                Button(
+                    onClick = {
+                        if (nomeState.isBlank() || telefoneState.isBlank() || emailState.isBlank() || senhaState.isBlank()) {
+                            Toast.makeText(context, "Todos os campos são obrigatórios", Toast.LENGTH_SHORT).show()
+                        } else {
+                            val novoUsuario = Usuario(
+                                nome = nomeState,
+                                telefone = telefoneState,
+                                email = emailState,
+                                dataNascimento = dataNascimentoState,
+                                senha = senhaState,
+                                sexo = sexoState,
+                                tipo = if (isPsicologoState) "psicologo" else "cliente",
+                                crp = if (isPsicologoState) crpState else null,
+                                isPsicologo = isPsicologoState
+                            )
+
+                            coroutineScope.launch {
+                                usuarioRepository.salvar(novoUsuario)
+                                controleDeNavegacao.navigate("login")
+                            }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0x4D19493B)),
+                    shape = RoundedCornerShape(13.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(51.3.dp)
+                ) {
+                    Text(text = "Salvar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                }
+            }
+
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "Já possui uma conta? ", color = Color.White)
+                    Text(
+                        text = "Faça login",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.clickable { controleDeNavegacao.navigate("login") }
+                    )
+                }
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(80.dp))
+            }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewCadastro() {
+    val navController = rememberNavController()
+    Cadastro(controleDeNavegacao = navController)
 }

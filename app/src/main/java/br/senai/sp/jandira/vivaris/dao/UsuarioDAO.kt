@@ -1,27 +1,20 @@
-package br.senai.sp.jandira.vivaris.dao
-
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
-import br.senai.sp.jandira.mytrips.model.Usuarios
+import br.senai.sp.jandira.vivaris.model.Usuario
 
 @Dao
 interface UsuarioDAO {
 
-
     @Insert
-    fun salvar(usuarios: Usuarios): Long
+    fun inserir(usuario: Usuario): Long
 
-    @Update
-    fun atualizar(usuarios: Usuarios): Int
+    @Query("SELECT * FROM usuarios WHERE email = :email AND senha = :senha")
+    suspend fun obterUsuarioPorCredenciais(email: String, senha: String): Usuario?
 
-    @Delete
-    fun excluir(usuarios: Usuarios)
+    @Query("SELECT * FROM usuarios WHERE id = :id")
+    suspend fun obterUsuarioPorId(id: Int): Usuario?
 
-    @Query("SELECT * FROM tbl_usuarios ORDER BY nome ASC")
-    fun listarTodosOsUsuarios(): List<Usuarios>
-
-
+    @Query("SELECT * FROM usuarios WHERE tipo = :tipo")
+    suspend fun obterUsuariosPorTipo(tipo: String): List<Usuario>
 }
