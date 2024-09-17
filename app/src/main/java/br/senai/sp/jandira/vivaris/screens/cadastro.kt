@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import br.senai.sp.jandira.vivaris.model.Usuario
+import br.senai.sp.jandira.vivaris.model.Cliente
 import android.widget.Toast
 import kotlinx.coroutines.launch
 
@@ -207,7 +207,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                         if (nomeState.isBlank() || telefoneState.isBlank() || emailState.isBlank() || senhaState.isBlank()) {
                             Toast.makeText(context, "Todos os campos são obrigatórios", Toast.LENGTH_SHORT).show()
                         } else {
-                            val novoUsuario = Usuario(
+                            val novoUsuario = Cliente(
                                 nome = nomeState,
                                 telefone = telefoneState,
                                 email = emailState,

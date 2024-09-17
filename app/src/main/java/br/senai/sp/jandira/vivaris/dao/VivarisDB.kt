@@ -1,15 +1,16 @@
 
 package br.senai.sp.jandira.vivaris.dao
 
+
 import UsuarioDAO
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import br.senai.sp.jandira.vivaris.model.Usuario
+import br.senai.sp.jandira.vivaris.model.Cliente
 
 
-@Database(entities = [Usuario::class], version = 2)
+@Database(entities = [Cliente::class], version = 2)
 abstract class VivarisDB : RoomDatabase() {
 
     abstract fun UsuarioDAO(): UsuarioDAO
