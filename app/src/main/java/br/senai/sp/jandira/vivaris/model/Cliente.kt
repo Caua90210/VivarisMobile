@@ -2,7 +2,6 @@ package br.senai.sp.jandira.vivaris.model
 
 import android.media.Image
 
-
 data class Cliente(
     val id: Int = 0,
     val nome: String,
@@ -10,7 +9,7 @@ data class Cliente(
     val email: String,
     val dataNascimento: String,
     val senha: String,
-    val sexo: Sexo? = null,
+    val id_sexo: String,
     val link_instagram: String,
     val foto_perfil: Image?,
     val cpf: String

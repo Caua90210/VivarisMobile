@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitFactory {
 
-    private val BASE_URL = "https://localhost:8080/v1/vivaris/"
+    private val BASE_URL = "http://192.168.56.1:8080/v1/vivaris/"
 
     private val retrofitFactory = Retrofit
         .Builder()
@@ -17,7 +17,5 @@ class RetrofitFactory {
     fun getClienteService(): ClienteService {
         return retrofitFactory.create(ClienteService::class.java)
     }
-
-
 
 }

@@ -3,7 +3,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("kotlin-kapt")
 }
 
 android {
@@ -53,10 +52,8 @@ android {
 }
 
 dependencies {
-    implementation ("androidx.compose.animation:animation:1.0.0")
-    implementation("androidx.room:room-runtime:2.6.1")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+ 
+
 
     // Retrofit Dependencies
     implementation("com.squareup.retrofit2:retrofit:2.11.0")

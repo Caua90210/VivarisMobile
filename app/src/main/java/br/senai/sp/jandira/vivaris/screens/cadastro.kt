@@ -16,9 +16,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import br.senai.sp.jandira.vivaris.model.Cliente
 import android.widget.Toast
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import br.senai.sp.jandira.vivaris.service.RetrofitFactory
+import br.senai.sp.jandira.vivaris.model.Cliente
 
 @Composable
 fun Cadastro(controleDeNavegacao: NavHostController) {
@@ -32,11 +36,11 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
     var crpState by remember { mutableStateOf("") }
     var isPsicologoState by remember { mutableStateOf(false) }
 
-
     val context = LocalContext.current
-    val usuarioRepository = UsuarioRepository(context)
     val coroutineScope = rememberCoroutineScope()
 
+    val retrofitFactory = RetrofitFactory()
+    val clienteService = retrofitFactory.getClienteService()
 
     Box(
         modifier = Modifier
@@ -50,7 +54,6 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                 )
             )
     ) {
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -207,22 +210,37 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                         if (nomeState.isBlank() || telefoneState.isBlank() || emailState.isBlank() || senhaState.isBlank()) {
                             Toast.makeText(context, "Todos os campos são obrigatórios", Toast.LENGTH_SHORT).show()
                         } else {
-                            val novoUsuario = Cliente(
+                            val cliente = Cliente(
                                 nome = nomeState,
                                 telefone = telefoneState,
                                 email = emailState,
                                 dataNascimento = dataNascimentoState,
                                 senha = senhaState,
-                                sexo = sexoState,
-                                tipo = if (isPsicologoState) "psicologo" else "cliente",
-                                crp = if (isPsicologoState) crpState else null,
-                                isPsicologo = isPsicologoState
+                                id_sexo = sexoState,
+                                link_instagram = "",
+                                foto_perfil = null,
+                                cpf = "12345678900"
                             )
 
                             coroutineScope.launch {
-                                usuarioRepository.salvar(novoUsuario)
-                                controleDeNavegacao.navigate("login")
+                                clienteService.cadastrarCliente(cliente).enqueue(object : Callback<Cliente> {
+                                    override fun onResponse(call: Call<Cliente>, response: Response<Cliente>) {
+                                        if (response.isSuccessful) {
+                                            Toast.makeText(context, "Cliente cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
+                                            controleDeNavegacao.navigate("login")
+                                        } else {
+
+                                            Toast.makeText(context, "Erro ao cadastrar cliente: ${response.code()}", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+
+                                    override fun onFailure(call: Call<Cliente>, t: Throwable) {
+
+                                        Toast.makeText(context, "Erro: ${t.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                })
                             }
+
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0x4D19493B)),

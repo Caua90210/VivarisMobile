@@ -3,18 +3,23 @@ package br.senai.sp.jandira.vivaris.service
 import br.senai.sp.jandira.vivaris.model.Cliente
 import br.senai.sp.jandira.vivaris.model.Result
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ClienteService {
 
 
-    @GET("Cliente")
+    @GET("cliente")
     fun getAllClientes(): Call<Result>
 
-    @GET("character/{id}")
+    @GET("cliente/{id}")
     fun getClienteById( @Path("id") id: Int): Call<Cliente>
 
-
+    @Headers("Content-Type: application/json")
+    @POST("cliente")
+    fun cadastrarCliente(@Body cliente: Cliente): Call<Cliente>
 
 }
