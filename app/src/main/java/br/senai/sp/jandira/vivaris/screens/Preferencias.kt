@@ -19,17 +19,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.vivaris.model.Preferencias
+import br.senai.sp.jandira.vivaris.service.RetrofitFactory
+import kotlinx.coroutines.launch
 
 @Composable
-fun Preferencias(controleDeNavegacao: NavHostController?) {
+fun PreferenciasScreen(controleDeNavegacao: NavHostController?) {
     var preferenciasList by remember { mutableStateOf(listOf<Preferencias>()) }
+    val scope = rememberCoroutineScope()
 
-    // Simulação de dados (remover quando você integrar o Retrofit)
-    preferenciasList = listOf(
-        Preferencias(id = 1, nome = "Rick Sanchez", cor = Color.Red.toString()),
-        Preferencias(id = 2, nome = "Morty Smith", cor = Color.Blue.toString()),
-        Preferencias(id = 3, nome = "Summer Smith", cor = Color.Green.toString())
-    )
+    // Consumir a API para buscar preferências
+    LaunchedEffect(Unit) {
+        scope.launch {
+            try {
+                val call = RetrofitFactory().getPreferenciasService().getAllPreferencias()
+                val response = call.execute() // Usar execute() para chamadas síncronas
+                if (response.isSuccessful) {
+                    preferenciasList = response.body() ?: emptyList()
+                } else {
+                    println("Erro: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                println("Exceção: ${e.message}")
+            }
+        }
+    }
 
     Surface(
         modifier = Modifier
@@ -43,7 +56,7 @@ fun Preferencias(controleDeNavegacao: NavHostController?) {
                 .fillMaxSize()
         ) {
             Text(
-                text = "Preferências",
+                text = "Escolha suas preferências",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF000000),
@@ -56,7 +69,7 @@ fun Preferencias(controleDeNavegacao: NavHostController?) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(preferenciasList) { preferencias ->
-                    CharacterCard(preferencias = preferencias, controleDeNavegacao)
+                    PreferenciasCard(preferencias = preferencias, controleDeNavegacao)
                 }
             }
         }
@@ -64,7 +77,7 @@ fun Preferencias(controleDeNavegacao: NavHostController?) {
 }
 
 @Composable
-fun CharacterCard(preferencias: Preferencias?, controleDeNavegacao: NavHostController?) {
+fun PreferenciasCard(preferencias: Preferencias?, controleDeNavegacao: NavHostController?) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -72,7 +85,7 @@ fun CharacterCard(preferencias: Preferencias?, controleDeNavegacao: NavHostContr
                 onClick = { controleDeNavegacao?.navigate("cadastro/${preferencias?.id}") }
             )
             .height(100.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFB00D0D)),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF00796B)),
         shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
@@ -95,7 +108,7 @@ fun CharacterCard(preferencias: Preferencias?, controleDeNavegacao: NavHostContr
                     text = preferencias?.nome ?: "Sem nome",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFFFFEB3B)
+                    color = Color(0xFFFFFFFF)
                 )
             }
         }
@@ -104,18 +117,17 @@ fun CharacterCard(preferencias: Preferencias?, controleDeNavegacao: NavHostContr
 
 @Preview
 @Composable
-private fun CharacterCardPreview() {
+private fun PreferenciasCardPreview() {
     val exemploPreferencias = Preferencias(
         id = 1,
-        nome = "Rick Sanchez",
+        nome = "Terapia Cognitiva",
         cor = Color.Red.toString()
     )
-    CharacterCard(preferencias = exemploPreferencias, controleDeNavegacao = null)
+    PreferenciasCard(preferencias = exemploPreferencias, controleDeNavegacao = null)
 }
 
 @Preview(showSystemUi = true)
 @Composable
-private fun PreferenciasPreview() {
-    // Simulação de uma navegação nula
-    Preferencias(controleDeNavegacao = null)
+private fun PreferenciasScreenPreview() {
+    PreferenciasScreen(controleDeNavegacao = null)
 }

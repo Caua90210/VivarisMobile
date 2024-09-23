@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,29 +12,70 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import android.widget.Toast
+import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
 import br.senai.sp.jandira.vivaris.model.Cliente
+import br.senai.sp.jandira.vivaris.model.Sexo
+import br.senai.sp.jandira.vivaris.model.SexoResponse
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+fun converterStringParaDate(data: String): Date? {
+    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    return try {
+        sdf.parse(data)
+    } catch (e: ParseException) {
+        Log.e("Cadastro", "Erro ao converter data: ${e.message}")
+        null
+    }
+}
+
+fun formatarDataParaEnviar(data: Date): String {
+    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    return sdf.format(data)
+}
+
+
+
+
+fun formatarData(data: String): String? {
+    return try {
+        val formatoEntrada = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val formatoSaida = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = formatoEntrada.parse(data)
+        formatoSaida.format(date)
+    } catch (e: ParseException) {
+        Log.e("Erro de Formatação", "Erro ao formatar data: ${e.message}")
+        null
+    }
+}
+
+
+
+
+
 
 @Composable
 fun Cadastro(controleDeNavegacao: NavHostController) {
-
     var nomeState by remember { mutableStateOf("") }
     var telefoneState by remember { mutableStateOf("") }
     var emailState by remember { mutableStateOf("") }
     var dataNascimentoState by remember { mutableStateOf("") }
     var senhaState by remember { mutableStateOf("") }
-    var sexoState by remember { mutableStateOf("") }
+    var cpfState by remember { mutableStateOf("") }
     var crpState by remember { mutableStateOf("") }
+   var preferenciaSelecionada by remember { mutableStateOf(1) }
     var isPsicologoState by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
@@ -41,6 +83,30 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
 
     val retrofitFactory = RetrofitFactory()
     val clienteService = retrofitFactory.getClienteService()
+    val sexoService = retrofitFactory.getSexoService()
+    var sexos by remember { mutableStateOf<List<Sexo>>(emptyList()) }
+    var loadingSexos by remember { mutableStateOf(true) }
+
+
+    LaunchedEffect(Unit) {
+        sexoService.getSexo().enqueue(object : Callback<SexoResponse> {
+            override fun onResponse(call: Call<SexoResponse>, response: Response<SexoResponse>) {
+                if (response.isSuccessful) {
+                    sexos = response.body()?.data ?: emptyList()
+                    Log.d("Sexos", "Sexos carregados: $sexos")
+                } else {
+                    Toast.makeText(context, "Erro ao carregar sexos: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    Log.e("Erro", "Corpo da resposta: ${response.errorBody()?.string()}")
+                }
+                loadingSexos = false
+            }
+
+            override fun onFailure(call: Call<SexoResponse>, t: Throwable) {
+                Toast.makeText(context, "Erro: ${t.message}", Toast.LENGTH_SHORT).show()
+                loadingSexos = false
+            }
+        })
+    }
 
     Box(
         modifier = Modifier
@@ -77,7 +143,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                 ) {
                     Button(
                         onClick = { isPsicologoState = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0x4D19493B)),
+                        colors = ButtonDefaults.buttonColors(containerColor = if (isPsicologoState) Color.Green else Color(0x4D19493B)),
                         shape = RoundedCornerShape(50),
                         modifier = Modifier.weight(1f)
                     ) {
@@ -88,7 +154,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
 
                     Button(
                         onClick = { isPsicologoState = false },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0x4D19493B)),
+                        colors = ButtonDefaults.buttonColors(containerColor = if (!isPsicologoState) Color.Green else Color(0x4D19493B)),
                         shape = RoundedCornerShape(50),
                         modifier = Modifier.weight(1f)
                     ) {
@@ -131,7 +197,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                 OutlinedTextField(
                     value = emailState,
                     onValueChange = { emailState = it },
-                    label = { Text("E-mail", color = Color.White) },
+                    label = { Text("Email", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFFFFFFFF),
@@ -145,8 +211,12 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
             item {
                 OutlinedTextField(
                     value = dataNascimentoState,
-                    onValueChange = { dataNascimentoState = it },
-                    label = { Text("Data de Nascimento", color = Color.White) },
+                    onValueChange = { input ->
+                        if (input.length <= 10) {
+                            dataNascimentoState = input
+                        }
+                    },
+                    label = { Text("Data de Nascimento (dd/MM/yyyy)", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFFFFFFFF),
@@ -156,6 +226,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     shape = RoundedCornerShape(16.dp)
                 )
             }
+
 
             item {
                 OutlinedTextField(
@@ -174,9 +245,9 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
 
             item {
                 OutlinedTextField(
-                    value = sexoState,
-                    onValueChange = { sexoState = it },
-                    label = { Text("Sexo", color = Color.White) },
+                    value = cpfState,
+                    onValueChange = { cpfState = it },
+                    label = { Text("CPF", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFFFFFFFF),
@@ -186,6 +257,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     shape = RoundedCornerShape(16.dp)
                 )
             }
+
 
             if (isPsicologoState) {
                 item {
@@ -204,10 +276,14 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                 }
             }
 
+
             item {
                 Button(
                     onClick = {
-                        if (nomeState.isBlank() || telefoneState.isBlank() || emailState.isBlank() || senhaState.isBlank()) {
+
+                        if (nomeState.isBlank() || telefoneState.isBlank() || emailState.isBlank() ||
+                            senhaState.isBlank() || cpfState.isBlank() || (isPsicologoState && crpState.isBlank())
+                        ) {
                             Toast.makeText(context, "Todos os campos são obrigatórios", Toast.LENGTH_SHORT).show()
                         } else {
                             val cliente = Cliente(
@@ -216,11 +292,16 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                                 email = emailState,
                                 dataNascimento = dataNascimentoState,
                                 senha = senhaState,
-                                id_sexo = sexoState,
-                                link_instagram = "",
+                                id_sexo = 1,
+                                cpf = cpfState,
+                               // crp = if (isPsicologoState) crpState else null,
+                                link_instagram = null,
                                 foto_perfil = null,
-                                cpf = "12345678900"
+                                id_preferencias = listOf(preferenciaSelecionada)
                             )
+
+
+                            Log.d("Cadastro", "Cliente a ser enviado: $cliente")
 
                             coroutineScope.launch {
                                 clienteService.cadastrarCliente(cliente).enqueue(object : Callback<Cliente> {
@@ -229,18 +310,17 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                                             Toast.makeText(context, "Cliente cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
                                             controleDeNavegacao.navigate("login")
                                         } else {
-
                                             Toast.makeText(context, "Erro ao cadastrar cliente: ${response.code()}", Toast.LENGTH_SHORT).show()
+                                            Log.e("Cadastro", "Erro ao cadastrar: ${response.errorBody()?.string()}")
                                         }
                                     }
 
                                     override fun onFailure(call: Call<Cliente>, t: Throwable) {
-
-                                        Toast.makeText(context, "Erro: ${t.message}", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, "Erro: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
+                                        Log.e("Cadastro", "Falha na chamada: ${t.localizedMessage}")
                                     }
                                 })
                             }
-
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0x4D19493B)),
@@ -253,10 +333,12 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                 }
             }
 
+
+
+
             item {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(text = "Já possui uma conta? ", color = Color.White)

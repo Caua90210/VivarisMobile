@@ -9,8 +9,9 @@ data class Cliente(
     val email: String,
     val dataNascimento: String,
     val senha: String,
-    val id_sexo: String,
-    val link_instagram: String,
+    val id_sexo: Int,
+    val link_instagram: String?,
     val foto_perfil: Image?,
-    val cpf: String
+    val cpf: String,
+    val id_preferencias: List<Int>
 )
