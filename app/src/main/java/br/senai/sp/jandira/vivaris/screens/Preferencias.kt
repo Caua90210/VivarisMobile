@@ -27,7 +27,7 @@ fun PreferenciasScreen(controleDeNavegacao: NavHostController?) {
     var preferenciasList by remember { mutableStateOf(listOf<Preferencias>()) }
     val scope = rememberCoroutineScope()
 
-    // Consumir a API para buscar preferências
+
     LaunchedEffect(Unit) {
         scope.launch {
             try {
@@ -94,7 +94,7 @@ fun PreferenciasCard(preferencias: Preferencias?, controleDeNavegacao: NavHostCo
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = (preferencias?.cor ?: Color.Gray) as Color)
             ) {
-                // Aqui você pode adicionar uma imagem ou outro conteúdo, se necessário
+
             }
             Spacer(modifier = Modifier.width(16.dp))
 

@@ -117,8 +117,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF15A27A),
-                        Color(0xFF67DEBC)
+                        Color(0xFFFFFF),
+                        Color(0xF1F3F3)
                     )
                 )
             )
@@ -135,7 +135,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     text = "Cadastre-se",
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = Color(0xFF3E9C81)
                 )
             }
 
@@ -173,9 +173,11 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     label = { Text("Nome Completo", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFFFFFFF),
-                        unfocusedBorderColor = Color(0xFFFFFFFF),
-                        focusedTextColor = Color.Black
+                        focusedBorderColor = Color(0xFFAACFBE),
+                        unfocusedBorderColor = Color(0xFFAACFBE),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White
                     ),
                     shape = RoundedCornerShape(16.dp)
                 )
@@ -188,9 +190,11 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     label = { Text("Telefone", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFFFFFFF),
-                        unfocusedBorderColor = Color(0xFFFFFFFF),
-                        focusedTextColor = Color.Black
+                        focusedBorderColor = Color(0xFFAACFBE),
+                        unfocusedBorderColor = Color(0xFFAACFBE),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White // Para a cor do cursor
                     ),
                     shape = RoundedCornerShape(16.dp)
                 )
@@ -203,9 +207,11 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     label = { Text("Email", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFFFFFFF),
-                        unfocusedBorderColor = Color(0xFFFFFFFF),
-                        focusedTextColor = Color.Black
+                        focusedBorderColor = Color(0xFFAACFBE),
+                        unfocusedBorderColor = Color(0xFFAACFBE),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White // Para a cor do cursor
                     ),
                     shape = RoundedCornerShape(16.dp)
                 )
@@ -222,9 +228,11 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     label = { Text("Data de Nascimento (dd/MM/yyyy)", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFFFFFFF),
-                        unfocusedBorderColor = Color(0xFFFFFFFF),
-                        focusedTextColor = Color.Black
+                        focusedBorderColor = Color(0xFFAACFBE),
+                        unfocusedBorderColor = Color(0xFFAACFBE),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White // Para a cor do cursor
                     ),
                     shape = RoundedCornerShape(16.dp)
                 )
@@ -238,9 +246,11 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     label = { Text("Senha", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFFFFFFF),
-                        unfocusedBorderColor = Color(0xFFFFFFFF),
-                        focusedTextColor = Color.Black
+                        focusedBorderColor = Color(0xFFAACFBE),
+                        unfocusedBorderColor = Color(0xFFAACFBE),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White // Para a cor do cursor
                     ),
                     shape = RoundedCornerShape(16.dp)
                 )
@@ -253,9 +263,11 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     label = { Text("CPF", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFFFFFFF),
-                        unfocusedBorderColor = Color(0xFFFFFFFF),
-                        focusedTextColor = Color.Black
+                        focusedBorderColor = Color(0xFFAACFBE),
+                        unfocusedBorderColor = Color(0xFFAACFBE),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White
                     ),
                     shape = RoundedCornerShape(16.dp)
                 )
@@ -270,9 +282,11 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                         label = { Text("CRP", color = Color.White) },
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFFFFFFFF),
-                            unfocusedBorderColor = Color(0xFFFFFFFF),
-                            focusedTextColor = Color.Black
+                            focusedBorderColor = Color(0xFFAACFBE),
+                            unfocusedBorderColor = Color(0xFFAACFBE),
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+                            cursorColor = Color.White
                         ),
                         shape = RoundedCornerShape(16.dp)
                     )
