@@ -7,7 +7,7 @@ data class Cliente(
     val nome: String,
     val telefone: String,
     val email: String,
-    val dataNascimento: String,
+    val data_nascimento: String,
     val senha: String,
     val id_sexo: Int,
     val link_instagram: String?,

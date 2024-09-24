@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +25,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.vivaris.R
+import br.senai.sp.jandira.vivaris.model.Cliente
+import br.senai.sp.jandira.vivaris.model.LoginUsuario
+import br.senai.sp.jandira.vivaris.service.RetrofitFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @Composable
 fun Login(controleDeNavegacao: NavHostController) {
@@ -31,6 +38,9 @@ fun Login(controleDeNavegacao: NavHostController) {
     var senhaState = remember { mutableStateOf("") }
     var erroState = remember { mutableStateOf(false) }
     var mensagemErroState = remember { mutableStateOf("") }
+
+    val retrofitFactory = RetrofitFactory()
+    val clienteService = retrofitFactory.getClienteService()
 
     Box(
         modifier = Modifier
@@ -57,14 +67,13 @@ fun Login(controleDeNavegacao: NavHostController) {
                 contentDescription = "Logo Vivaris",
                 modifier = Modifier
                     .fillMaxWidth()
-
                     .size(100.dp),
                 contentScale = ContentScale.Fit
             )
-        Text("Logue-se", color = Color.White, fontSize = 48.sp, fontWeight = FontWeight.Bold)
 
-         Spacer(modifier = Modifier.height(32.dp))
+            Text("Logue-se", color = Color.White, fontSize = 48.sp, fontWeight = FontWeight.Bold)
 
+            Spacer(modifier = Modifier.height(32.dp))
 
             Row(
                 modifier = Modifier
@@ -84,7 +93,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Button(
-                    onClick = {  },
+                    onClick = { },
                     shape = RoundedCornerShape(50),
                     colors = ButtonDefaults.buttonColors(Color(0xFF296856)),
                     modifier = Modifier.weight(1f)
@@ -94,7 +103,6 @@ fun Login(controleDeNavegacao: NavHostController) {
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
 
             OutlinedTextField(
                 value = emailState.value,
@@ -118,7 +126,6 @@ fun Login(controleDeNavegacao: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-
             OutlinedTextField(
                 value = senhaState.value,
                 onValueChange = { senhaState.value = it },
@@ -141,15 +148,31 @@ fun Login(controleDeNavegacao: NavHostController) {
 
             Spacer(modifier = Modifier.height(28.dp))
 
-
             Button(
                 onClick = {
-                    if (emailState.value == "teste@gmail.com" && senhaState.value == "1234") {
-                        // controleDeNavegacao!!.navigate("home")
-                    } else {
-                        erroState.value = true
-                        mensagemErroState.value = "Usuário e senha incorretos!"
-                    }
+                    val loginRequest = LoginUsuario(email = emailState.value, senha = senhaState.value)
+                    clienteService.loginUsuario(loginRequest).enqueue(object : Callback<Cliente> {
+                        override fun onResponse(call: Call<Cliente>, response: Response<Cliente>) {
+                            Log.i("dados: ", loginRequest.email)
+                            if (response.isSuccessful) {
+                                val cliente = response.body()
+                                if (cliente != null) {
+                                    controleDeNavegacao.navigate("home/${cliente.id}")
+                                } else {
+                                    erroState.value = true
+                                    mensagemErroState.value = "Erro ao obter os dados do usuário!"
+                                }
+                            } else {
+                                erroState.value = true
+                                mensagemErroState.value = "Usuário e senha incorretos!"
+                            }
+                        }
+
+                        override fun onFailure(call: Call<Cliente>, t: Throwable) {
+                            erroState.value = true
+                            mensagemErroState.value = "Erro: ${t.localizedMessage}"
+                        }
+                    })
                 },
                 colors = ButtonDefaults.buttonColors(Color(0x4D19493B)),
                 shape = RoundedCornerShape(13.dp),
@@ -160,8 +183,11 @@ fun Login(controleDeNavegacao: NavHostController) {
                 Text(text = "Entrar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            if (erroState.value) {
+                Text(text = mensagemErroState.value, color = Color.Red, modifier = Modifier.padding(8.dp))
+            }
 
+            Spacer(modifier = Modifier.height(32.dp))
 
             Row(
                 modifier = Modifier
@@ -173,7 +199,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                     text = "Cadastre-se",
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { controleDeNavegacao!!.navigate("cadastro") }
+                    modifier = Modifier.clickable { controleDeNavegacao.navigate("cadastro") }
                 )
             }
         }

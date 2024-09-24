@@ -1,6 +1,7 @@
 package br.senai.sp.jandira.vivaris.service
 
 import br.senai.sp.jandira.vivaris.model.Cliente
+import br.senai.sp.jandira.vivaris.model.LoginUsuario
 import br.senai.sp.jandira.vivaris.model.Result
 import retrofit2.Call
 import retrofit2.http.Body
@@ -17,6 +18,10 @@ interface ClienteService {
 
     @GET("cliente/{id}")
     fun getClienteById( @Path("id") id: Int): Call<Cliente>
+
+    @Headers("Content-Type: application/json")
+    @POST("login/usuario")
+    fun loginUsuario(@Body loginUsuario: LoginUsuario): Call<Cliente>
 
     @Headers("Content-Type: application/json")
     @POST("cliente")

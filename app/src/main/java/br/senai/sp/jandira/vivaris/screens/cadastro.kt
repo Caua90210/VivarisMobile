@@ -24,6 +24,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
 import br.senai.sp.jandira.vivaris.model.Cliente
+import br.senai.sp.jandira.vivaris.model.Psicologo
 import br.senai.sp.jandira.vivaris.model.Sexo
 import br.senai.sp.jandira.vivaris.model.SexoResponse
 import java.text.ParseException
@@ -87,6 +88,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
     var sexos by remember { mutableStateOf<List<Sexo>>(emptyList()) }
     var loadingSexos by remember { mutableStateOf(true) }
 
+
+    val psicologoService = retrofitFactory.getPsicologoService()
 
     LaunchedEffect(Unit) {
         sexoService.getSexo().enqueue(object : Callback<SexoResponse> {
@@ -276,32 +279,67 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                 }
             }
 
-
             item {
                 Button(
                     onClick = {
 
                         if (nomeState.isBlank() || telefoneState.isBlank() || emailState.isBlank() ||
-                            senhaState.isBlank() || cpfState.isBlank() || (isPsicologoState && crpState.isBlank())
-                        ) {
+                            senhaState.isBlank() || cpfState.isBlank() || (isPsicologoState && crpState.isBlank())) {
                             Toast.makeText(context, "Todos os campos são obrigatórios", Toast.LENGTH_SHORT).show()
+                            return@Button
+                        }
+
+                        if (isPsicologoState) {
+
+                            val psicologo = Psicologo(
+                                nome = nomeState,
+                                telefone = telefoneState,
+                                email = emailState,
+                                data_nascimento = dataNascimentoState,
+                                senha = senhaState,
+                                id_sexo = 1,
+                                cpf = cpfState,
+                                cip = crpState,
+                                link_instagram = null.toString(),
+                                foto_perfil = null,
+                                descricao = "teste",
+                                id_preferencias = listOf(preferenciaSelecionada)
+                            )
+
+
+                            coroutineScope.launch {
+                                psicologoService.cadastrarPsicologo(psicologo).enqueue(object : Callback<Psicologo> {
+                                    override fun onResponse(call: Call<Psicologo>, response: Response<Psicologo>) {
+                                        if (response.isSuccessful) {
+                                            Toast.makeText(context, "Psicólogo cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
+                                            controleDeNavegacao.navigate("login")
+                                        } else {
+                                            Toast.makeText(context, "Erro ao cadastrar psicólogo: ${response.code()}", Toast.LENGTH_SHORT).show()
+                                            Log.e("Cadastro", "Erro ao cadastrar: ${response.errorBody()?.string()}")
+                                        }
+                                    }
+
+                                    override fun onFailure(call: Call<Psicologo>, t: Throwable) {
+                                        Toast.makeText(context, "Erro: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
+                                        Log.e("Cadastro", "Falha na chamada: ${t.localizedMessage}")
+                                    }
+                                })
+                            }
                         } else {
+
                             val cliente = Cliente(
                                 nome = nomeState,
                                 telefone = telefoneState,
                                 email = emailState,
-                                dataNascimento = dataNascimentoState,
+                                data_nascimento = dataNascimentoState,
                                 senha = senhaState,
                                 id_sexo = 1,
                                 cpf = cpfState,
-                               // crp = if (isPsicologoState) crpState else null,
                                 link_instagram = null,
                                 foto_perfil = null,
                                 id_preferencias = listOf(preferenciaSelecionada)
                             )
 
-
-                            Log.d("Cadastro", "Cliente a ser enviado: $cliente")
 
                             coroutineScope.launch {
                                 clienteService.cadastrarCliente(cliente).enqueue(object : Callback<Cliente> {
