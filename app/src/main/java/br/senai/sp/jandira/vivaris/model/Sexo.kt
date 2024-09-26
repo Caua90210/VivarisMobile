@@ -5,7 +5,7 @@ data class Sexo(
     val sexo: String
 )
 data class SexoResponse(
-    val data: List<Sexo>, // A lista de sexos recebida da API
+    val data: List<Sexo>,
     val status_code: Int,
     val quantidade: Int
 )

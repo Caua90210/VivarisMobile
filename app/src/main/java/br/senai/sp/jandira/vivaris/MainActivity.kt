@@ -16,10 +16,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import br.senai.sp.jandira.vivaris.screens.Home
-
-
+import br.senai.sp.jandira.vivaris.screens.PreferenciasScreen
 import br.senai.sp.jandira.vivaris.ui.theme.VivarisTheme
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,9 +30,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val controleDeNavegacao = rememberNavController()
-                    NavHost(navController = controleDeNavegacao, startDestination = "login") {
-                        composable(route = "login"){ Login(controleDeNavegacao)}
-                        composable(route = "cadastro"){  Cadastro(controleDeNavegacao) }
+                    NavHost(navController = controleDeNavegacao, startDestination = "preferencias") {
+                        composable(route = "login") { Login(controleDeNavegacao) }
+                        composable(route = "cadastro") { Cadastro(controleDeNavegacao) }
                         composable(
                             route = "home/{id}",
                             arguments = listOf(navArgument("id") { type = NavType.IntType })
@@ -42,11 +40,16 @@ class MainActivity : ComponentActivity() {
                             val userId = backStackEntry.arguments?.getInt("id") ?: 0
                             Home(controleDeNavegacao = controleDeNavegacao, userId = userId)
                         }
+                        composable(route = "disponibilidade") {
+                            DisponibilidadeScreen(controleDeNavegacao)
+                        }
+
+                        composable(route = "preferencias"){
+                            PreferenciasScreen(controleDeNavegacao)
+                        }
                     }
                 }
             }
         }
     }
-
 }
-
