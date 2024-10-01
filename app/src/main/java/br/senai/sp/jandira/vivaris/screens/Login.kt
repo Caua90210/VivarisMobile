@@ -48,8 +48,8 @@ fun Login(controleDeNavegacao: NavHostController) {
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF15A27A),
-                        Color(0xFF67DEBC)
+                        Color(0xFFFFFFFF),
+                        Color(0xFFF1F3F3)
                     )
                 )
             )
@@ -71,7 +71,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                 contentScale = ContentScale.Fit
             )
 
-            Text("Logue-se", color = Color.White, fontSize = 48.sp, fontWeight = FontWeight.Bold)
+            Text("Logue-se", color = Color(0xFF085848), fontSize = 48.sp, fontWeight = FontWeight.Bold)
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -104,15 +104,22 @@ fun Login(controleDeNavegacao: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFFAACFBE), shape = RoundedCornerShape(16.dp)) // Cor de fundo do campo
+            ) {
             OutlinedTextField(
                 value = emailState.value,
                 onValueChange = { emailState.value = it },
-                modifier = Modifier.fillMaxWidth(0.9f),
                 label = { Text("Email", color = Color.White) },
+                modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFFFFFFFF),
-                    unfocusedBorderColor = Color(0xFFFFFFFF),
-                    focusedTextColor = Color.Black
+                    focusedBorderColor = Color(0xFFAACFBE),
+                    unfocusedBorderColor = Color(0xFFAACFBE),
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    cursorColor = Color.White // Para a cor do cursor
                 ),
                 leadingIcon = {
                     Icon(
@@ -122,19 +129,26 @@ fun Login(controleDeNavegacao: NavHostController) {
                     )
                 },
                 shape = RoundedCornerShape(16.dp)
-            )
+            )}
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFFAACFBE), shape = RoundedCornerShape(16.dp)) // Cor de fundo do campo
+            ) {
             OutlinedTextField(
                 value = senhaState.value,
                 onValueChange = { senhaState.value = it },
-                modifier = Modifier.fillMaxWidth(0.9f),
                 label = { Text("Senha", color = Color.White) },
+                modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFFFFFFFF),
-                    unfocusedBorderColor = Color(0xFFFFFFFF),
-                    focusedTextColor = Color.Black
+                    focusedBorderColor = Color(0xFFAACFBE),
+                    unfocusedBorderColor = Color(0xFFAACFBE),
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    cursorColor = Color.White // Para a cor do cursor
                 ),
                 leadingIcon = {
                     Icon(
@@ -144,7 +158,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                     )
                 },
                 shape = RoundedCornerShape(16.dp)
-            )
+            )}
 
             Spacer(modifier = Modifier.height(28.dp))
 
@@ -174,7 +188,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                         }
                     })
                 },
-                colors = ButtonDefaults.buttonColors(Color(0x4D19493B)),
+                colors = ButtonDefaults.buttonColors(Color(0xFF22AF87)),
                 shape = RoundedCornerShape(13.dp),
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
@@ -194,10 +208,10 @@ fun Login(controleDeNavegacao: NavHostController) {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = "Não possui uma conta? ", color = Color.White)
+                Text(text = "Não possui uma conta? ", color = Color(0xFF085848))
                 Text(
                     text = "Cadastre-se",
-                    color = Color.White,
+                    color = Color(0xFF085848),
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable { controleDeNavegacao.navigate("cadastro") }
                 )

@@ -1,6 +1,8 @@
 package br.senai.sp.jandira.vivaris
 
 import Cadastro
+import DisponibilidadeScreenV3
+
 import Login
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -15,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+
 import br.senai.sp.jandira.vivaris.screens.Home
 import br.senai.sp.jandira.vivaris.ui.theme.VivarisTheme
 
@@ -30,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val controleDeNavegacao = rememberNavController()
-                    NavHost(navController = controleDeNavegacao, startDestination = "login") {
+                    NavHost(navController = controleDeNavegacao, startDestination = "disponibilidade") {
                         composable(route = "login") { Login(controleDeNavegacao) }
                         composable(route = "cadastro") { Cadastro(controleDeNavegacao) }
                         composable(
@@ -41,7 +44,7 @@ class MainActivity : ComponentActivity() {
                             Home(controleDeNavegacao = controleDeNavegacao, userId = userId)
                         }
                         composable(route = "disponibilidade") {
-                            DisponibilidadeScreen(controleDeNavegacao)
+                           DisponibilidadeScreenV3(controleDeNavegacao)
                         }
                         composable("preferencias/{clienteId}") { backStackEntry ->
                             val clienteId = backStackEntry.arguments?.getString("clienteId")?.toIntOrNull()

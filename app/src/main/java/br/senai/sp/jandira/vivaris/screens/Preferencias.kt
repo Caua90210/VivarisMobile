@@ -13,9 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.vivaris.model.PreferenciaCliente
 import br.senai.sp.jandira.vivaris.model.Preferencias
 import br.senai.sp.jandira.vivaris.model.PreferenciasResponse
@@ -188,3 +190,14 @@ fun String.toColor(): Color {
         Color.Gray
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewPreferenciasScreen() {
+
+    val navController = rememberNavController()
+    val clienteId = 1
+
+    PreferenciasScreen(navController = navController, clienteId = clienteId)
+}
+

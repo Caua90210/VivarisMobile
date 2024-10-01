@@ -147,7 +147,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                 ) {
                     Button(
                         onClick = { isPsicologoState = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = if (isPsicologoState) Color.Green else Color(0x4D19493B)),
+                        colors = ButtonDefaults.buttonColors(containerColor = if (isPsicologoState) Color(0xFF22AF87) else Color(0x4D19493B)),
                         shape = RoundedCornerShape(50),
                         modifier = Modifier.weight(1f)
                     ) {
@@ -158,7 +158,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
 
                     Button(
                         onClick = { isPsicologoState = false },
-                        colors = ButtonDefaults.buttonColors(containerColor = if (!isPsicologoState) Color.Green else Color(0x4D19493B)),
+                        colors = ButtonDefaults.buttonColors(containerColor = if (!isPsicologoState) Color(0xFF22AF87) else Color(0x4D19493B)),
                         shape = RoundedCornerShape(50),
                         modifier = Modifier.weight(1f)
                     ) {
@@ -423,7 +423,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
 
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0x4D19493B)),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF22AF87)),
                     shape = RoundedCornerShape(13.dp),
                     modifier = Modifier
                         .fillMaxWidth()
