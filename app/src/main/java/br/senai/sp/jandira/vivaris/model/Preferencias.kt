@@ -6,6 +6,12 @@ data class Preferencias(
     val cor: String
 )
 
+data class PreferenciaCliente(
+    val id_cliente: Int,
+    val preferencias: List<Int> // Lista de IDs de preferências
+)
+
+
 data class PreferenciasResponse(
     val data: List<Preferencias>,
     val status_code: Int

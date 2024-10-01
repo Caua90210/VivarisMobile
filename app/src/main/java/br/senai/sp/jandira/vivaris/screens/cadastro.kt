@@ -24,6 +24,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
 import br.senai.sp.jandira.vivaris.model.Cliente
+import br.senai.sp.jandira.vivaris.model.ClienteResponse
 import br.senai.sp.jandira.vivaris.model.Psicologo
 import br.senai.sp.jandira.vivaris.model.Sexo
 import br.senai.sp.jandira.vivaris.model.SexoResponse
@@ -167,6 +168,11 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
             }
 
             item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFAACFBE), shape = RoundedCornerShape(16.dp)) // Cor de fundo do campo
+                ) {
                 OutlinedTextField(
                     value = nomeState,
                     onValueChange = { nomeState = it },
@@ -181,9 +187,14 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     ),
                     shape = RoundedCornerShape(16.dp)
                 )
-            }
+            }}
 
             item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFAACFBE), shape = RoundedCornerShape(16.dp)) // Cor de fundo do campo
+                ) {
                 OutlinedTextField(
                     value = telefoneState,
                     onValueChange = { telefoneState = it },
@@ -198,9 +209,14 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     ),
                     shape = RoundedCornerShape(16.dp)
                 )
-            }
+            }}
 
             item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFAACFBE), shape = RoundedCornerShape(16.dp)) // Cor de fundo do campo
+                ) {
                 OutlinedTextField(
                     value = emailState,
                     onValueChange = { emailState = it },
@@ -215,9 +231,14 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     ),
                     shape = RoundedCornerShape(16.dp)
                 )
-            }
+            }}
 
             item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFAACFBE), shape = RoundedCornerShape(16.dp)) // Cor de fundo do campo
+                ) {
                 OutlinedTextField(
                     value = dataNascimentoState,
                     onValueChange = { input ->
@@ -236,10 +257,15 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     ),
                     shape = RoundedCornerShape(16.dp)
                 )
-            }
+            }}
 
 
             item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFAACFBE), shape = RoundedCornerShape(16.dp)) // Cor de fundo do campo
+                ) {
                 OutlinedTextField(
                     value = senhaState,
                     onValueChange = { senhaState = it },
@@ -254,9 +280,14 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     ),
                     shape = RoundedCornerShape(16.dp)
                 )
-            }
+            }}
 
             item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFFAACFBE), shape = RoundedCornerShape(16.dp)) // Cor de fundo do campo
+                ) {
                 OutlinedTextField(
                     value = cpfState,
                     onValueChange = { cpfState = it },
@@ -271,11 +302,16 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                     ),
                     shape = RoundedCornerShape(16.dp)
                 )
-            }
+            }}
 
 
             if (isPsicologoState) {
                 item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color(0xFFAACFBE), shape = RoundedCornerShape(16.dp)) // Cor de fundo do campo
+                    ) {
                     OutlinedTextField(
                         value = crpState,
                         onValueChange = { crpState = it },
@@ -291,7 +327,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                         shape = RoundedCornerShape(16.dp)
                     )
                 }
-            }
+            }}
 
             item {
                 Button(
@@ -316,8 +352,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                                 cip = crpState,
                                 link_instagram = null.toString(),
                                 foto_perfil = null,
-                                descricao = "teste",
-                                id_preferencias = listOf(preferenciaSelecionada)
+                                descricao = "teste"
+
                             )
 
 
@@ -351,28 +387,40 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                                 cpf = cpfState,
                                 link_instagram = null,
                                 foto_perfil = null,
-                                id_preferencias = listOf(preferenciaSelecionada)
+                                id_preferencias = emptyList()
                             )
 
-
                             coroutineScope.launch {
-                                clienteService.cadastrarCliente(cliente).enqueue(object : Callback<Cliente> {
-                                    override fun onResponse(call: Call<Cliente>, response: Response<Cliente>) {
+                                clienteService.cadastrarCliente(cliente).enqueue(object : Callback<ClienteResponse> {
+                                    override fun onResponse(call: Call<ClienteResponse>, response: Response<ClienteResponse>) {
                                         if (response.isSuccessful) {
                                             Toast.makeText(context, "Cliente cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
-                                            controleDeNavegacao.navigate("login")
+
+                                            // Acesse o ID do usuário corretamente a partir da resposta
+                                            val clienteID = response.body()?.user?.id // Acesse o ID do usuário aqui
+                                            Log.d("Cadastro", "Cliente ID: $clienteID")
+
+                                            if (clienteID != null) {
+                                                controleDeNavegacao.navigate("preferencias/$clienteID")
+                                            } else {
+                                                Toast.makeText(context, "ID do cliente não disponível", Toast.LENGTH_SHORT).show()
+                                                Log.e("Cadastro", "ID do cliente é null")
+                                            }
                                         } else {
                                             Toast.makeText(context, "Erro ao cadastrar cliente: ${response.code()}", Toast.LENGTH_SHORT).show()
                                             Log.e("Cadastro", "Erro ao cadastrar: ${response.errorBody()?.string()}")
                                         }
                                     }
 
-                                    override fun onFailure(call: Call<Cliente>, t: Throwable) {
+                                    override fun onFailure(call: Call<ClienteResponse>, t: Throwable) {
                                         Toast.makeText(context, "Erro: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
                                         Log.e("Cadastro", "Falha na chamada: ${t.localizedMessage}")
                                     }
                                 })
                             }
+
+
+
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0x4D19493B)),

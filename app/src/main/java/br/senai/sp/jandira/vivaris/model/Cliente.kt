@@ -10,8 +10,16 @@ data class Cliente(
     val data_nascimento: String,
     val senha: String,
     val id_sexo: Int,
-    val link_instagram: String?,
-    val foto_perfil: Image?,
+    val link_instagram: String? =null,
+    val foto_perfil: Image? = null,
     val cpf: String,
-    val id_preferencias: List<Int>
+    val id_preferencias: List<Int>,
+    val preferencias: List<Preferencias>? = null
 )
+
+data class ClienteResponse(
+    val user: Cliente, // Presumindo que Cliente seja a sua model
+    val status_code: Int,
+    val message: String
+)
+

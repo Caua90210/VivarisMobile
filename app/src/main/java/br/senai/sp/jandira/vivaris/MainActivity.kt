@@ -16,10 +16,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import br.senai.sp.jandira.vivaris.screens.Home
-import br.senai.sp.jandira.vivaris.screens.PreferenciasScreen
 import br.senai.sp.jandira.vivaris.ui.theme.VivarisTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val controleDeNavegacao = rememberNavController()
-                    NavHost(navController = controleDeNavegacao, startDestination = "preferencias") {
+                    NavHost(navController = controleDeNavegacao, startDestination = "login") {
                         composable(route = "login") { Login(controleDeNavegacao) }
                         composable(route = "cadastro") { Cadastro(controleDeNavegacao) }
                         composable(
@@ -43,10 +43,14 @@ class MainActivity : ComponentActivity() {
                         composable(route = "disponibilidade") {
                             DisponibilidadeScreen(controleDeNavegacao)
                         }
-
-                        composable(route = "preferencias"){
-                            PreferenciasScreen(controleDeNavegacao)
+                        composable("preferencias/{clienteId}") { backStackEntry ->
+                            val clienteId = backStackEntry.arguments?.getString("clienteId")?.toIntOrNull()
+                            PreferenciasScreen(controleDeNavegacao, clienteId ?: 0) // Use 0 como fallback se necessário
                         }
+
+
+
+
                     }
                 }
             }

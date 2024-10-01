@@ -14,7 +14,6 @@ data class Psicologo(
     val foto_perfil: Image?,
     val descricao: String,
     val link_instagram: String,
-    val id_sexo: Int,
-    val id_preferencias: List<Int>
+    val id_sexo: Int
     )
 

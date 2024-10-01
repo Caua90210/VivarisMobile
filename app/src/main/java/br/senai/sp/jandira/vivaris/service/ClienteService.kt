@@ -1,6 +1,7 @@
 package br.senai.sp.jandira.vivaris.service
 
 import br.senai.sp.jandira.vivaris.model.Cliente
+import br.senai.sp.jandira.vivaris.model.ClienteResponse
 import br.senai.sp.jandira.vivaris.model.LoginUsuario
 import br.senai.sp.jandira.vivaris.model.Result
 import retrofit2.Call
@@ -25,6 +26,6 @@ interface ClienteService {
 
     @Headers("Content-Type: application/json")
     @POST("cliente")
-    fun cadastrarCliente(@Body cliente: Cliente): Call<Cliente>
+    fun cadastrarCliente(@Body cliente: Cliente): Call<ClienteResponse>
 
 }
