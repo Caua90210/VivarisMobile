@@ -5,6 +5,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,23 +31,24 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
+
 @Composable
 fun PreferenciasScreen(
     navController: NavHostController,
     clienteId: Int
 ) {
     var preferenciasList by remember { mutableStateOf(emptyList<Preferencias>()) }
-    var selectedPreferencias by remember { mutableStateOf(mutableListOf<Int>()) } // Guardar as preferências selecionadas
+    var selectedPreferencias by remember { mutableStateOf(mutableListOf<Int>()) }
     var loading by remember { mutableStateOf(true) }
     val context = LocalContext.current
     val retrofitService = RetrofitFactory().getPreferenciasService()
 
-    // Carregar preferências
     LaunchedEffect(Unit) {
         retrofitService.getAllPreferencias().enqueue(object : Callback<PreferenciasResponse> {
             override fun onResponse(call: Call<PreferenciasResponse>, response: Response<PreferenciasResponse>) {
                 if (response.isSuccessful) {
-                    preferenciasList = response.body()?.data ?: emptyList() // Atualiza a lista de preferências
+                    preferenciasList = response.body()?.data ?: emptyList()
                     Log.d("Preferencias", "Preferências carregadas: $preferenciasList")
                 } else {
                     showToast(context, "Erro: ${response.code()}")
@@ -57,44 +63,57 @@ fun PreferenciasScreen(
         })
     }
 
-    // Exibir conteúdo
     if (loading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
     } else {
-        PreferenciasList(preferenciasList) { preferenciaId ->
-            if (!selectedPreferencias.contains(preferenciaId)) {
-                selectedPreferencias.add(preferenciaId) // Adiciona a preferência selecionada
-            } else {
-                selectedPreferencias.remove(preferenciaId) // Remove se já estiver selecionada
-            }
-            Log.d("PreferenciasScreen", "Preferências selecionadas: $selectedPreferencias") // Verifique as preferências selecionadas
-        }
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Text(
+                text = "Selecione suas Preferências",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF00796B),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
 
-        // Botão para cadastrar preferências
-        Button(
-            onClick = {
-                if (selectedPreferencias.isNotEmpty()) {
-                    cadastrarPreferencia(selectedPreferencias, clienteId, navController, context)
+            // Mudança para LazyVerticalGrid para duas colunas
+            PreferenciasGrid(preferenciasList) { preferenciaId ->
+                if (!selectedPreferencias.contains(preferenciaId)) {
+                    selectedPreferencias.add(preferenciaId)
                 } else {
-                    showToast(context, "Selecione pelo menos uma preferência.")
+                    selectedPreferencias.remove(preferenciaId)
                 }
-            },
-            modifier = Modifier
-                //.align(Alignment.CenterHorizontally)
-                .padding(16.dp)
-        ) {
-            Text("Cadastrar Preferências")
+                Log.d("PreferenciasScreen", "Preferências selecionadas: $selectedPreferencias")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    if (selectedPreferencias.isNotEmpty()) {
+                        cadastrarPreferencia(selectedPreferencias, clienteId, navController, context)
+                    } else {
+                        showToast(context, "Selecione pelo menos uma preferência.")
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Cadastrar Preferências", fontSize = 18.sp)
+            }
         }
     }
 }
 
 @Composable
-fun PreferenciasList(preferencias: List<Preferencias>, onSelect: (Int) -> Unit) {
-    Log.d("PreferenciasList", "Preferências recebidas: $preferencias") // Log aqui
-    Column(modifier = Modifier.fillMaxSize()) {
-        preferencias.forEach { preferencia ->
+fun PreferenciasGrid(preferencias: List<Preferencias>, onSelect: (Int) -> Unit) {
+    Log.d("PreferenciasGrid", "Preferências recebidas: $preferencias")
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2), // Definindo 2 colunas
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(8.dp) // Espaçamento ao redor da grade
+    ) {
+        items(preferencias) { preferencia ->
             PreferenciasCard(preferencia) { onSelect(preferencia.id) }
         }
     }
@@ -106,42 +125,44 @@ fun PreferenciasCard(preferencia: Preferencias, onSelect: (Int) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onSelect(preferencia.id) }
-            .height(100.dp),
+            .padding(vertical = 8.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF00796B)),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(12.dp)
     ) {
-        Row(modifier = Modifier.fillMaxSize()) {
+        Row(modifier = Modifier.padding(16.dp)) {
             Card(
-                modifier = Modifier.size(100.dp),
-                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.size(80.dp),
+                shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = preferencia.cor.toColor())
             ) {
-                Spacer(modifier = Modifier.width(16.dp))
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = preferencia.nome,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
+
+                Box(modifier = Modifier.fillMaxSize())
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = preferencia.nome,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
         }
     }
 }
+
+// Funções de auxiliar e preview permanecem inalteradas
+
 fun cadastrarPreferencia(
     listaPreferencias: List<Int>, // Ajustado para uma lista de IDs de preferências
     idCliente: Int,
     navController: NavHostController,
     context: Context
 ) {
-    // Aqui você pode querer adicionar uma verificação para ver se o cliente já possui preferências cadastradas.
-    // Para isso, talvez você precise de um método que busque as preferências do cliente na API antes de cadastrar.
+
     val preferenciaCliente = PreferenciaCliente(
         id_cliente = idCliente,
         preferencias = listaPreferencias
@@ -161,7 +182,7 @@ fun cadastrarPreferencia(
                 if (response.isSuccessful) {
                     // Preferências cadastradas com sucesso
                     showToast(context, "Preferências cadastradas com sucesso!")
-                    navController.navigate("login") // Navega para a tela de login
+                    navController.navigate("login")
                 } else {
                     // Log de erro caso a resposta não seja bem-sucedida
                     Log.e("CadastroPreferencia", "Erro: ${response.code()} - ${response.errorBody()?.string()}")

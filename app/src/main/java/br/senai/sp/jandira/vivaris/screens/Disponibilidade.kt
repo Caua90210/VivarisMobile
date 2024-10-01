@@ -3,8 +3,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -70,7 +72,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-           //.background(Color(0xFFFFFFFF))
+        //.background(Color(0xFFFFFFFF))
         ,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -86,29 +88,32 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth().background(Color(0xFF))
-
-            ) {
-                daysOfWeekLetters.forEach { dayLetter ->
-                    Button(
-                        onClick = {
-                            if (selectedDays.contains(dayLetter)) {
-                                selectedDays = selectedDays.minus(dayLetter)
+            daysOfWeekLetters.forEach { dayLetter ->
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .border(1.dp, Color(0xFF3E9C81), CircleShape)
+                        .clickable {
+                            selectedDays = if (selectedDays.contains(dayLetter)) {
+                                selectedDays.minus(dayLetter)
                             } else {
-                                selectedDays = selectedDays.plus(dayLetter)
+                                selectedDays.plus(dayLetter)
                             }
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (selectedDays.contains(dayLetter)) Color(0xFF52B6A4) else Color.Transparent
+                        }
+                        .background(
+                            if (selectedDays.contains(dayLetter)) Color(0xFF3E9C81) else Color.Transparent,
+                            shape = CircleShape
                         ),
-
-                        ) {
-                        Text(text = dayLetter)
-                    }
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = dayLetter,
+                        color = if (selectedDays.contains(dayLetter)) Color.White else Color(0xFF3E9C81),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
                 }
             }
-
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -300,5 +305,3 @@ fun DisponibilidadeHorarioSection(periodo: String, times: List<String>) {
 fun PreviewDisponibilidadeScreenV3() {
     DisponibilidadeScreenV3(controleDeNavegacao = rememberNavController())
 }
-
-

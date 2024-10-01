@@ -8,7 +8,7 @@ data class Preferencias(
 
 data class PreferenciaCliente(
     val id_cliente: Int,
-    val preferencias: List<Int> // Lista de IDs de preferências
+    val preferencias: List<Int>
 )
 
 
