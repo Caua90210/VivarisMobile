@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val controleDeNavegacao = rememberNavController()
-                    NavHost(navController = controleDeNavegacao, startDestination = "preferencias/1") {
+                    NavHost(navController = controleDeNavegacao, startDestination = "login") {
                         composable(route = "login") { Login(controleDeNavegacao) }
                         composable(route = "cadastro") { Cadastro(controleDeNavegacao) }
                         composable(

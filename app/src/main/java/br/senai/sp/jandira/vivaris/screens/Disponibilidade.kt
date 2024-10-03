@@ -1,3 +1,4 @@
+import android.app.TimePickerDialog
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -55,30 +56,38 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController) {
 
     val daysOfWeekLetters = listOf("D", "S", "T", "Q1", "Q2", "F", "S2")
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .background(Color(0xFF3E9C81))
-    ) {
-        Text(text = "Horário", textAlign = TextAlign.Center, modifier = Modifier
-            .fillMaxWidth()
-            .padding(24.dp), color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold )
-    }
-
 
 
     Column(
+        modifier = Modifier.fillMaxSize()
+            .background(color = Color(0xF1F1F1F1))
+    ){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .background(Color(0xFF3E9C81))
+        ) {
+            Text(text = "Horário", textAlign = TextAlign.Center, modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp), color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold )
+        }
+
+Spacer(modifier = Modifier.height(40.dp))
+    Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-        //.background(Color(0xFFFFFFFF))
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .height(650.dp)
+        .background(Color(0xFFFFFFFF), shape = RoundedCornerShape(16.dp))
+
         ,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
 
     ) {
-        Spacer(modifier = Modifier.height(100.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(text = "Dias Disponíveis", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color(0xFF296856))
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -132,11 +141,14 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
+                .padding(horizontal = 20.dp)
         ) {
             Text(text = "Adicionar Horário", color = Color.White, fontSize = 16.sp)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        Spacer(modifier = Modifier.height(200.dp))
 
         Button(
             onClick = {
@@ -171,6 +183,9 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
+                .padding(horizontal = 42.dp)
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 10.dp)
         ) {
             Text(text = "Confirmar disponibilidade", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
         }
@@ -207,7 +222,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController) {
             }
         )
     }
-}
+}}
 
 fun cadastrarDisponibilidade(disponibilidade: Disponibilidade, context: android.content.Context, disponibilidadeService: DisponibilidadeService) {
     disponibilidadeService.cadastrarDisponibilidade(disponibilidade).enqueue(object : Callback<Disponibilidade> {
@@ -229,27 +244,61 @@ fun cadastrarDisponibilidade(disponibilidade: Disponibilidade, context: android.
 fun AddHorarioDialog(onDismiss: () -> Unit, onConfirm: (String, String) -> Unit) {
     var horarioInicio by remember { mutableStateOf("") }
     var horarioFim by remember { mutableStateOf("") }
+    var showTimePickerInicio by remember { mutableStateOf(false) }
+    var showTimePickerFim by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+    // TimePicker para o horário de início
+    if (showTimePickerInicio) {
+        TimePickerDialog(
+            context,
+            { _, hourOfDay, minute ->
+                // Formatando a hora e minuto como "HH:mm" sem segundos
+                horarioInicio = String.format("%02d:%02d", hourOfDay, minute)
+                showTimePickerInicio = false
+            },
+            0, 0, true
+        ).show()
+    }
+
+    // TimePicker para o horário de fim
+    if (showTimePickerFim) {
+        TimePickerDialog(
+            context,
+            { _, hourOfDay, minute ->
+                // Formatando a hora e minuto como "HH:mm" sem segundos
+                horarioFim = String.format("%02d:%02d", hourOfDay, minute)
+                showTimePickerFim = false
+            },
+            0, 0, true
+        ).show()
+    }
 
     AlertDialog(
         onDismissRequest = { onDismiss() },
         title = { Text(text = "Adicionar Horário") },
         text = {
             Column {
-                TextField(
-                    value = horarioInicio,
-                    onValueChange = { horarioInicio = it },
-                    label = { Text("Horário de Início (HH:mm)") }
-                )
+                // Botão para selecionar o horário de início
+                Button(onClick = { showTimePickerInicio = true }) {
+                    Text(text = if (horarioInicio.isEmpty()) "Selecionar Horário de Início" else "Início: $horarioInicio")
+                }
                 Spacer(modifier = Modifier.height(8.dp))
-                TextField(
-                    value = horarioFim,
-                    onValueChange = { horarioFim = it },
-                    label = { Text("Horário de Fim (HH:mm)") }
-                )
+                // Botão para selecionar o horário de fim
+                Button(onClick = { showTimePickerFim = true }) {
+                    Text(text = if (horarioFim.isEmpty()) "Selecionar Horário de Fim" else "Fim: $horarioFim")
+                }
             }
         },
         confirmButton = {
-            Button(onClick = { onConfirm(horarioInicio, horarioFim) }) {
+            Button(onClick = {
+                if (horarioInicio.isNotEmpty() && horarioFim.isNotEmpty()) {
+                    onConfirm(horarioInicio, horarioFim)
+                } else {
+                    Toast.makeText(context, "Por favor, selecione ambos os horários", Toast.LENGTH_SHORT).show()
+                }
+            }) {
                 Text("Criar Horário")
             }
         },
@@ -261,12 +310,14 @@ fun AddHorarioDialog(onDismiss: () -> Unit, onConfirm: (String, String) -> Unit)
     )
 }
 
+
+
 @Composable
 fun DisponibilidadeHorarioSection(periodo: String, times: List<String>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = 4.dp, horizontal = 16.dp),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center
     ) {
