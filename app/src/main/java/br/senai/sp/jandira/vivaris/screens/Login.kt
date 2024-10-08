@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,8 +39,6 @@ fun Login(controleDeNavegacao: NavHostController) {
     var erroState = remember { mutableStateOf(false) }
     var mensagemErroState = remember { mutableStateOf("") }
     var isPsicologo = remember { mutableStateOf(false) }
-
-
 
     val retrofitFactory = RetrofitFactory()
     val clienteService = retrofitFactory.getClienteService()
@@ -87,7 +84,10 @@ fun Login(controleDeNavegacao: NavHostController) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Button(
-                    onClick = { isPsicologo.value = true },
+                    onClick = {
+                        isPsicologo.value = true
+                        Log.d("LoginScreen", "Botão Psicólogo clicado: isPsicologo = ${isPsicologo.value}")
+                    },
                     shape = RoundedCornerShape(50),
                     colors = ButtonDefaults.buttonColors(Color(0xFF296856)),
                     modifier = Modifier.weight(1f)
@@ -98,7 +98,10 @@ fun Login(controleDeNavegacao: NavHostController) {
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Button(
-                    onClick = { isPsicologo.value = false },
+                    onClick = {
+                        isPsicologo.value = false
+                        Log.d("LoginScreen", "Botão Cliente clicado: isPsicologo = ${isPsicologo.value}")
+                    },
                     shape = RoundedCornerShape(50),
                     colors = ButtonDefaults.buttonColors(Color(0xFF296856)),
                     modifier = Modifier.weight(1f)
@@ -114,27 +117,31 @@ fun Login(controleDeNavegacao: NavHostController) {
                     .fillMaxWidth()
                     .background(Color(0xFFAACFBE), shape = RoundedCornerShape(16.dp)) // Cor de fundo do campo
             ) {
-            OutlinedTextField(
-                value = emailState.value,
-                onValueChange = { emailState.value = it },
-                label = { Text("Email", color = Color.White) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFFAACFBE),
-                    unfocusedBorderColor = Color(0xFFAACFBE),
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    cursorColor = Color.White // Para a cor do cursor
-                ),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Email,
-                        contentDescription = "Email Icon",
-                        tint = Color(0xFFFFFFFF)
-                    )
-                },
-                shape = RoundedCornerShape(16.dp)
-            )}
+                OutlinedTextField(
+                    value = emailState.value,
+                    onValueChange = {
+                        emailState.value = it
+                        Log.d("LoginScreen", "Email alterado: ${emailState.value}")
+                    },
+                    label = { Text("Email", color = Color.White) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFAACFBE),
+                        unfocusedBorderColor = Color(0xFFAACFBE),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White // Para a cor do cursor
+                    ),
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Email,
+                            contentDescription = "Email Icon",
+                            tint = Color(0xFFFFFFFF)
+                        )
+                    },
+                    shape = RoundedCornerShape(16.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -143,113 +150,126 @@ fun Login(controleDeNavegacao: NavHostController) {
                     .fillMaxWidth()
                     .background(Color(0xFFAACFBE), shape = RoundedCornerShape(16.dp)) // Cor de fundo do campo
             ) {
-            OutlinedTextField(
-                value = senhaState.value,
-                onValueChange = { senhaState.value = it },
-                label = { Text("Senha", color = Color.White) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFFAACFBE),
-                    unfocusedBorderColor = Color(0xFFAACFBE),
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    cursorColor = Color.White // Para a cor do cursor
-                ),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Lock,
-                        contentDescription = "Lock Icon",
-                        tint = Color(0xFFFFFFFF)
-                    )
-                },
-                shape = RoundedCornerShape(16.dp)
-            )}
+                OutlinedTextField(
+                    value = senhaState.value,
+                    onValueChange = {
+                        senhaState.value = it
+                        Log.d("LoginScreen", "Senha alterada: ${senhaState.value}")
+                    },
+                    label = { Text("Senha", color = Color.White) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFAACFBE),
+                        unfocusedBorderColor = Color(0xFFAACFBE),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        cursorColor = Color.White // Para a cor do cursor
+                    ),
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Lock,
+                            contentDescription = "Lock Icon",
+                            tint = Color(0xFFFFFFFF)
+                        )
+                    },
+                    shape = RoundedCornerShape(16.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(28.dp))
-
             Button(
                 onClick = {
+                    Log.d("LoginScreen", "Botão de login clicado")
                     val loginRequest = LoginUsuario(email = emailState.value, senha = senhaState.value)
+                    Log.d("LoginScreen", "LoginRequest criado: email = ${loginRequest.email}, senha = ${loginRequest.senha}")
 
                     if (isPsicologo.value) {
                         // Login para psicólogo
+                        Log.d("LoginScreen", "Tentando login como psicólogo")
                         psicologoService.psicologoLogin(loginRequest).enqueue(object : Callback<Psicologo> {
                             override fun onResponse(call: Call<Psicologo>, response: Response<Psicologo>) {
+                                Log.d("LoginScreen", "Resposta recebida: ${response.code()}")
                                 if (response.isSuccessful) {
                                     val psicologo = response.body()
+                                    Log.d("LoginScreen", "Dados do psicólogo: $psicologo")
                                     if (psicologo != null) {
-                                        controleDeNavegacao.navigate("home/${psicologo.id}")
+                                        controleDeNavegacao.navigate("home/${psicologo.id}/true")
                                     } else {
                                         erroState.value = true
                                         mensagemErroState.value = "Erro ao obter os dados do psicólogo!"
+                                        Log.e("LoginScreen", "Erro ao obter os dados do psicólogo!")
                                     }
                                 } else {
                                     erroState.value = true
                                     mensagemErroState.value = "Usuário e senha incorretos!"
+                                    Log.e("LoginScreen", "Usuário e senha incorretos!")
                                 }
                             }
 
                             override fun onFailure(call: Call<Psicologo>, t: Throwable) {
                                 erroState.value = true
                                 mensagemErroState.value = "Erro: ${t.localizedMessage}"
+                                Log.e("LoginScreen", "Falha na conexão: ${t.localizedMessage}")
                             }
                         })
                     } else {
                         // Login para cliente
+                        Log.d("LoginScreen", "Tentando login como cliente")
                         clienteService.loginUsuario(loginRequest).enqueue(object : Callback<Cliente> {
                             override fun onResponse(call: Call<Cliente>, response: Response<Cliente>) {
+                                Log.d("LoginScreen", "Resposta recebida: ${response.code()}")
                                 if (response.isSuccessful) {
                                     val cliente = response.body()
+                                    Log.d("LoginScreen", "Dados do cliente: $cliente")
                                     if (cliente != null) {
-                                        controleDeNavegacao.navigate("home/${cliente.id}")
+                                        controleDeNavegacao.navigate("home/${cliente.id}/false")
                                     } else {
                                         erroState.value = true
                                         mensagemErroState.value = "Erro ao obter os dados do cliente!"
+                                        Log.e("LoginScreen", "Erro ao obter os dados do cliente!")
                                     }
                                 } else {
                                     erroState.value = true
                                     mensagemErroState.value = "Usuário e senha incorretos!"
+                                    Log.e("LoginScreen", "Usuário e senha incorretos!")
                                 }
                             }
 
                             override fun onFailure(call: Call<Cliente>, t: Throwable) {
                                 erroState.value = true
                                 mensagemErroState.value = "Erro: ${t.localizedMessage}"
+                                Log.e("LoginScreen", "Falha na conexão: ${t.localizedMessage}")
                             }
                         })
                     }
                 },
-                colors = ButtonDefaults.buttonColors(Color(0xFF22AF87)),
-                shape = RoundedCornerShape(13.dp),
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .height(51.3.dp)
+                colors = ButtonDefaults.buttonColors(Color(0xFF296856)),
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Entrar", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text("Entrar", color = Color.White, fontSize = 18.sp)
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+            TextButton(onClick = { controleDeNavegacao.navigate("cadastro") }) {
+                Text("Criar uma conta", color = Color(0xFF296856), fontSize = 14.sp)
+            }
+        }
+
+        if (erroState.value) {
+            Snackbar(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                action = {
+                    TextButton(onClick = { erroState.value = false }) {
+                        Text("Fechar", color = Color.White)
+                    }
+                },
+                containerColor = Color(0xFF296856),
+                contentColor = Color.White,
             ) {
-                Text(text = "Não possui uma conta? ", color = Color(0xFF085848))
-                Text(
-                    text = "Cadastre-se",
-                    color = Color(0xFF085848),
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { controleDeNavegacao.navigate("cadastro") }
-                )
+                Text(mensagemErroState.value)
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewLogin() {
-    val navController = rememberNavController()
-    Login(navController)
 }

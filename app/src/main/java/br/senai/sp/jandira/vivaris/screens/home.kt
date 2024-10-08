@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
 import br.senai.sp.jandira.vivaris.model.Cliente
@@ -15,7 +16,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun Home(controleDeNavegacao: NavHostController, userId: Int) {
+fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boolean) {
     val nomeUsuario = remember { mutableStateOf("") }
     val loading = remember { mutableStateOf(true) }
     val retrofitFactory = RetrofitFactory()
@@ -52,6 +53,22 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int) {
             Text("Carregando...")
         } else {
             Text("Bem-vindo, ${nomeUsuario.value}!", style = MaterialTheme.typography.headlineMedium)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            if (isPsicologo) {
+                Button(
+                    onClick = {
+                        controleDeNavegacao.navigate("disponibilidade/$userId")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                ) {
+                    Text(text = "Ir para Disponibilidade", fontSize = 16.sp)
+                }
+            }
         }
     }
 }

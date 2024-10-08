@@ -36,23 +36,34 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = controleDeNavegacao, startDestination = "login") {
                         composable(route = "login") { Login(controleDeNavegacao) }
                         composable(route = "cadastro") { Cadastro(controleDeNavegacao) }
+
+                        // Adiciona o parâmetro isPsicologo na rota home
                         composable(
-                            route = "home/{id}",
-                            arguments = listOf(navArgument("id") { type = NavType.IntType })
+                            route = "home/{id}/{isPsicologo}",
+                            arguments = listOf(
+                                navArgument("id") { type = NavType.IntType },
+                                navArgument("isPsicologo") { type = NavType.BoolType }
+                            )
                         ) { backStackEntry ->
                             val userId = backStackEntry.arguments?.getInt("id") ?: 0
-                            Home(controleDeNavegacao = controleDeNavegacao, userId = userId)
+                            val isPsicologo = backStackEntry.arguments?.getBoolean("isPsicologo") ?: false
+
+                            // Passa userId e isPsicologo para a tela Home
+                            Home(controleDeNavegacao = controleDeNavegacao, userId = userId, isPsicologo = isPsicologo)
                         }
-                        composable(route = "disponibilidade") {
-                           DisponibilidadeScreenV3(controleDeNavegacao) }
+
+                        composable("disponibilidade/{idPsicologo}") { backStackEntry ->
+                            val idPsicologo = backStackEntry.arguments?.getString("idPsicologo")?.toIntOrNull()
+                            if (idPsicologo != null) {
+                                DisponibilidadeScreenV3(controleDeNavegacao, idPsicologo)
+                            }
+                        }
+
+
                         composable("preferencias/{clienteId}") { backStackEntry ->
                             val clienteId = backStackEntry.arguments?.getString("clienteId")?.toIntOrNull()
                             PreferenciasScreen(controleDeNavegacao, clienteId ?: 0)
                         }
-
-
-
-
                     }
                 }
             }

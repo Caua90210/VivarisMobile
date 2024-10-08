@@ -21,7 +21,7 @@ interface PsicologoService {
     fun getPsicologById( @Path("id") id: Int): Call<Psicologo>
 
     @Headers("Content-Type: application/json")
-    @POST("login/psicologo")
+    @POST("profissional/login")
     fun psicologoLogin(@Body loginUsuario: LoginUsuario): Call<Psicologo>
 
     @Headers("Content-Type: application/json")

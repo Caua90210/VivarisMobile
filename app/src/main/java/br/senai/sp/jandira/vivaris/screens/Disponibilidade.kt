@@ -1,8 +1,5 @@
 import android.app.TimePickerDialog
-import android.content.Context
-import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,7 +29,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController) {
+fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo: Int) {
     var selectedDays by remember { mutableStateOf(setOf<String>()) }
     var morningTimes by remember { mutableStateOf(mutableListOf<String>()) }
     var afternoonTimes by remember { mutableStateOf(mutableListOf<String>()) }
@@ -172,7 +169,6 @@ Spacer(modifier = Modifier.height(40.dp))
                         val (start, end) = timeRange.split(" - ")
                         disponibilidades.add(Disponibilidade(selectedDaysFullNames, start, end))
                     }
-
                     disponibilidades.forEach { disponibilidade ->
                         cadastrarDisponibilidade(disponibilidade, context, disponibilidadeService)
                     }
@@ -351,8 +347,11 @@ fun DisponibilidadeHorarioSection(periodo: String, times: List<String>) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewDisponibilidadeScreenV3() {
-    DisponibilidadeScreenV3(controleDeNavegacao = rememberNavController())
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewDisponibilidadeScreenV3() {
+//    DisponibilidadeScreenV3(
+//        controleDeNavegacao = rememberNavController(),
+//        idPsicologo = idPsicologo
+//    )
+//}
