@@ -386,8 +386,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                                 id_sexo = 1,
                                 cpf = cpfState,
                                 link_instagram = null,
-                                foto_perfil = null,
-                                id_preferencias = emptyList()
+                                foto_perfil = null
+                               // id_preferencias = emptyList()
                             )
 
                             coroutineScope.launch {
@@ -396,8 +396,8 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                                         if (response.isSuccessful) {
                                             Toast.makeText(context, "Cliente cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
 
-                                            // Acesse o ID do usuário corretamente a partir da resposta
-                                            val clienteID = response.body()?.user?.id // Acesse o ID do usuário aqui
+
+                                            val clienteID = response.body()?.user?.id
                                             Log.d("Cadastro", "Cliente ID: $clienteID")
 
                                             if (clienteID != null) {
@@ -407,6 +407,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                                                 Log.e("Cadastro", "ID do cliente é null")
                                             }
                                         } else {
+                                            Log.d("Cadastro", "Dados enviados: $cliente")
                                             Toast.makeText(context, "Erro ao cadastrar cliente: ${response.code()}", Toast.LENGTH_SHORT).show()
                                             Log.e("Cadastro", "Erro ao cadastrar: ${response.errorBody()?.string()}")
                                         }

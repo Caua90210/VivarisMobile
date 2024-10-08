@@ -3,6 +3,7 @@ package br.senai.sp.jandira.vivaris
 import Cadastro
 import DisponibilidadeScreenV3
 import Login
+import PreferenciasScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
                            DisponibilidadeScreenV3(controleDeNavegacao) }
                         composable("preferencias/{clienteId}") { backStackEntry ->
                             val clienteId = backStackEntry.arguments?.getString("clienteId")?.toIntOrNull()
-                            PreferenciasScreen(controleDeNavegacao, clienteId ?: 0) // Use 0 como fallback se necessário
+                            PreferenciasScreen(controleDeNavegacao, clienteId ?: 0)
                         }
 
 

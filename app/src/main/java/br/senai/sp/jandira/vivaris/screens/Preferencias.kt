@@ -1,15 +1,11 @@
-package br.senai.sp.jandira.vivaris
-
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -31,8 +27,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
-
 @Composable
 fun PreferenciasScreen(
     navController: NavHostController,
@@ -44,30 +38,40 @@ fun PreferenciasScreen(
     val context = LocalContext.current
     val retrofitService = RetrofitFactory().getPreferenciasService()
 
+    Log.d("PreferenciasScreen", "Iniciando a tela de preferências para o cliente ID: $clienteId")
+
     LaunchedEffect(Unit) {
+        Log.d("PreferenciasScreen", "Buscando todas as preferências...")
         retrofitService.getAllPreferencias().enqueue(object : Callback<PreferenciasResponse> {
             override fun onResponse(call: Call<PreferenciasResponse>, response: Response<PreferenciasResponse>) {
+                Log.d("PreferenciasScreen", "Resposta recebida: ${response.code()}")
+
                 if (response.isSuccessful) {
                     preferenciasList = response.body()?.data ?: emptyList()
                     Log.d("Preferencias", "Preferências carregadas: $preferenciasList")
                 } else {
                     showToast(context, "Erro: ${response.code()}")
+                    Log.e("PreferenciasScreen", "Erro ao carregar preferências: ${response.errorBody()?.string()}")
                 }
                 loading = false
+                Log.d("PreferenciasScreen", "Carregamento concluído, loading setado para false.")
             }
 
             override fun onFailure(call: Call<PreferenciasResponse>, t: Throwable) {
                 showToast(context, "Erro: ${t.message}")
+                Log.e("PreferenciasScreen", "Falha ao buscar preferências: ${t.localizedMessage}")
                 loading = false
             }
         })
     }
 
     if (loading) {
+        Log.d("PreferenciasScreen", "Mostrando indicador de carregamento...")
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
     } else {
+        Log.d("PreferenciasScreen", "Exibindo a lista de preferências.")
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             Text(
                 text = "Selecione suas Preferências",
@@ -77,33 +81,40 @@ fun PreferenciasScreen(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Mudança para LazyVerticalGrid para duas colunas
             PreferenciasGrid(preferenciasList) { preferenciaId ->
                 if (!selectedPreferencias.contains(preferenciaId)) {
                     selectedPreferencias.add(preferenciaId)
+                    Log.d("PreferenciasScreen", "Preferência selecionada: $preferenciaId")
                 } else {
                     selectedPreferencias.remove(preferenciaId)
+                    Log.d("PreferenciasScreen", "Preferência removida: $preferenciaId")
                 }
                 Log.d("PreferenciasScreen", "Preferências selecionadas: $selectedPreferencias")
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp)) // Este espaçador pode ser ajustado
 
             Button(
                 onClick = {
+                    Log.d("PreferenciasScreen", "Botão 'Iniciar Jornada' clicado.")
                     if (selectedPreferencias.isNotEmpty()) {
                         cadastrarPreferencia(selectedPreferencias, clienteId, navController, context)
                     } else {
                         showToast(context, "Selecione pelo menos uma preferência.")
+                        Log.d("PreferenciasScreen", "Nenhuma preferência selecionada.")
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp), // Adicionando um padding vertical
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red) // Mudando a cor do botão
             ) {
-                Text("Cadastrar Preferências", fontSize = 18.sp)
+                Text("Iniciar Jornada", fontSize = 18.sp, color = Color.White) // Mudando a cor do texto
             }
         }
     }
 }
+
 
 @Composable
 fun PreferenciasGrid(preferencias: List<Preferencias>, onSelect: (Int) -> Unit) {
@@ -121,6 +132,7 @@ fun PreferenciasGrid(preferencias: List<Preferencias>, onSelect: (Int) -> Unit) 
 
 @Composable
 fun PreferenciasCard(preferencia: Preferencias, onSelect: (Int) -> Unit) {
+    Log.d("PreferenciasCard", "Criando cartão para a preferência: ${preferencia.nome}, ID: ${preferencia.id}")
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -135,7 +147,6 @@ fun PreferenciasCard(preferencia: Preferencias, onSelect: (Int) -> Unit) {
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = preferencia.cor.toColor())
             ) {
-
                 Box(modifier = Modifier.fillMaxSize())
             }
             Spacer(modifier = Modifier.width(16.dp))
@@ -154,15 +165,12 @@ fun PreferenciasCard(preferencia: Preferencias, onSelect: (Int) -> Unit) {
     }
 }
 
-// Funções de auxiliar e preview permanecem inalteradas
-
 fun cadastrarPreferencia(
     listaPreferencias: List<Int>, // Ajustado para uma lista de IDs de preferências
     idCliente: Int,
     navController: NavHostController,
     context: Context
 ) {
-
     val preferenciaCliente = PreferenciaCliente(
         id_cliente = idCliente,
         preferencias = listaPreferencias
@@ -174,14 +182,16 @@ fun cadastrarPreferencia(
     // Chamada ao serviço Retrofit
     RetrofitFactory().getPreferenciasService().cadastrarPreferenciaCliente(preferenciaCliente)
         .enqueue(object : retrofit2.Callback<PreferenciasResponse> {
-
             override fun onResponse(
                 call: Call<PreferenciasResponse>,
                 response: Response<PreferenciasResponse>
             ) {
+                Log.d("CadastroPreferencia", "Resposta da tentativa de cadastro: ${response.code()}")
+
                 if (response.isSuccessful) {
                     // Preferências cadastradas com sucesso
                     showToast(context, "Preferências cadastradas com sucesso!")
+                    Log.d("CadastroPreferencia", "Preferências cadastradas com sucesso!")
                     navController.navigate("login")
                 } else {
                     // Log de erro caso a resposta não seja bem-sucedida
@@ -201,6 +211,7 @@ fun cadastrarPreferencia(
 // Função para mostrar Toast
 fun showToast(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    Log.d("Toast", message)
 }
 
 // Função de extensão para converter String em Color
@@ -208,6 +219,7 @@ fun String.toColor(): Color {
     return try {
         Color(android.graphics.Color.parseColor(this))
     } catch (e: Exception) {
+        Log.e("ColorConversion", "Erro ao converter a cor: ${this}, Exception: ${e.localizedMessage}")
         Color.Gray
     }
 }
@@ -215,10 +227,9 @@ fun String.toColor(): Color {
 @Preview(showBackground = true)
 @Composable
 fun PreviewPreferenciasScreen() {
-
     val navController = rememberNavController()
     val clienteId = 1
 
+    Log.d("PreviewPreferenciasScreen", "Exibindo a tela de preferências para pré-visualização.")
     PreferenciasScreen(navController = navController, clienteId = clienteId)
 }
-
