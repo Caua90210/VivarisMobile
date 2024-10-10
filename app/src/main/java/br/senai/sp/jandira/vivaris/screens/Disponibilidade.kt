@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.vivaris.model.Disponibilidade
 import br.senai.sp.jandira.vivaris.model.DisponibilidadePsicologo
+import br.senai.sp.jandira.vivaris.model.DisponibilidadeResponse
 import br.senai.sp.jandira.vivaris.service.DisponibilidadeService
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
 import retrofit2.Call
@@ -148,34 +149,72 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
                     if (selectedDays.isEmpty()) {
                         Toast.makeText(context, "Selecione ao menos um dia", Toast.LENGTH_SHORT).show()
                     } else {
-                        val selectedDaysFullNames = selectedDays.map { dayLetter ->
-                            daysOfWeekMap[dayLetter]
-                        }.joinToString(",")
-
                         val disponibilidades = mutableListOf<Disponibilidade>()
+
+                        // Adicionar disponibilidade para os horários da manhã
                         morningTimes.forEach { timeRange ->
                             val (start, end) = timeRange.split(" - ")
-                            val disponibilidade = Disponibilidade(selectedDaysFullNames, start, end)
-                            disponibilidades.add(disponibilidade)
+                            if (start.isNotEmpty() && end.isNotEmpty()) {
+                                selectedDays.forEach { dayLetter ->
+                                    val diaCompleto = daysOfWeekMap[dayLetter]
+                                    if (diaCompleto != null) {
+                                        val disponibilidade = Disponibilidade(
+                                            dia_semana = diaCompleto,
+                                            horario_inicio = start,
+                                            horario_fim = end
+                                        )
+                                        disponibilidades.add(disponibilidade)
 
-                            // Log dos dados que estão sendo enviados
-                            Log.d("DisponibilidadeScreen", "Criando Disponibilidade: $disponibilidade")
+                                        Log.d("DisponibilidadeScreen", "Criando Disponibilidade: $disponibilidade")
+                                    }
+                                }
+                            } else {
+                                Log.e("DisponibilidadeScreen", "Horário inválido: $timeRange")
+                            }
                         }
+
+                        // Repetir o mesmo para afternoonTimes e nightTimes...
                         afternoonTimes.forEach { timeRange ->
                             val (start, end) = timeRange.split(" - ")
-                            val disponibilidade = Disponibilidade(selectedDaysFullNames, start, end)
-                            disponibilidades.add(disponibilidade)
+                            if (start.isNotEmpty() && end.isNotEmpty()) {
+                                selectedDays.forEach { dayLetter ->
+                                    val diaCompleto = daysOfWeekMap[dayLetter]
+                                    if (diaCompleto != null) {
+                                        val disponibilidade = Disponibilidade(
+                                            dia_semana = diaCompleto,
+                                            horario_inicio = start,
+                                            horario_fim = end
+                                        )
+                                        disponibilidades.add(disponibilidade)
 
-                            // Log dos dados que estão sendo enviados
-                            Log.d("DisponibilidadeScreen", "Criando Disponibilidade: $disponibilidade")
+                                        Log.d("DisponibilidadeScreen", "Criando Disponibilidade: $disponibilidade")
+                                    }
+                                }
+                            } else {
+                                Log.e("DisponibilidadeScreen", "Horário inválido: $timeRange")
+                            }
                         }
+
+                        // Repetir para os horários da noite
                         nightTimes.forEach { timeRange ->
                             val (start, end) = timeRange.split(" - ")
-                            val disponibilidade = Disponibilidade(selectedDaysFullNames, start, end)
-                            disponibilidades.add(disponibilidade)
+                            if (start.isNotEmpty() && end.isNotEmpty()) {
+                                selectedDays.forEach { dayLetter ->
+                                    val diaCompleto = daysOfWeekMap[dayLetter]
+                                    if (diaCompleto != null) {
+                                        val disponibilidade = Disponibilidade(
+                                            dia_semana = diaCompleto,
+                                            horario_inicio = start,
+                                            horario_fim = end
+                                        )
+                                        disponibilidades.add(disponibilidade)
 
-                            // Log dos dados que estão sendo enviados
-                            Log.d("DisponibilidadeScreen", "Criando Disponibilidade: $disponibilidade")
+                                        Log.d("DisponibilidadeScreen", "Criando Disponibilidade: $disponibilidade")
+                                    }
+                                }
+                            } else {
+                                Log.e("DisponibilidadeScreen", "Horário inválido: $timeRange")
+                            }
                         }
 
                         disponibilidades.forEach { disponibilidade ->
@@ -240,31 +279,47 @@ fun cadastrarDisponibilidade(
     Log.d("DisponibilidadeService", "Dados da Disponibilidade: $disponibilidade")
 
     // Chamada para cadastrar a disponibilidade
-    disponibilidadeService.cadastrarDisponibilidade(disponibilidade).enqueue(object : Callback<Disponibilidade> {
-        override fun onResponse(call: Call<Disponibilidade>, response: Response<Disponibilidade>) {
+    disponibilidadeService.cadastrarDisponibilidade(disponibilidade).enqueue(object : Callback<DisponibilidadeResponse> {
+        override fun onResponse(
+            call: Call<DisponibilidadeResponse>,
+            response: Response<DisponibilidadeResponse>
+        ) {
             if (response.isSuccessful) {
                 val disponibilidadeCadastrada = response.body()
 
+                // Log e Toast para notificar o sucesso
                 Log.d("DisponibilidadeService", "Disponibilidade cadastrada com sucesso: $disponibilidadeCadastrada")
                 Toast.makeText(context, "Disponibilidade cadastrada com sucesso", Toast.LENGTH_SHORT).show()
 
                 // Verificar se a disponibilidade foi cadastrada corretamente antes de continuar
                 disponibilidadeCadastrada?.let {
-                    // Realiza a associação do psicólogo com a disponibilidade
-                    cadastrarDisponibilidadePsicologo(it.id, idPsicologo, disponibilidadeService, context)
+                   val id = it.data.id
+                        // Chamar a função para cadastrar a relação do psicólogo com a disponibilidade
+                    if (id != null) {
+                        cadastrarDisponibilidadePsicologo(
+                            id,
+                            idPsicologo,
+                            disponibilidadeService,
+                            context
+                        )
+                    }
+
                 }
 
             } else {
+                // Log e Toast para notificar o erro
                 Log.e("DisponibilidadeService", "Erro ao cadastrar disponibilidade: ${response.errorBody()?.string()}")
-                Toast.makeText(context, "Erro ao cadastrar disponibilidade", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Erro ao cadastrar disponibilidade: ${response.message()}", Toast.LENGTH_SHORT).show()
             }
         }
 
-        override fun onFailure(call: Call<Disponibilidade>, t: Throwable) {
+        override fun onFailure(call: Call<DisponibilidadeResponse>, t: Throwable) {
+            // Log e Toast para notificar a falha
             Log.e("DisponibilidadeService", "Falha ao cadastrar disponibilidade: ${t.message}")
-            Toast.makeText(context, "Falha ao cadastrar disponibilidade", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Falha ao cadastrar disponibilidade: ${t.message}", Toast.LENGTH_SHORT).show()
         }
     })
+
 }
 
 // Função para associar o psicólogo à disponibilidade
@@ -274,30 +329,36 @@ fun cadastrarDisponibilidadePsicologo(
     disponibilidadeService: DisponibilidadeService,
     context: android.content.Context
 ) {
+    // Verificar os parâmetros recebidos
+    Log.d("CadastrarDisponibilidade", "disponibilidadeId: $disponibilidadeId, idPsicologo: $idPsicologo")
+
+    // Criar objeto DisponibilidadePsicologo
     val disponibilidadePsicologo = DisponibilidadePsicologo(
-        disponibilidade_id = disponibilidadeId,
+        disponibilidade = disponibilidadeId,
         id_psicologo = idPsicologo,
-        status = "Livre"  // ou outro status, caso necessário
+        status = "Livre" // ou outro status, se necessário
     )
 
-    // Fazer a chamada para associar o psicólogo à disponibilidade
-    disponibilidadeService.postDisponibilidadePsicologo(idPsicologo, disponibilidadePsicologo).enqueue(object : Callback<DisponibilidadePsicologo> {
-        override fun onResponse(call: Call<DisponibilidadePsicologo>, response: Response<DisponibilidadePsicologo>) {
-            if (response.isSuccessful) {
-                Log.d("DisponibilidadeService", "Associação psicólogo-disponibilidade realizada com sucesso")
-                Toast.makeText(context, "Psicólogo associado à disponibilidade", Toast.LENGTH_SHORT).show()
-            } else {
-                Log.e("DisponibilidadeService", "Erro ao associar psicólogo: ${response.errorBody()?.string()}")
-                Toast.makeText(context, "Erro ao associar psicólogo à disponibilidade", Toast.LENGTH_SHORT).show()
+    // Chamar o serviço para associar o psicólogo à disponibilidade
+    disponibilidadeService.postDisponibilidadePsicologo(idPsicologo, disponibilidadePsicologo)
+        .enqueue(object : Callback<DisponibilidadePsicologo> {
+            override fun onResponse(call: Call<DisponibilidadePsicologo>, response: Response<DisponibilidadePsicologo>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(context, "Disponibilidade associada com sucesso", Toast.LENGTH_SHORT).show()
+                    Log.d("DisponibilidadePsicologo", "Associação realizada com sucesso: ${response.body()}")
+                } else {
+                    Log.e("DisponibilidadePsicologo", "Erro ao associar: ${response.code()} - ${response.errorBody()?.string()}")
+                    Toast.makeText(context, "Erro ao associar disponibilidade", Toast.LENGTH_SHORT).show()
+                }
             }
-        }
 
-        override fun onFailure(call: Call<DisponibilidadePsicologo>, t: Throwable) {
-            Log.e("DisponibilidadeService", "Falha ao associar psicólogo: ${t.message}")
-            Toast.makeText(context, "Falha ao associar psicólogo à disponibilidade", Toast.LENGTH_SHORT).show()
-        }
-    })
+            override fun onFailure(call: Call<DisponibilidadePsicologo>, t: Throwable) {
+                Log.e("DisponibilidadePsicologo", "Falha na associação: ${t.message}")
+                Toast.makeText(context, "Falha na associação da disponibilidade", Toast.LENGTH_SHORT).show()
+            }
+        })
 }
+
 
 @Composable
 fun DisponibilidadeHorarioSection(title: String, times: List<String>) {

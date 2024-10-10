@@ -72,7 +72,12 @@ fun PreferenciasScreen(
         }
     } else {
         Log.d("PreferenciasScreen", "Exibindo a lista de preferências.")
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween // Garante que o botão fique no final da tela
+        ) {
             Text(
                 text = "Selecione suas Preferências",
                 fontSize = 24.sp,
@@ -81,39 +86,44 @@ fun PreferenciasScreen(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            PreferenciasGrid(preferenciasList) { preferenciaId ->
-                if (!selectedPreferencias.contains(preferenciaId)) {
-                    selectedPreferencias.add(preferenciaId)
-                    Log.d("PreferenciasScreen", "Preferência selecionada: $preferenciaId")
-                } else {
-                    selectedPreferencias.remove(preferenciaId)
-                    Log.d("PreferenciasScreen", "Preferência removida: $preferenciaId")
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.weight(1f), // Ajusta para que a lista use o espaço restante
+                contentPadding = PaddingValues(8.dp)
+            ) {
+                items(preferenciasList) { preferencia ->
+                    PreferenciasCard(preferencia) { preferenciaId ->
+                        if (!selectedPreferencias.contains(preferenciaId)) {
+                            selectedPreferencias.add(preferenciaId)
+                        } else {
+                            selectedPreferencias.remove(preferenciaId)
+                        }
+                    }
                 }
-                Log.d("PreferenciasScreen", "Preferências selecionadas: $selectedPreferencias")
             }
 
-            Spacer(modifier = Modifier.height(16.dp)) // Este espaçador pode ser ajustado
+            Spacer(modifier = Modifier.height(16.dp)) // Espaçamento antes do botão
 
             Button(
                 onClick = {
-                    Log.d("PreferenciasScreen", "Botão 'Iniciar Jornada' clicado.")
                     if (selectedPreferencias.isNotEmpty()) {
                         cadastrarPreferencia(selectedPreferencias, clienteId, navController, context)
                     } else {
                         showToast(context, "Selecione pelo menos uma preferência.")
-                        Log.d("PreferenciasScreen", "Nenhuma preferência selecionada.")
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp), // Adicionando um padding vertical
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Red) // Mudando a cor do botão
+                    .padding(vertical = 8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00796B))
             ) {
-                Text("Iniciar Jornada", fontSize = 18.sp, color = Color.White) // Mudando a cor do texto
+                Text("Iniciar Jornada", fontSize = 18.sp, color = Color.White)
             }
         }
     }
 }
+
+
 
 
 @Composable
@@ -132,38 +142,50 @@ fun PreferenciasGrid(preferencias: List<Preferencias>, onSelect: (Int) -> Unit) 
 
 @Composable
 fun PreferenciasCard(preferencia: Preferencias, onSelect: (Int) -> Unit) {
-    Log.d("PreferenciasCard", "Criando cartão para a preferência: ${preferencia.nome}, ID: ${preferencia.id}")
+    var isSelected by remember { mutableStateOf(false) } // Estado para controlar se a preferência está selecionada
+
+    Log.d(
+        "PreferenciasCard",
+        if (isSelected) "Preferência selecionada: ${preferencia.nome}, ID: ${preferencia.id}"
+        else "Preferência deselecionada: ${preferencia.nome}, ID: ${preferencia.id}"
+    )
+
+    val backgroundColor = if (isSelected) {
+        preferencia.cor.toColor().copy(alpha = 0.8f) // Escurece a cor quando selecionado
+    } else {
+        preferencia.cor.toColor() // Cor normal quando não selecionado
+    }
+
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onSelect(preferencia.id) }
+            .padding(8.dp)
+            .clickable {
+                isSelected = !isSelected // Alterna o estado de seleção
+                onSelect(preferencia.id) // Chama o callback com o ID da preferência
+            }
             .padding(vertical = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF00796B)),
+        colors = CardDefaults.cardColors(containerColor = backgroundColor), // Aplica a cor de fundo
         shape = RoundedCornerShape(12.dp)
     ) {
-        Row(modifier = Modifier.padding(16.dp)) {
-            Card(
-                modifier = Modifier.size(80.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = preferencia.cor.toColor())
-            ) {
-                Box(modifier = Modifier.fillMaxSize())
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(
-                    text = preferencia.nome,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-            }
+        // Centraliza o conteúdo do card
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp), // Espaçamento interno do card
+            contentAlignment = Alignment.Center // Centraliza o texto no card
+        ) {
+            Text(
+                text = preferencia.nome,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White // Cor do texto
+            )
         }
     }
 }
+
+
+
 
 fun cadastrarPreferencia(
     listaPreferencias: List<Int>, // Ajustado para uma lista de IDs de preferências
@@ -194,9 +216,23 @@ fun cadastrarPreferencia(
                     Log.d("CadastroPreferencia", "Preferências cadastradas com sucesso!")
                     navController.navigate("login")
                 } else {
-                    // Log de erro caso a resposta não seja bem-sucedida
-                    Log.e("CadastroPreferencia", "Erro: ${response.code()} - ${response.errorBody()?.string()}")
-                    showToast(context, "Erro ao cadastrar as preferências: ${response.errorBody()?.string()}")
+                    // Verifica o código de resposta e redireciona se for 500 ou 404
+                    when (response.code()) {
+                        500 -> {
+                            Log.e("CadastroPreferencia", "Erro 500: Erro interno do servidor.")
+                          //  showToast(context, "Erro interno do servidor. Redirecionando...")
+                            navController.navigate("login")
+                        }
+                        404 -> {
+                            Log.e("CadastroPreferencia", "Erro 404: Recurso não encontrado.")
+                        //    showToast(context, "Recurso não encontrado. Redirecionando...")
+                            navController.navigate("login")
+                        }
+                        else -> {
+                            Log.e("CadastroPreferencia", "Erro: ${response.code()} - ${response.errorBody()?.string()}")
+                            showToast(context, "Erro ao cadastrar as preferências: ${response.errorBody()?.string()}")
+                        }
+                    }
                 }
             }
 
@@ -207,6 +243,7 @@ fun cadastrarPreferencia(
             }
         })
 }
+
 
 // Função para mostrar Toast
 fun showToast(context: Context, message: String) {
