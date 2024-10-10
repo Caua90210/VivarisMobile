@@ -1,9 +1,7 @@
 package br.senai.sp.jandira.vivaris.service
 
-import br.senai.sp.jandira.vivaris.model.Cliente
 import br.senai.sp.jandira.vivaris.model.Disponibilidade
-import br.senai.sp.jandira.vivaris.model.LoginUsuario
-import br.senai.sp.jandira.vivaris.model.Result
+import br.senai.sp.jandira.vivaris.model.DisponibilidadePsicologo
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,6 +19,9 @@ interface DisponibilidadeService {
     fun getDisponibilidadeById( @Path("id") id: Int): Call<Disponibilidade>
 
     @POST("disponibilidade/psicologo/{id}")
-    fun postDisponibilidadePsicologo( @Path("id") id: Int): Call<Disponibilidade>
+    fun postDisponibilidadePsicologo(
+        @Path("id") id: Int,
+        disponibilidadePsicologo: DisponibilidadePsicologo
+    ): Call<DisponibilidadePsicologo>
 
 }

@@ -11,9 +11,15 @@ data class Psicologo(
     val email: String,
     val senha: String,
     val telefone: String,
-    val foto_perfil: Image?,
+    val foto_perfil: String?,
     val descricao: String,
     val link_instagram: String,
     val id_sexo: Int
     )
+
+data class PsicologoResponse(
+    val data: Psicologo,
+    val status_code: Int
+)
+
 

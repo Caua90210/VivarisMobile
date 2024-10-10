@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                         composable(route = "login") { Login(controleDeNavegacao) }
                         composable(route = "cadastro") { Cadastro(controleDeNavegacao) }
 
-                        // Adiciona o parâmetro isPsicologo na rota home
+
                         composable(
                             route = "home/{id}/{isPsicologo}",
                             arguments = listOf(
@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
                             val userId = backStackEntry.arguments?.getInt("id") ?: 0
                             val isPsicologo = backStackEntry.arguments?.getBoolean("isPsicologo") ?: false
 
-                            // Passa userId e isPsicologo para a tela Home
+
                             Home(controleDeNavegacao = controleDeNavegacao, userId = userId, isPsicologo = isPsicologo)
                         }
 

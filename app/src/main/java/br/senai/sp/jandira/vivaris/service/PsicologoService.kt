@@ -1,8 +1,7 @@
 package br.senai.sp.jandira.vivaris.service
 
-import br.senai.sp.jandira.vivaris.model.Cliente
-import br.senai.sp.jandira.vivaris.model.LoginUsuario
 import br.senai.sp.jandira.vivaris.model.Psicologo
+import br.senai.sp.jandira.vivaris.model.PsicologoResponse
 import br.senai.sp.jandira.vivaris.model.Result
 import retrofit2.Call
 import retrofit2.http.Body
@@ -22,7 +21,7 @@ interface PsicologoService {
 
     @Headers("Content-Type: application/json")
     @POST("profissional/login")
-    fun psicologoLogin(@Body loginUsuario: LoginUsuario): Call<Psicologo>
+    fun psicologoLogin(@Body loginPsicologo: Any): Call<PsicologoResponse>
 
     @Headers("Content-Type: application/json")
     @POST("psicologo")

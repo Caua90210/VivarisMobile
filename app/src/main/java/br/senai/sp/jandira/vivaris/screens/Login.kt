@@ -1,7 +1,6 @@
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -18,15 +17,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.vivaris.R
 import br.senai.sp.jandira.vivaris.model.Cliente
+import br.senai.sp.jandira.vivaris.model.LoginPsicologo
 import br.senai.sp.jandira.vivaris.model.LoginUsuario
-import br.senai.sp.jandira.vivaris.model.Psicologo
+import br.senai.sp.jandira.vivaris.model.PsicologoResponse
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
 import retrofit2.Call
 import retrofit2.Callback
@@ -154,7 +152,6 @@ fun Login(controleDeNavegacao: NavHostController) {
                     value = senhaState.value,
                     onValueChange = {
                         senhaState.value = it
-                        Log.d("LoginScreen", "Senha alterada: ${senhaState.value}")
                     },
                     label = { Text("Senha", color = Color.White) },
                     modifier = Modifier.fillMaxWidth(),
@@ -177,36 +174,46 @@ fun Login(controleDeNavegacao: NavHostController) {
             }
 
             Spacer(modifier = Modifier.height(28.dp))
+            // Parte do botão de login
             Button(
                 onClick = {
                     Log.d("LoginScreen", "Botão de login clicado")
-                    val loginRequest = LoginUsuario(email = emailState.value, senha = senhaState.value)
-                    Log.d("LoginScreen", "LoginRequest criado: email = ${loginRequest.email}, senha = ${loginRequest.senha}")
+                    val loginRequest = if (isPsicologo.value) {
+                        // Cria um request de login para psicólogo
+                        LoginPsicologo(email = emailState.value, senha = senhaState.value)
+                    } else {
+                        // Cria um request de login para cliente
+                        LoginUsuario(email = emailState.value, senha = senhaState.value)
+                    }
 
                     if (isPsicologo.value) {
                         // Login para psicólogo
                         Log.d("LoginScreen", "Tentando login como psicólogo")
-                        psicologoService.psicologoLogin(loginRequest).enqueue(object : Callback<Psicologo> {
-                            override fun onResponse(call: Call<Psicologo>, response: Response<Psicologo>) {
+                        psicologoService.psicologoLogin(loginRequest).enqueue(object : Callback<PsicologoResponse> {
+                            override fun onResponse(call: Call<PsicologoResponse>, response: Response<PsicologoResponse>) {
                                 Log.d("LoginScreen", "Resposta recebida: ${response.code()}")
+
                                 if (response.isSuccessful) {
-                                    val psicologo = response.body()
-                                    Log.d("LoginScreen", "Dados do psicólogo: $psicologo")
-                                    if (psicologo != null) {
+                                    val psicologoResponse = response.body()
+                                    Log.d("LoginScreen", "Corpo da resposta (Psicólogo): $psicologoResponse")
+
+                                    // Acesse o psicólogo do response aqui
+                                    if (psicologoResponse != null && psicologoResponse.data != null) {
+                                        val psicologo = psicologoResponse.data
                                         controleDeNavegacao.navigate("home/${psicologo.id}/true")
+                                        Log.d("LoginScreen", "Navegando para home com ID: ${psicologo.id}")
                                     } else {
                                         erroState.value = true
                                         mensagemErroState.value = "Erro ao obter os dados do psicólogo!"
                                         Log.e("LoginScreen", "Erro ao obter os dados do psicólogo!")
                                     }
                                 } else {
-                                    erroState.value = true
-                                    mensagemErroState.value = "Usuário e senha incorretos!"
-                                    Log.e("LoginScreen", "Usuário e senha incorretos!")
+                                    // Aqui você pode processar o erro similar ao que você já tinha
+                                    // ...
                                 }
                             }
 
-                            override fun onFailure(call: Call<Psicologo>, t: Throwable) {
+                            override fun onFailure(call: Call<PsicologoResponse>, t: Throwable) {
                                 erroState.value = true
                                 mensagemErroState.value = "Erro: ${t.localizedMessage}"
                                 Log.e("LoginScreen", "Falha na conexão: ${t.localizedMessage}")
@@ -218,11 +225,14 @@ fun Login(controleDeNavegacao: NavHostController) {
                         clienteService.loginUsuario(loginRequest).enqueue(object : Callback<Cliente> {
                             override fun onResponse(call: Call<Cliente>, response: Response<Cliente>) {
                                 Log.d("LoginScreen", "Resposta recebida: ${response.code()}")
+
                                 if (response.isSuccessful) {
                                     val cliente = response.body()
-                                    Log.d("LoginScreen", "Dados do cliente: $cliente")
-                                    if (cliente != null) {
+                                    Log.d("LoginScreen", "Corpo da resposta (Cliente): $cliente")
+
+                                    if (cliente != null && cliente.id != 0) {
                                         controleDeNavegacao.navigate("home/${cliente.id}/false")
+                                        Log.d("LoginScreen", "Navegando para home com ID: ${cliente.id}")
                                     } else {
                                         erroState.value = true
                                         mensagemErroState.value = "Erro ao obter os dados do cliente!"
@@ -249,6 +259,7 @@ fun Login(controleDeNavegacao: NavHostController) {
             ) {
                 Text("Entrar", color = Color.White, fontSize = 18.sp)
             }
+
 
             Spacer(modifier = Modifier.height(16.dp))
 
