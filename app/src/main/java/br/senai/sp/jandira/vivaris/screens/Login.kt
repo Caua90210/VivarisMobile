@@ -190,11 +190,12 @@ fun Login(controleDeNavegacao: NavHostController) {
                     if (isPsicologo.value) {
                         // Login para psicólogo
                         Log.d("LoginScreen", "Tentando login como psicólogo")
-                        psicologoService.psicologoLogin(loginRequest as LoginPsicologo).enqueue(object : Callback<DataResponse> {
+                        psicologoService.psicologoLogin(loginRequest as LoginPsicologo).enqueue(object : Callback<PsicologoResponse> {
+
 
                             override fun onResponse(
-                                p0: Call<DataResponse>,
-                                response: Response<DataResponse>
+                                p0: Call<PsicologoResponse>,
+                                response: Response<PsicologoResponse>
                             ) {
                                 Log.d("LoginScreen", "Resposta recebida: ${response.code()}")
 
@@ -231,7 +232,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                                 }
                             }
 
-                            override fun onFailure(p0: Call<DataResponse>, t: Throwable) {
+                            override fun onFailure(p0: Call<PsicologoResponse>, t: Throwable) {
                                 erroState.value = true
                                 mensagemErroState.value = "Erro: ${t.localizedMessage}"
                                 Log.e("LoginScreen", "Falha na conexão: ${t.localizedMessage}")

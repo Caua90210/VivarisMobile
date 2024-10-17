@@ -23,7 +23,7 @@ interface PsicologoService {
 
     @Headers("Content-Type: application/json")
     @POST("profissional/login")
-    fun psicologoLogin(@Body loginPsicologo: LoginPsicologo): Call<DataResponse>
+    fun psicologoLogin(@Body loginPsicologo: LoginPsicologo): Call<PsicologoResponse>
 
     @Headers("Content-Type: application/json")
     @POST("psicologo")

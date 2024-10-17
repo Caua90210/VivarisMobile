@@ -5,6 +5,7 @@ import br.senai.sp.jandira.vivaris.model.DisponibilidadePsicologo
 import br.senai.sp.jandira.vivaris.model.DisponibilidadeResponse
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -24,6 +25,12 @@ interface DisponibilidadeService {
         @Path("id") idPsicologo: Int,
         @Body disponibilidadePsicologo: DisponibilidadePsicologo
     ): Call<DisponibilidadePsicologo>
+
+    @DELETE("disponibilidade/psicologo/{id}")
+    fun deleteDisponibilidade(
+        @Path("id") idPsicologo: Int,
+        @Body 
+    )
 
 
 }
