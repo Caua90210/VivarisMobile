@@ -1,5 +1,7 @@
 package br.senai.sp.jandira.vivaris.service
 
+import br.senai.sp.jandira.vivaris.model.DataResponse
+import br.senai.sp.jandira.vivaris.model.LoginPsicologo
 import br.senai.sp.jandira.vivaris.model.Psicologo
 import br.senai.sp.jandira.vivaris.model.PsicologoResponse
 import br.senai.sp.jandira.vivaris.model.Result
@@ -21,7 +23,7 @@ interface PsicologoService {
 
     @Headers("Content-Type: application/json")
     @POST("profissional/login")
-    fun psicologoLogin(@Body loginPsicologo: Any): Call<PsicologoResponse>
+    fun psicologoLogin(@Body loginPsicologo: LoginPsicologo): Call<DataResponse>
 
     @Headers("Content-Type: application/json")
     @POST("psicologo")

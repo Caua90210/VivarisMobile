@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.vivaris.R
 import br.senai.sp.jandira.vivaris.model.Cliente
+import br.senai.sp.jandira.vivaris.model.DataResponse
 import br.senai.sp.jandira.vivaris.model.LoginPsicologo
 import br.senai.sp.jandira.vivaris.model.LoginUsuario
 import br.senai.sp.jandira.vivaris.model.PsicologoResponse
@@ -178,42 +179,59 @@ fun Login(controleDeNavegacao: NavHostController) {
             Button(
                 onClick = {
                     Log.d("LoginScreen", "Botão de login clicado")
-                    val loginRequest = if (isPsicologo.value) {
-                        // Cria um request de login para psicólogo
+                    val loginRequest: Any = if (isPsicologo.value) {
+                        // Cria um request de login para psicólogo (tipagem correta para psicólogo)
                         LoginPsicologo(email = emailState.value, senha = senhaState.value)
                     } else {
-                        // Cria um request de login para cliente
+                        // Cria um request de login para cliente (tipagem correta para cliente)
                         LoginUsuario(email = emailState.value, senha = senhaState.value)
                     }
 
                     if (isPsicologo.value) {
                         // Login para psicólogo
                         Log.d("LoginScreen", "Tentando login como psicólogo")
-                        psicologoService.psicologoLogin(loginRequest).enqueue(object : Callback<PsicologoResponse> {
-                            override fun onResponse(call: Call<PsicologoResponse>, response: Response<PsicologoResponse>) {
+                        psicologoService.psicologoLogin(loginRequest as LoginPsicologo).enqueue(object : Callback<DataResponse> {
+
+                            override fun onResponse(
+                                p0: Call<DataResponse>,
+                                response: Response<DataResponse>
+                            ) {
                                 Log.d("LoginScreen", "Resposta recebida: ${response.code()}")
 
                                 if (response.isSuccessful) {
                                     val psicologoResponse = response.body()
-                                    Log.d("LoginScreen", "Corpo da resposta (Psicólogo): $psicologoResponse")
+                                    Log.d("LoginScreen", "Corpo da resposta (Psicólogo): ${psicologoResponse}")
 
-                                    // Acesse o psicólogo do response aqui
-                                    if (psicologoResponse != null && psicologoResponse.data != null) {
+                                    if (psicologoResponse?.status_code == 200) {
                                         val psicologo = psicologoResponse.data
-                                        controleDeNavegacao.navigate("home/${psicologo.id}/true")
-                                        Log.d("LoginScreen", "Navegando para home com ID: ${psicologo.id}")
+                                        if (psicologo != null) {
+                                            controleDeNavegacao.navigate("home/${psicologo.id}/true")
+                                            Log.d("LoginScreen", "Navegando para home com ID: ${psicologo.id}")
+                                        } else {
+                                            erroState.value = true
+                                            mensagemErroState.value = "Erro ao obter os dados do psicólogo!"
+                                            Log.e("LoginScreen", "Erro: psicólogo não encontrado!")
+                                        }
                                     } else {
                                         erroState.value = true
-                                        mensagemErroState.value = "Erro ao obter os dados do psicólogo!"
-                                        Log.e("LoginScreen", "Erro ao obter os dados do psicólogo!")
+                                        mensagemErroState.value = "Erro: ${psicologoResponse?.message ?: "Erro desconhecido"}"
+                                        Log.e("LoginScreen", "Erro: ${psicologoResponse?.message}")
                                     }
                                 } else {
-                                    // Aqui você pode processar o erro similar ao que você já tinha
-                                    // ...
+                                    // Lidar com erros de resposta
+                                    if (response.code() == 404) {
+                                        erroState.value = true
+                                        mensagemErroState.value = "Usuário não encontrado!"
+                                        Log.e("LoginSreen", "Erro 404: Usuário não encontrado ")
+                                    } else {
+                                        erroState.value = true
+                                        mensagemErroState.value = "Erro ao tentar fazer login"
+                                        Log.e("LoginSreen", "Erro no login: ${response.code()}")
+                                    }
                                 }
                             }
 
-                            override fun onFailure(call: Call<PsicologoResponse>, t: Throwable) {
+                            override fun onFailure(p0: Call<DataResponse>, t: Throwable) {
                                 erroState.value = true
                                 mensagemErroState.value = "Erro: ${t.localizedMessage}"
                                 Log.e("LoginScreen", "Falha na conexão: ${t.localizedMessage}")
@@ -222,7 +240,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                     } else {
                         // Login para cliente
                         Log.d("LoginScreen", "Tentando login como cliente")
-                        clienteService.loginUsuario(loginRequest).enqueue(object : Callback<Cliente> {
+                        clienteService.loginUsuario(loginRequest as LoginUsuario).enqueue(object : Callback<Cliente> {
                             override fun onResponse(call: Call<Cliente>, response: Response<Cliente>) {
                                 Log.d("LoginScreen", "Resposta recebida: ${response.code()}")
 
@@ -239,9 +257,15 @@ fun Login(controleDeNavegacao: NavHostController) {
                                         Log.e("LoginScreen", "Erro ao obter os dados do cliente!")
                                     }
                                 } else {
-                                    erroState.value = true
-                                    mensagemErroState.value = "Usuário e senha incorretos!"
-                                    Log.e("LoginScreen", "Usuário e senha incorretos!")
+                                    if (response.code() == 404) {
+                                        erroState.value = true
+                                        mensagemErroState.value = "Usuário não encontrado!"
+                                        Log.e("LoginScreen", "Erro 404: Usuário não encontrado!")
+                                    } else {
+                                        erroState.value = true
+                                        mensagemErroState.value = "Usuário e senha incorretos!"
+                                        Log.e("LoginScreen", "Usuário e senha incorretos!")
+                                    }
                                 }
                             }
 
