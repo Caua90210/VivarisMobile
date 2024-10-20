@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "br.senai.sp.jandira.vivaris"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "br.senai.sp.jandira.vivaris"
         minSdk = 29
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -73,6 +73,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -85,5 +87,10 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.0.1")
     implementation("androidx.compose.ui:ui-tooling-preview:1.4.0")
 
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.navigation:navigation-compose:2.7.7")//
+
+    implementation ("com.google.guava:guava:30.1.1-android")
+    implementation ("androidx.compose.material:material-icons-extended:1.3.0")//asd
+    implementation("androidx.compose.material3:material3:1.4.0-alpha01")
+
 }

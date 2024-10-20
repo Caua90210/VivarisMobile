@@ -10,6 +10,7 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface DisponibilidadeService {
 
@@ -29,8 +30,11 @@ interface DisponibilidadeService {
     @DELETE("disponibilidade/psicologo/{id}")
     fun deleteDisponibilidade(
         @Path("id") idPsicologo: Int,
-        @Body 
-    )
+        @Query("dia_semana") diaSemana: String
+    ): Call<DisponibilidadePsicologo>
+
+    @GET("disponibilidade/{id}")
+    fun getDisponibilidadebyId(@Path("id") id: Int): Call<List<Disponibilidade>>
 
 
 }
