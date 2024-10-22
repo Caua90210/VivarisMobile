@@ -17,8 +17,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-
 import br.senai.sp.jandira.vivaris.screens.Home
+import br.senai.sp.jandira.vivaris.screens.SplashScreen
 import br.senai.sp.jandira.vivaris.ui.theme.VivarisTheme
 
 class MainActivity : ComponentActivity() {
@@ -33,23 +33,41 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val controleDeNavegacao = rememberNavController()
-                    NavHost(navController = controleDeNavegacao, startDestination = "login") {
-                        composable(route = "login") { Login(controleDeNavegacao) }
-                        composable(route = "cadastro"){ Cadastro(controleDeNavegacao) }
+                    NavHost(navController = controleDeNavegacao, startDestination = "splash") {
 
+                        // Splash Screen
+                        composable(route = "splash") {
+                            SplashScreen(navController = controleDeNavegacao)
+                        }
+
+                        // Login Screen
+                        composable(route = "login") {
+                            Login(controleDeNavegacao)
+                        }
+
+                        // Cadastro Screen
+                        composable(route = "cadastro") {
+                            Cadastro(controleDeNavegacao)
+                        }
 
                         composable(
-                            route = "home/{id}/{isPsicologo}",
+                            route = "home/{id}/{isPsicologo}/{nome}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.IntType },
-                                navArgument("isPsicologo") { type = NavType.BoolType }
+                                navArgument("isPsicologo") { type = NavType.BoolType },
+                                navArgument("nome") { type = NavType.StringType }  // Added this for the "nome" argument
                             )
                         ) { backStackEntry ->
                             val userId = backStackEntry.arguments?.getInt("id") ?: 0
                             val isPsicologo = backStackEntry.arguments?.getBoolean("isPsicologo") ?: false
+                            val nomeUsuario = backStackEntry.arguments?.getString("nome") ?: ""
 
-
-                            Home(controleDeNavegacao = controleDeNavegacao, userId = userId, isPsicologo = isPsicologo)
+                            Home(
+                                controleDeNavegacao = controleDeNavegacao,
+                                userId = userId,
+                                isPsicologo = isPsicologo,
+                                nomeUsuario = nomeUsuario
+                            )
                         }
 
                         composable("disponibilidade/{idPsicologo}") { backStackEntry ->
@@ -58,7 +76,6 @@ class MainActivity : ComponentActivity() {
                                 DisponibilidadeScreenV3(controleDeNavegacao, idPsicologo)
                             }
                         }
-
 
                         composable("preferencias/{clienteId}") { backStackEntry ->
                             val clienteId = backStackEntry.arguments?.getString("clienteId")?.toIntOrNull()

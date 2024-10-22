@@ -1,3 +1,4 @@
+import android.app.TimePickerDialog
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -24,6 +25,7 @@ import br.senai.sp.jandira.vivaris.model.DisponibilidadePsicologo
 import br.senai.sp.jandira.vivaris.model.DisponibilidadeResponse
 import br.senai.sp.jandira.vivaris.service.DisponibilidadeService
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -73,9 +75,10 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
                 .height(80.dp)
                 .background(Color(0xFF3E9C81))
         ) {
+            Spacer(modifier = Modifier.padding(bottom = 20.dp))
             Text(text = "Horário", textAlign = TextAlign.Center, modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp), color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                .fillMaxSize()
+                .padding(top = 40.dp), color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
         }
 
         Spacer(modifier = Modifier.height(40.dp))
@@ -460,25 +463,58 @@ fun AddHTimeDialog(
     onDismiss: () -> Unit,
     onAddTime: (String, String, String) -> Unit
 ) {
-    // Aqui você pode ter os campos de entrada para o horário e o dia
     var horarioInicio by remember { mutableStateOf("") }
     var horarioFim by remember { mutableStateOf("") }
     var timeOfDay by remember { mutableStateOf("") }
+    var showTimePickerInicio by remember { mutableStateOf(false) }
+    var showTimePickerFim by remember { mutableStateOf(false) }
+
+    if (showTimePickerInicio) {
+        TimePickerDialog(
+            LocalContext.current,
+            { _, selectedHour, selectedMinute ->
+                val formattedTime = String.format("%02d:%02d:%02d", selectedHour, selectedMinute, 0)
+                horarioInicio = formattedTime
+                timeOfDay = determineTimeOfDay(formattedTime)
+                showTimePickerInicio = false
+            },
+            LocalTime.now().hour,
+            LocalTime.now().minute,
+            true
+        ).show()
+    }
+
+    if (showTimePickerFim) {
+        TimePickerDialog(
+            LocalContext.current,
+            { _, selectedHour, selectedMinute ->
+                val formattedTime = String.format("%02d:%02d:%02d", selectedHour, selectedMinute, 0)
+                horarioFim = formattedTime
+                showTimePickerFim = false
+            },
+            LocalTime.now().hour,
+            LocalTime.now().minute,
+            true
+        ).show()
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "Adicionar Horário") },
+        title = { Text(text = "Adicionar Horário", color = Color(0xFF3E9C81)) },
         text = {
             Column {
-                // Campos de entrada para os horários e o período do dia
-                TextField(value = horarioInicio, onValueChange = { horarioInicio = it }, label = { Text("Horário Início") })
-                TextField(value = horarioFim, onValueChange = { horarioFim = it }, label = { Text("Horário Fim") })
-                TextField(value = timeOfDay, onValueChange = { timeOfDay = it }, label = { Text("Período do Dia (Manhã/Tarde/Noite)") })
+                Button(onClick = { showTimePickerInicio = true }) {
+                    Text(text = if (horarioInicio.isEmpty()) "Selecionar Horário Início" else horarioInicio)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { showTimePickerFim = true }) {
+                    Text(text = if (horarioFim.isEmpty()) "Selecionar Horário Fim" else horarioFim)
+                }
             }
         },
         confirmButton = {
             TextButton(onClick = {
-                onAddTime(horarioInicio, horarioFim, timeOfDay) // Chamada correta para a função
+                onAddTime(horarioInicio, horarioFim, timeOfDay)
                 onDismiss() // Fecha o diálogo após adicionar o horário
             }) {
                 Text("Adicionar")
@@ -490,6 +526,17 @@ fun AddHTimeDialog(
             }
         }
     )
+}
+
+fun determineTimeOfDay(startTime: String): String {
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+    val start = LocalTime.parse(startTime, timeFormatter)
+
+    return when {
+        start.isBefore(LocalTime.of(12, 0)) -> "Manhã"
+        start.isBefore(LocalTime.of(18, 0)) -> "Tarde"
+        else -> "Noite"
+    }
 }
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 800)

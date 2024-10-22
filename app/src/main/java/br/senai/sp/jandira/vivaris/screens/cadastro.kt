@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -49,9 +50,12 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.toSize
+import br.senai.sp.jandira.vivaris.R
 
 
 // Função para formatar a data
@@ -179,12 +183,26 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.vivarislogo),
+                    contentDescription = "Logo Vivaris",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .size(100.dp),
+                    contentScale = ContentScale.Fit
+                )
+
+            }
+
             item {
                 Text(
                     text = "Cadastre-se",
-                    fontSize = 32.sp,
+                    fontSize = 48.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF3E9C81)
+                    color = Color(0xFF22AF87)
                 )
             }
 
@@ -542,14 +560,14 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                                 cpf = cpfState,
                                 link_instagram = null,
                                 foto_perfil = null
-                                // id_preferencias = emptyList()
+
                             )
 
                             coroutineScope.launch {
                                 clienteService.cadastrarCliente(cliente).enqueue(object : Callback<ClienteResponse> {
                                     override fun onResponse(call: Call<ClienteResponse>, response: Response<ClienteResponse>) {
                                         if (response.isSuccessful) {
-                                            Toast.makeText(context, "Cliente cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
+                                     //       Toast.makeText(context, "Cliente cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
 
 
                                             val clienteID = response.body()?.user?.id

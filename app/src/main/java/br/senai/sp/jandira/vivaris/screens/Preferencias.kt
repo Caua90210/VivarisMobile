@@ -61,7 +61,7 @@ fun PreferenciasScreen(
                     preferenciasList = response.body()?.data ?: emptyList()
                     Log.d("Preferencias", "Preferências carregadas: $preferenciasList")
                 } else {
-                    showToast(context, "Erro: ${response.code()}")
+                   // showToast(context, "Erro: ${response.code()}")
                     Log.e("PreferenciasScreen", "Erro ao carregar preferências: ${response.errorBody()?.string()}")
                 }
                 loading = false
@@ -69,7 +69,7 @@ fun PreferenciasScreen(
             }
 
             override fun onFailure(call: Call<PreferenciasResponse>, t: Throwable) {
-                showToast(context, "Erro: ${t.message}")
+             //   showToast(context, "Erro: ${t.message}")
                 Log.e("PreferenciasScreen", "Falha ao buscar preferências: ${t.localizedMessage}")
                 loading = false
             }
@@ -146,20 +146,19 @@ fun PreferenciasScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp)) // Espaçamento antes do botão
-
             Button(
                 onClick = {
-                    if (selectedPreferencias.isNotEmpty()) {
-                        // Chama a função de cadastro de preferências
+                    if (selectedPreferencias.isNotEmpty() && !isRegistering) {
+                        isRegistering = true // Inicia o registro
                         cadastrarPreferencia(selectedPreferencias, clienteId, navController, context, onComplete = {
                             // Navegação para a tela de login
                             navController.navigate("login")
-                        }, onRegisterChange = { isRegistering = it })
+                        }, onRegisterChange = { isRegistering = it }) // Atualiza o estado de registro
                     } else {
                         showToast(context, "Selecione pelo menos uma preferência.")
                     }
                 },
-                enabled = !isRegistering,
+                enabled = !isRegistering, // Desabilita o botão enquanto está registrando
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(height = 61.dp)
@@ -176,7 +175,7 @@ fun PreferenciasScreen(
                 TextButton(onClick = { navController.navigate("login") },
                     modifier = Modifier.align(Alignment.CenterHorizontally)) {
                     Text("Pular esta etapa", color = Color(0xFF085848), fontSize = 16.sp,textAlign = TextAlign.Center)
-                    Toast.makeText(context, "Cliente cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "Cliente cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -254,7 +253,7 @@ fun PreferenciasCard(preferencia: Preferencias, onSelect: (Int) -> Unit) {
 
 
 fun cadastrarPreferencia(
-    listaPreferencias: List<Int>, // Ajustado para uma lista de IDs de preferências
+    listaPreferencias: List<Int>,
     idCliente: Int,
     navController: NavHostController,
     context: Context,
@@ -262,71 +261,49 @@ fun cadastrarPreferencia(
     isRegistering: Boolean = false,
     onComplete: () -> Unit
 ) {
-
-
     if (isRegistering) return // Evita múltiplos cliques enquanto está registrando
 
-    onRegisterChange(true)
+    onRegisterChange(true) // Inicia o registro
 
     val preferenciaCliente = PreferenciaCliente(
         id_cliente = idCliente,
         preferencias = listaPreferencias
     )
 
-    // Log para verificar os dados que estão sendo enviados
     Log.d("CadastroPreferencia", "Cliente ID: $idCliente, Preferências: $listaPreferencias")
 
-    // Chamada ao serviço Retrofit
     RetrofitFactory().getPreferenciasService().cadastrarPreferenciaCliente(preferenciaCliente)
         .enqueue(object : retrofit2.Callback<PreferenciasResponse> {
             override fun onResponse(
                 call: Call<PreferenciasResponse>,
                 response: Response<PreferenciasResponse>
             ) {
-
-                onRegisterChange(false)
+                onRegisterChange(false) // Atualiza o estado de registro
                 Log.d("CadastroPreferencia", "Resposta da tentativa de cadastro: ${response.code()}")
 
                 if (response.isSuccessful) {
-                    // Preferências cadastradas com sucesso
-                    showToast(context, "Preferências cadastradas com sucesso!")
                     Log.d("CadastroPreferencia", "Preferências cadastradas com sucesso!")
                     navController.navigate("login")
                     onComplete()
                 } else {
-                    // Verifica o código de resposta e redireciona se for 500 ou 404
-                    when (response.code()) {
-                        500 -> {
-                            Log.e("CadastroPreferencia", "Erro 500: Erro interno do servidor.")
-                          //  showToast(context, "Erro interno do servidor. Redirecionando...")
-                            navController.navigate("login")
-                        }
-                        404 -> {
-                            Log.e("CadastroPreferencia", "Erro 404: Recurso não encontrado.")
-                        //    showToast(context, "Recurso não encontrado. Redirecionando...")
-                            navController.navigate("login")
-                        }
-                        else -> {
-                            Log.e("CadastroPreferencia", "Erro: ${response.code()} - ${response.errorBody()?.string()}")
-                            showToast(context, "Erro ao cadastrar as preferências: ${response.errorBody()?.string()}")
-                        }
-
-                    }
+                    Log.e("CadastroPreferencia", "Erro: ${response.code()} - ${response.errorBody()?.string()}")
+                   // showToast(context, "Erro ao cadastrar as preferências: ${response.errorBody()?.string()}")
                 }
 
+                if (response.code() == 404) {
+                    Log.d("CadastroPreferencia", "Preferências já escolhidas, navegando para login.")
+                    navController.navigate("login")
+                    onComplete() // Chama onComplete para finalizar o registro
+                }
             }
 
             override fun onFailure(call: Call<PreferenciasResponse>, t: Throwable) {
-
-                onRegisterChange(false)
-                // Log de falha na requisição
-                Log.e("CadastroPreferencia", "Falha: ${t.localizedMessage}")
-                showToast(context, "Erro: ${t.localizedMessage}")
+                onRegisterChange(false) // Atualiza o estado de registro
+              Log.e("CadastroPreferencia", "Falha: ${t.localizedMessage}")
+           //     showToast(context, "Erro: ${t.localizedMessage}")
             }
         })
 }
-
-
 // Função para mostrar Toast
 fun showToast(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
