@@ -7,3 +7,6 @@ data class DisponibilidadePsicologo(
     val status: String = "Livre"
 )
 
+
+
+

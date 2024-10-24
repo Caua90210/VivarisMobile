@@ -13,3 +13,20 @@ data class DisponibilidadeResponse(
     val status_code: Int,
     val message: String
 )
+data class DisponibilidadeInfo(
+    val status_code: Int,
+    val data: Disponibilidade
+)
+
+data class PsicologoData(
+    val id: Int,
+    val nome: String,
+    val email: String,
+    val telefone: String,
+    val disponibilidades: List<Disponibilidade>
+)
+
+data class PsicologoDisponibilidadeResponse(
+    val data: PsicologoData,
+    val status_code: Int
+)

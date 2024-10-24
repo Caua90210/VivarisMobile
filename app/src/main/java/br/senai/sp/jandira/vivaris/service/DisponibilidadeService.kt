@@ -1,8 +1,11 @@
 package br.senai.sp.jandira.vivaris.service
 
+import br.senai.sp.jandira.vivaris.model.DiaSemanaRequest
 import br.senai.sp.jandira.vivaris.model.Disponibilidade
+import br.senai.sp.jandira.vivaris.model.DisponibilidadeInfo
 import br.senai.sp.jandira.vivaris.model.DisponibilidadePsicologo
 import br.senai.sp.jandira.vivaris.model.DisponibilidadeResponse
+import br.senai.sp.jandira.vivaris.model.PsicologoDisponibilidadeResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -19,7 +22,7 @@ interface DisponibilidadeService {
     fun cadastrarDisponibilidade(@Body disponibilidade: Disponibilidade): Call<DisponibilidadeResponse>
 
     @GET("disponibilidade/psicologo/{id}")
-    fun getDisponibilidadeById( @Path("id") id: Int): Call<Disponibilidade>
+    fun getDisponibilidadePsicologoById( @Path("id") idPsicologo: Int): Call<PsicologoDisponibilidadeResponse>
 
     @POST("disponibilidade/psicologo/{id}")
     fun postDisponibilidadePsicologo(
@@ -30,11 +33,12 @@ interface DisponibilidadeService {
     @DELETE("disponibilidade/psicologo/{id}")
     fun deleteDisponibilidade(
         @Path("id") idPsicologo: Int,
-        @Query("dia_semana") diaSemana: String
+        @Body diaSemana: DiaSemanaRequest // Enviar o corpo como um objeto
     ): Call<DisponibilidadePsicologo>
 
+
     @GET("disponibilidade/{id}")
-    fun getDisponibilidadebyId(@Path("id") id: Int): Call<List<Disponibilidade>>
+    fun getDisponibilidadebyId(@Path("id") id: Int): Call<DisponibilidadeInfo>
 
 
 }

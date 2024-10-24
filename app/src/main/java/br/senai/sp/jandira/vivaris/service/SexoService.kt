@@ -6,6 +6,6 @@ import retrofit2.Call
 import retrofit2.http.GET
 
 interface SexoService {
-    @GET("sexo") // Ajuste a URL conforme necessário
-    fun getSexo(): Call<SexoResponse> // A classe Sexo deve representar o modelo de dados que você espera receber
+    @GET("sexo")
+    fun getSexo(): Call<SexoResponse>
 }

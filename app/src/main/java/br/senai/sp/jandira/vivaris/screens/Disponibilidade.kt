@@ -21,8 +21,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.vivaris.model.Disponibilidade
+import br.senai.sp.jandira.vivaris.model.DisponibilidadeInfo
 import br.senai.sp.jandira.vivaris.model.DisponibilidadePsicologo
 import br.senai.sp.jandira.vivaris.model.DisponibilidadeResponse
+import br.senai.sp.jandira.vivaris.model.PsicologoDisponibilidadeResponse
 import br.senai.sp.jandira.vivaris.service.DisponibilidadeService
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
 import kotlinx.coroutines.launch
@@ -44,6 +46,8 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
     var showDeleteDialog by remember { mutableStateOf(false) }
     var selectedDisponibilidade by remember { mutableStateOf<Disponibilidade?>(null) }
     var showDetailsDialog by remember { mutableStateOf(false) }
+    var idsDisponibilidades by remember { mutableStateOf<List<Int>>(emptyList()) }
+
 
     val context = LocalContext.current
     val retrofitFactory = RetrofitFactory()
@@ -62,11 +66,82 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
 
     val daysOfWeekLetters = listOf("D", "S", "T", "Q1", "Q2", "F", "S2")
 
+
+    // Variável para armazenar as disponibilidades
+    var disponibilidades by remember { mutableStateOf<List<Disponibilidade>>(emptyList()) }
+
+    // Função para buscar as disponibilidades do psicólogo
+    fun fetchDisponibilidades() {
+        val retrofitFactory = RetrofitFactory()
+        val disponibilidadeService = retrofitFactory.getDisponibilidadeService()
+
+        disponibilidadeService.getDisponibilidadePsicologoById(idPsicologo).enqueue(object : Callback<PsicologoDisponibilidadeResponse> {
+            override fun onResponse(call: Call<PsicologoDisponibilidadeResponse>, response: Response<PsicologoDisponibilidadeResponse>) {
+                if (response.isSuccessful) {
+                    val psicologoResponse = response.body()
+                    psicologoResponse?.let {
+
+                        idsDisponibilidades = it.data.disponibilidades.map {disponibilidade -> disponibilidade.id!! } ?: emptyList()
+                        Log.d("DisponibilidadeScreen", "IDs das Disponibilidades recebidos: $idsDisponibilidades")
+
+
+
+                       // disponibilidades = it.data.disponibilidades ?: emptyList()
+                        //Log.d("DisponibilidadeScreen", "Disponibilidades recebidas: $disponibilidades")
+                    }
+
+                } else {
+                    Log.e("DisponibilidadeScreen", "Erro ao buscar disponibilidades: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<PsicologoDisponibilidadeResponse>, t: Throwable) {
+                Log.e("DisponibilidadeScreen", "Falha ao buscar disponibilidades: ${t.message}")
+            }
+        })
+    }
+    // Função para buscar detalhes das disponibilidades
+    fun fetchDetalhesDisponibilidades(ids: List<Int>) {
+        val retrofitFactory = RetrofitFactory()
+        val disponibilidadeService = retrofitFactory.getDisponibilidadeService()
+
+        ids.forEach { id ->
+            disponibilidadeService.getDisponibilidadebyId(id).enqueue(object : Callback<DisponibilidadeInfo> {
+                override fun onResponse(
+                    p0: Call<DisponibilidadeInfo>,
+                    response: Response<DisponibilidadeInfo>
+                ) {
+                    if (response.isSuccessful) {
+                        val disponibilidadeDetalhada = response.body()
+                        // Aqui você pode adicionar a disponibilidade detalhada a uma lista
+                        Log.d("DisponibilidadeScreen", "Detalhes da Disponibilidade: $disponibilidadeDetalhada")
+
+                    } else {
+                        Log.e("DisponibilidadeScreen", "Erro ao buscar detalhes da disponibilidade: ${response.errorBody()?.string()}")
+                    }
+                }
+
+                override fun onFailure(p0: Call<DisponibilidadeInfo>, t: Throwable) {
+                    Log.e("DisponibilidadeScreen", "Falha ao buscar detalhes da disponibilidade: ${t.message}")
+                }
+            })
+        }
+    }
+
+    // Chama a função para buscar disponibilidades quando a tela é exibida
+    LaunchedEffect(idPsicologo) {
+        fetchDisponibilidades()
+        fetchDetalhesDisponibilidades(idsDisponibilidades)
+    }
+
+
+
     // Log do ID do psicólogo
     Log.d("DisponibilidadeScreen", "ID do Psicólogo: $idPsicologo")
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(color = Color(0xF1F1F1F1))
     ) {
         Row(
@@ -311,6 +386,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
                     }
                     showAddTimeDialog = false // Fecha o diálogo
                 }
+
             )
         }
 
@@ -545,3 +621,4 @@ fun PreviewDisponibilidadeScreenV3() {
     val navController = rememberNavController() // NavHostController para navegação de tela
     DisponibilidadeScreenV3(controleDeNavegacao = navController, idPsicologo = 1)
 }
+
