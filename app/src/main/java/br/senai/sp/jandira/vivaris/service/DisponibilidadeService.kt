@@ -33,8 +33,10 @@ interface DisponibilidadeService {
     @DELETE("disponibilidade/psicologo/{id}")
     fun deleteDisponibilidade(
         @Path("id") idPsicologo: Int,
-        @Body diaSemana: DiaSemanaRequest // Enviar o corpo como um objeto
+        @Body diaSemana: DiaSemanaRequest
     ): Call<DisponibilidadePsicologo>
+
+
 
 
     @GET("disponibilidade/{id}")
