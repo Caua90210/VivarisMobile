@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.vivaris.model.Disponibilidade
+import br.senai.sp.jandira.vivaris.model.DisponibilidadeData
 import br.senai.sp.jandira.vivaris.model.DisponibilidadeInfo
 import br.senai.sp.jandira.vivaris.model.DisponibilidadePsicologo
 import br.senai.sp.jandira.vivaris.model.DisponibilidadeResponse
@@ -31,6 +32,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -48,10 +50,21 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
     var showDetailsDialog by remember { mutableStateOf(false) }
     var idsDisponibilidades by remember { mutableStateOf<List<Int>>(emptyList()) }
 
+    var disponibilidadesDetalhadas by remember { mutableStateOf(mutableListOf<DisponibilidadeData>()) }
 
     val context = LocalContext.current
     val retrofitFactory = RetrofitFactory()
     val disponibilidadeService = retrofitFactory.getDisponibilidadeService()
+
+    fun formatarHorario(horario: String): String {
+        // Remover o 'Z' e substituir o espaço por 'T' para compatibilidade com LocalDateTime
+        val adjustedHorario = horario.replace("Z", "").replace(" ", "T")
+
+        // Agora, analisamos a string com o formato correto
+        val dateTime = LocalDateTime.parse(adjustedHorario, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"))
+
+        return dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+    }
 
     // Mapeamento dos dias da semana
     val daysOfWeekMap = mapOf(
@@ -70,75 +83,63 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
     // Variável para armazenar as disponibilidades
     var disponibilidades by remember { mutableStateOf<List<Disponibilidade>>(emptyList()) }
 
-    // Função para buscar as disponibilidades do psicólogo
-    fun fetchDisponibilidades() {
-        val retrofitFactory = RetrofitFactory()
-        val disponibilidadeService = retrofitFactory.getDisponibilidadeService()
-
-        disponibilidadeService.getDisponibilidadePsicologoById(idPsicologo).enqueue(object : Callback<PsicologoDisponibilidadeResponse> {
-            override fun onResponse(call: Call<PsicologoDisponibilidadeResponse>, response: Response<PsicologoDisponibilidadeResponse>) {
-                if (response.isSuccessful) {
-                    val psicologoResponse = response.body()
-                    psicologoResponse?.let {
-
-                        idsDisponibilidades = it.data.disponibilidades.map {disponibilidade -> disponibilidade.id!! } ?: emptyList()
-                        Log.d("DisponibilidadeScreen", "IDs das Disponibilidades recebidos: $idsDisponibilidades")
-
-
-
-                       // disponibilidades = it.data.disponibilidades ?: emptyList()
-                        //Log.d("DisponibilidadeScreen", "Disponibilidades recebidas: $disponibilidades")
-                    }
-
-                } else {
-                    Log.e("DisponibilidadeScreen", "Erro ao buscar disponibilidades: ${response.errorBody()?.string()}")
-                }
-            }
-
-            override fun onFailure(call: Call<PsicologoDisponibilidadeResponse>, t: Throwable) {
-                Log.e("DisponibilidadeScreen", "Falha ao buscar disponibilidades: ${t.message}")
-            }
-        })
-    }
     // Função para buscar detalhes das disponibilidades
     fun fetchDetalhesDisponibilidades(ids: List<Int>) {
-        val retrofitFactory = RetrofitFactory()
-        val disponibilidadeService = retrofitFactory.getDisponibilidadeService()
-
         ids.forEach { id ->
             disponibilidadeService.getDisponibilidadebyId(id).enqueue(object : Callback<DisponibilidadeInfo> {
-                override fun onResponse(
-                    p0: Call<DisponibilidadeInfo>,
-                    response: Response<DisponibilidadeInfo>
-                ) {
+                override fun onResponse(call: Call<DisponibilidadeInfo>, response: Response<DisponibilidadeInfo>) {
                     if (response.isSuccessful) {
-                        val disponibilidadeDetalhada = response.body()
-                        // Aqui você pode adicionar a disponibilidade detalhada a uma lista
-                        Log.d("DisponibilidadeScreen", "Detalhes da Disponibilidade: $disponibilidadeDetalhada")
+                        response.body()?.data?.forEach { disponibilidade ->
+                            val horarioInicioFormatado = formatarHorario(disponibilidade.horario_inicio)
+                            val horarioFimFormatado = formatarHorario(disponibilidade.horario_fim)
+                            val timeOfDay = determineTimeOfDay(horarioInicioFormatado)
+                            val timeRange = "$horarioInicioFormatado - $horarioFimFormatado"
 
-                    } else {
-                        Log.e("DisponibilidadeScreen", "Erro ao buscar detalhes da disponibilidade: ${response.errorBody()?.string()}")
+                            // Adiciona os horários às listas correspondentes
+                            when (timeOfDay) {
+                                "Manhã" -> morningTimes.add(timeRange)
+                                "Tarde" -> afternoonTimes.add(timeRange)
+                                "Noite" -> nightTimes.add(timeRange)
+                            }
+                        }
                     }
                 }
 
-                override fun onFailure(p0: Call<DisponibilidadeInfo>, t: Throwable) {
+                override fun onFailure(call: Call<DisponibilidadeInfo>, t: Throwable) {
                     Log.e("DisponibilidadeScreen", "Falha ao buscar detalhes da disponibilidade: ${t.message}")
                 }
             })
         }
     }
 
+    // Função para buscar as disponibilidades do psicólogo
+    fun fetchDisponibilidades() {
+        val retrofitFactory = RetrofitFactory()
+        val disponibilidadeService = retrofitFactory.getDisponibilidadeService()
+        disponibilidadeService.getDisponibilidadePsicologoById(idPsicologo).enqueue(object : Callback<PsicologoDisponibilidadeResponse> {
+            override fun onResponse(call: Call<PsicologoDisponibilidadeResponse>, response: Response<PsicologoDisponibilidadeResponse>) {
+                if (response.isSuccessful) {
+                    val psicologoResponse = response.body()
+                    psicologoResponse?.let {
+                        idsDisponibilidades = it.data.disponibilidades.map {disponibilidade -> disponibilidade.id!! } ?: emptyList()
+                        Log.d("DisponibilidadeScreen", "IDs das Disponibilidades recebidos: $idsDisponibilidades")
+                        fetchDetalhesDisponibilidades(idsDisponibilidades)
+                    }
+                } else {
+                    Log.e("DisponibilidadeScreen", "Erro ao buscar disponibilidades: ${response.errorBody()?.string()}")
+                }
+            }
+            override fun onFailure(call: Call<PsicologoDisponibilidadeResponse>, t: Throwable) {
+                Log.e("DisponibilidadeScreen", "Falha ao buscar disponibilidades: ${t.message}")
+            }
+        })
+    }
     // Chama a função para buscar disponibilidades quando a tela é exibida
     LaunchedEffect(idPsicologo) {
         fetchDisponibilidades()
-        fetchDetalhesDisponibilidades(idsDisponibilidades)
     }
-
-
-
     // Log do ID do psicólogo
     Log.d("DisponibilidadeScreen", "ID do Psicólogo: $idPsicologo")
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -214,6 +215,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
+
 
                 // Seções de horários
                 DisponibilidadeHorarioSection("Manhã", morningTimes, onClick = {
@@ -362,6 +364,8 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
                 ) {
                     Text(text = "Confirmar Disponibilidade", color = Color.White, fontSize = 16.sp)
                 }
+
+
             }
 
 
@@ -605,7 +609,7 @@ fun AddHTimeDialog(
 }
 
 fun determineTimeOfDay(startTime: String): String {
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss") // Ajuste o formato para HH:mm:ss
     val start = LocalTime.parse(startTime, timeFormatter)
 
     return when {
