@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.vivaris.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -155,8 +156,9 @@ fun Configuracoes(controleDeNavegacao: NavHostController) {
             }
         })
 }
-//        @Preview
-//        @Composable
-//        fun DefaultPreview() {
-//            Configuracoes(controleDeNavegacao)
-//        }
+        @Preview
+        @Composable
+        fun PreviewConfiguracoes() {
+            val navController = rememberNavController()
+            Configuracoes(controleDeNavegacao = navController)
+        }

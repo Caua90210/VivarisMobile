@@ -5,7 +5,21 @@ data class Disponibilidade(
     val dia_semana: String,
     val horario_inicio: String,
     val horario_fim: String
-)
+){
+    override fun hashCode(): Int {
+        // Use o operador Elvis para garantir que não haja NullPointerException
+        return (dia_semana?.hashCode() ?: 0) * 31 + (horario_inicio?.hashCode() ?: 0) * 31 + (horario_fim?.hashCode() ?: 0)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Disponibilidade) return false
+
+        return dia_semana == other.dia_semana &&
+                horario_inicio == other.horario_inicio &&
+                horario_fim == other.horario_fim
+    }
+}
 
 
 data class DisponibilidadeResponse(
@@ -40,3 +54,5 @@ data class PsicologoDisponibilidadeResponse(
     val data: PsicologoData,
     val status_code: Int
 )
+
+

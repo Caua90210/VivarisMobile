@@ -30,6 +30,7 @@ interface DisponibilidadeService {
         @Body disponibilidadePsicologo: DisponibilidadePsicologo
     ): Call<DisponibilidadePsicologo>
 
+
     @DELETE("disponibilidade/psicologo/{id}")
     fun deleteDisponibilidade(
         @Path("id") idPsicologo: Int,
