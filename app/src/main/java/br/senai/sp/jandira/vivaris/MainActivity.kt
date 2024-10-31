@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import br.senai.sp.jandira.vivaris.screens.Configuracoes
 import br.senai.sp.jandira.vivaris.screens.Home
 import br.senai.sp.jandira.vivaris.screens.SplashScreen
 import br.senai.sp.jandira.vivaris.ui.theme.VivarisTheme
@@ -81,6 +82,11 @@ class MainActivity : ComponentActivity() {
                             val clienteId = backStackEntry.arguments?.getString("clienteId")?.toIntOrNull()
                             PreferenciasScreen(controleDeNavegacao, clienteId ?: 0)
                         }
+                        composable(route = "configuracoes") {
+                           Configuracoes(controleDeNavegacao)
+                        }
+
+
                     }
                 }
             }

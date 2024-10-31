@@ -4,12 +4,21 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.HeartBroken
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Report
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -20,11 +29,29 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
+@Composable
+fun MenuItem(text: String, icon: ImageVector, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable { onClick() },
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(imageVector = icon, contentDescription = null, modifier = Modifier.size(24.dp))
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(text = text)
+    }
+}
+
 @Composable
 fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boolean, nomeUsuario: String) {
     val loading = remember { mutableStateOf(true) }
     val retrofitFactory = RetrofitFactory()
     val clienteService = retrofitFactory.getClienteService()
+    val showMenu = remember { mutableStateOf(false) }
 
     // Fetch user data apenas se o nome não foi passado
     LaunchedEffect(userId) {
@@ -51,7 +78,8 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
         }
     }
 
-    // UI
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -59,6 +87,76 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(onClick = { /*TODO: implement notification icon click*/ }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.notificacao),
+                    contentDescription = "Notification"
+                )
+            }
+
+            IconButton(onClick = { showMenu.value = !showMenu.value }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.menu),
+                    contentDescription = "Hamburger"
+                )
+            }
+        }
+
+        if (showMenu.value) {
+            DropdownMenu(
+                expanded = showMenu.value,
+                onDismissRequest = { showMenu.value = false },
+                modifier = Modifier
+                    .fillMaxWidth() // Fill the width of the screen
+                    .background(Color.White) // Set the background color
+            ) {
+                Row {
+                    Text(
+                        "Bom Dia, $nomeUsuario!",
+                        style = MaterialTheme.typography.headlineMedium,
+                        textAlign = TextAlign.Start,
+
+                        )
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White)
+                        .padding(16.dp)
+                ) {
+                    MenuItem(text = "Meus Grupos", icon = Icons.Default.People) {
+                        controleDeNavegacao.navigate("meusGrupos")
+                    }
+                    MenuItem(text = "Posts Curtidos", icon = Icons.Default.HeartBroken) {
+                        controleDeNavegacao.navigate("postsCurtidos")
+                    }
+                    MenuItem(text = "Minhas preferências", icon = Icons.Default.Settings) {
+                        controleDeNavegacao.navigate("preferencias")
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    MenuItem(text = "Editar Perfil", icon = Icons.Default.Edit) {
+                        controleDeNavegacao.navigate("editarPerfil")
+                    }
+                    MenuItem(text = "Configurações", icon = Icons.Default.Settings) {
+                        controleDeNavegacao.navigate("configuracoes")
+                    }
+                    MenuItem(text = "Denúncia", icon = Icons.Default.Report) {
+                        controleDeNavegacao.navigate("denuncia")
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    MenuItem(text = "FAQ", icon = Icons.Default.Chat) {
+                        controleDeNavegacao.navigate("faq")
+                    }
+                }
+            }
+        }
+
         if (loading.value) {
             Text("Carregando...")
         } else {
@@ -159,7 +257,10 @@ fun FeatureButton(label: String, icon: Int) {
         modifier = Modifier
             .size(100.dp) // Tamanho desejado para o botão
             .clickable { }
-            .background(color = Color(0xFF9DEFD4), shape = MaterialTheme.shapes.medium) // Cor de fundo
+            .background(
+                color = Color(0xFF9DEFD4),
+                shape = MaterialTheme.shapes.medium
+            ) // Cor de fundo
             .padding(8.dp), // Espaçamento interno
         contentAlignment = Alignment.Center // Centraliza o conteúdo
     ) {
