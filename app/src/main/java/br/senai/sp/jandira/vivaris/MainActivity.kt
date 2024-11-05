@@ -17,6 +17,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
+import br.senai.sp.jandira.vivaris.screens.AddCartao
 import br.senai.sp.jandira.vivaris.screens.Configuracoes
 import br.senai.sp.jandira.vivaris.screens.Home
 import br.senai.sp.jandira.vivaris.screens.SplashScreen
@@ -78,12 +80,20 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-                        composable("preferencias/{clienteId}") { backStackEntry ->
+                        composable(
+                            "preferencias/{clienteId}",
+                            deepLinks = listOf(navDeepLink { uriPattern = "android-app://br.senai.sp.jandira.vivaris/preferencias/{clienteId}" })
+                        ) { backStackEntry ->
                             val clienteId = backStackEntry.arguments?.getString("clienteId")?.toIntOrNull()
                             PreferenciasScreen(controleDeNavegacao, clienteId ?: 0)
                         }
+
                         composable(route = "configuracoes") {
                            Configuracoes(controleDeNavegacao)
+                        }
+
+                        composable(route = "addcartao"){
+                            AddCartao()
                         }
 
 

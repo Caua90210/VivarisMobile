@@ -124,7 +124,7 @@ fun Configuracoes(controleDeNavegacao: NavHostController) {
 
                 // Botão "Meus cartões"
                 Button(
-                    onClick = { /* Handle 'Meus cartões' button click */ },
+                    onClick = { controleDeNavegacao.navigate("addcartao")},
                     modifier = buttonModifier,
                     colors = buttonColors,
                     shape = RoundedCornerShape(10.dp)

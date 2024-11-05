@@ -131,27 +131,27 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                         .padding(16.dp)
                 ) {
                     MenuItem(text = "Meus Grupos", icon = Icons.Default.People) {
-                        controleDeNavegacao.navigate("meusGrupos")
+                      //  controleDeNavegacao.navigate("meusGrupos")
                     }
                     MenuItem(text = "Posts Curtidos", icon = Icons.Default.HeartBroken) {
-                        controleDeNavegacao.navigate("postsCurtidos")
+                    //    controleDeNavegacao.navigate("postsCurtidos")
                     }
                     MenuItem(text = "Minhas preferências", icon = Icons.Default.Settings) {
-                        controleDeNavegacao.navigate("preferencias")
+                       // controleDeNavegacao.navigate("preferencias")
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     MenuItem(text = "Editar Perfil", icon = Icons.Default.Edit) {
-                        controleDeNavegacao.navigate("editarPerfil")
+                    //    controleDeNavegacao.navigate("editarPerfil")
                     }
                     MenuItem(text = "Configurações", icon = Icons.Default.Settings) {
                         controleDeNavegacao.navigate("configuracoes")
                     }
                     MenuItem(text = "Denúncia", icon = Icons.Default.Report) {
-                        controleDeNavegacao.navigate("denuncia")
+                    //    controleDeNavegacao.navigate("denuncia")
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     MenuItem(text = "FAQ", icon = Icons.Default.Chat) {
-                        controleDeNavegacao.navigate("faq")
+                    //    controleDeNavegacao.navigate("faq")
                     }
                 }
             }
