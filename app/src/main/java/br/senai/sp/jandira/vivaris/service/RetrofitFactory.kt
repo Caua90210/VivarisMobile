@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitFactory {
 
-    private val BASE_URL = "http://10.107.144.8:8080/v1/vivaris/"
+    private val BASE_URL = "http://10.107.144.21:8080/v1/vivaris/"
 
 
 

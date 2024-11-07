@@ -22,14 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -66,7 +64,6 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
     val showMenu = remember { mutableStateOf(false) }
 
 
-
     // Fetch user data apenas se o nome não foi passado
     LaunchedEffect(userId) {
         if (nomeUsuario.isEmpty()) {
@@ -100,13 +97,14 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, top = 5.dp),
+                .padding(horizontal = 16.dp)
+                .padding(top = 10.dp),
             verticalAlignment = Alignment.Top
         ) {
             Column (
-                modifier = Modifier.padding(12.dp), // Adiciona espaçamento ao redor da coluna
-                verticalArrangement = Arrangement.Top, // Alinha o conteúdo no topo
-                horizontalAlignment = Alignment.Start // Alinha o conteúdo à esquerda
+                modifier = Modifier.padding(12.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
             ) {
                 Text(
                     text = "Bom Dia,",
@@ -135,7 +133,8 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
             )
 
             Row(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(top = 12.dp),
                 horizontalArrangement = Arrangement.End
             ) {
@@ -163,6 +162,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
 
 
         }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -224,23 +224,162 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
 //                    modifier = Modifier.align(Alignment.Start)
 //                )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(70.dp))
 
-                // Consultas do dia
-//            Text("Consultas Hoje", style = MaterialTheme.typography.titleLarge)
-//            Spacer(modifier = Modifier.height(8.dp))
-//            Row(
-//                horizontalArrangement = Arrangement.SpaceEvenly,
-//                modifier = Modifier.fillMaxWidth()
-//            ) {
-//                repeat(4) { // Apenas para exemplo, repita 4 vezes para criar consultas fictícias
-//                    ConsultaCard("Teste", "10:30")
-//                }
-//            }
+                if (!isPsicologo){
 
-                Spacer(modifier = Modifier.height(32.dp))
+                    Button(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFCBEBDA)),
+                        shape = RoundedCornerShape(10.dp)
+
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = "Busque por psicológos...",
+                                color = Color.Gray,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Start
+                                )
+
+                            Icon(
+                                painter = painterResource(id = R.drawable.searcg),
+                                contentDescription = "Ícone de busca",
+                                tint = Color.Gray, // Cor do ícone
+                                modifier = Modifier.size(24.dp) // Tamanho do ícone
+                            )
+                        }
+
+                    }
+                    Spacer(modifier = Modifier.height(5.dp))
+                }
+
+
+               //
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(190.dp)
+                        .padding(horizontal = 16.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF15A27A)) // Corrigido aqui
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(text = "Como você está hoje?",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            color = Color(0xFFFCFCF1))
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Column(
+
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.starstruck),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(40.dp) // Definindo o tamanho da imagem
+                                )
+
+
+                                Image(
+                                    painter = painterResource(id = R.drawable.sorrindo),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(40.dp) // Definindo o tamanho da imagem
+                                )
+
+
+                                Image(
+                                    painter = painterResource(id = R.drawable.neutro),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(40.dp) // Definindo o tamanho da imagem
+                                )
+
+
+                                Image(
+                                    painter = painterResource(id = R.drawable.desapontado),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(40.dp) // Definindo o tamanho da imagem
+                                )
+
+
+                                Image(
+                                    painter = painterResource(id = R.drawable.chorando),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(40.dp) // Definindo o tamanho da imagem
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(horizontal = 12.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                RadioButton(
+                                    selected = ( false),
+                                    onClick = {  }
+                                )
+                                RadioButton(
+                                    selected = ( false),
+                                    onClick = {  }
+                                )
+                                RadioButton(
+                                    selected = ( false),
+                                    onClick = {  }
+                                )
+                                RadioButton(
+                                    selected = ( false),
+                                    onClick = {  }
+                                )
+                                RadioButton(
+                                    selected = ( false),
+                                    onClick = {  }
+                                )
+                            }
+
+                            Button(onClick = { /*TODO*/ },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                                shape = RoundedCornerShape(9.dp),
+                                colors = ButtonDefaults.buttonColors(Color(0xFF25856A))
+
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(text = "Gostaria de falar sobre?")
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.edit),
+                                        contentDescription = "Ícone de busca",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(5.dp))
+
+                        }
+                    }
+                }
 
                 if (isPsicologo) {
+
 
 
                     // Botões inferiores
@@ -248,67 +387,126 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        FeatureButton("Blog", R.drawable.blog)
-                        FeatureButton("Criar Grupo", R.drawable.grupos)
-                        FeatureButton("Prontuários", R.drawable.prontuario)
+
+                        FeatureButton("Blog", R.drawable.blog,
+                            onClick = { /* Ação */ }, fullWidth = false,
+                            isBold = true,
+                            textSize = 16.sp,
+                            textColor = Color(0xFF296856))
+                        FeatureButton("Criar Grupo", R.drawable.grupos,
+                            onClick = { /* Ação */ }, fullWidth = false,
+                            isBold = true,
+                            textSize = 16.sp,
+                            textColor = Color(0xFF296856))
+                        FeatureButton("Prontuários", R.drawable.prontuario,
+                            onClick = { /* Ação */ }, fullWidth = false,
+                            isBold = true,
+                            textSize = 16.sp,
+                            textColor = Color(0xFF296856))
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+
 
                     Row(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        FeatureButton("Eventos em Live", R.drawable.live)
-                        FeatureButton("Lembrete", R.drawable.bell)
-                        FeatureButton("Meus Chats", R.drawable.chat)
+                        FeatureButton("Eventos em Live", R.drawable.live,
+                            onClick = { /* Ação */ }, fullWidth = true,
+                            isBold = true,
+                            textSize = 16.sp,
+                            textColor = Color(0xFF296856))
+//                        FeatureButton("Lembrete", R.drawable.bell)
+
                     }
 
-                    Spacer(modifier = Modifier.height(32.dp))
+               //
 
                     // Botão para psicólogo
-                    if (isPsicologo) {
-                        Button(
-                            onClick = {
-                                controleDeNavegacao.navigate("disponibilidade/$userId")
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(50.dp),
-                            colors = ButtonDefaults.buttonColors(Color(0xFF3E9C81))
+//                    if (isPsicologo) {
+//                        Button(
+//                            onClick = {
+//
+//                            },
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .height(50.dp),
+//                            colors = ButtonDefaults.buttonColors(Color(0xFF3E9C81))
+//
+//                        ) {
+//                            Text(text = "Ir para Disponibilidade", fontSize = 16.sp)
+//                        }
+//                    }
 
-                        ) {
-                            Text(text = "Ir para Disponibilidade", fontSize = 16.sp)
-                        }
-                    }
+
                 } else {
                     // Botões inferiores
                     Row(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        FeatureButton("Blog", R.drawable.blog)
-                        FeatureButton("Gráfico de Humor", R.drawable.graficohumor)
-                        FeatureButton("Diário", R.drawable.diario)
-                    }
+                        FeatureButton("Blog", R.drawable.blog, onClick = { /* Ação */ }, fullWidth = false,
+                            isBold = true,
+                            textSize = 16.sp,
+                            textColor = Color(0xFF296856))
+                        FeatureButton("Gráfico  de Humor", R.drawable.graficohumor, onClick = { /* Ação */ }, fullWidth = false,
+                            isBold = true,
+                            textSize = 13.sp,
+                            textColor = Color(0xFF296856))
+                        FeatureButton("Diário", R.drawable.diario,onClick = { /* Ação */ }, fullWidth = false,
+                            isBold = true,
+                            textSize = 16.sp,
+                            textColor = Color(0xFF296856))
+                    }     // Spacer(modifier = Modifier.height(32.dp))
+                    FeatureButton("Trilhas de Meditação", R.drawable.meditacao, onClick = { /* Ação */ },
+                        fullWidth = true,
+                        isBold = true,
+                        textSize = 16.sp,
+                        textColor = Color(0xFF296856))
 
-                    Spacer(modifier = Modifier.height(16.dp))
 
                     Row(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        FeatureButton("Trilhas de Meditação", R.drawable.meditacao)
-                        FeatureButton("Lembrete", R.drawable.bell)
-                        FeatureButton("Meus Chats", R.drawable.chat)
+
+
                     }
+
                 }
 
             }
+
+
+
+
+
+
+            //Spacer(modifier = Modifier.height(32.dp))
+            FeatureButton(label = "Lembrete", icon = R.drawable.bell, onClick = { /* Ação */ },
+                fullWidth = true,
+                isBold = true,
+                textSize = 16.sp,
+                textColor = Color(0xFF296856))
+          //  Spacer(modifier = Modifier.height(32.dp))
+
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ){
+                FeatureButton("Meus Chat`s", R.drawable.chat,
+                    onClick = { /* Ação */ }, fullWidth = false,
+                    isBold = true,
+                    textSize = 16.sp,
+                    textColor = Color(0xFF296856))
+            }
+
             Spacer(modifier = Modifier.height(90.dp))
 
 
         }
+
+
 
 
         Row(
@@ -341,22 +539,29 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
             }
 
 
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.agendamento),
-                    contentDescription = "inicio",
-                    modifier = Modifier.size(24.dp),
-                    tint = Color.Unspecified
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text("Agendamento", fontSize = 12.sp, color = Color.White)
-            }
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp)
+                        .clickable(onClick = {
+                            if (isPsicologo) {
+                                controleDeNavegacao.navigate("disponibilidade/$userId")
+                            } else {
+                                controleDeNavegacao.navigate("disponibilidadeCliente")
+                            }
+                        }),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.agendamento),
+                        contentDescription = "Agendamento",
+                        modifier = Modifier.size(24.dp),
+                        tint = Color.Unspecified
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text("Agendamento", fontSize = 12.sp, color = Color.White)
+                }
 
 
             Column(
@@ -377,6 +582,8 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
             }
 
 
+
+
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -394,30 +601,42 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                 Text("Perfil", fontSize = 12.sp, color = Color.White)
             }
         }}
+        Image(
+            painter = painterResource(id = R.drawable.gadets),
+            contentDescription = "Logo Vivaris",
+            modifier = Modifier
+                .size(250.dp)
+                .offset(x = -35.dp, y = 578.dp), // Desloca a imagem 16 dp para a direita
+            contentScale = ContentScale.Fit
+        )
 
 
 
     }
 }
 
-
-
 @Composable
-fun FeatureButton(label: String, icon: Int) {
-    // Mudar o tamanho dos botões
-    Box(
+fun FeatureButton(
+    label: String,
+    icon: Int,
+    fullWidth: Boolean,
+    onClick: () -> Unit = { },
+    textColor: Color,
+    textSize: TextUnit,
+    isBold: Boolean,
+
+) {
+    Button(
+        onClick = onClick,
         modifier = Modifier
-            .size(100.dp) // Tamanho desejado para o botão
-            .clickable { }
-            .background(
-                color = Color(0xFF9DEFD4),
-                shape = MaterialTheme.shapes.medium
-            ) // Cor de fundo
+            .then(if (fullWidth) Modifier.fillMaxWidth() else Modifier.size(115.dp))
             .padding(8.dp), // Espaçamento interno
-        contentAlignment = Alignment.Center // Centraliza o conteúdo
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFCCEBDA)), // Cor de fundo
+        shape = MaterialTheme.shapes.large // Forma do botão
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+           horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Icon(
                 painter = painterResource(id = icon),
@@ -425,12 +644,16 @@ fun FeatureButton(label: String, icon: Int) {
                 modifier = Modifier.size(40.dp),
                 tint = Color.Unspecified // Isso fará com que o ícone use a cor padrão
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(label, fontSize = 12.sp)
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = label,
+                fontSize = textSize,
+                color = textColor,
+                fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal // Define o peso da fonte
+            )
         }
     }
 }
-
 
 
 @Preview(showBackground = true, device = Devices.PIXEL_4)
@@ -443,7 +666,7 @@ fun HomePreview() {
     Home(
         controleDeNavegacao = navController,
         userId = 1,
-        isPsicologo = true,
+        isPsicologo = false,
         nomeUsuario = "João da Silva"
     )
 }
