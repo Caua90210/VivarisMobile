@@ -134,7 +134,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
 
                         disponibilidades = it.data.disponibilidades
                         existingDisponibilidades =
-                            disponibilidades.toSet() // Atualiza as disponibilidades existentes
+                            disponibilidades.toSet()
                         Log.d("DisponibilidadeScreen", "IDs das Disponibilidades recebidos: ${disponibilidades.map { it.id }}")
                         fetchDetalhesDisponibilidades(disponibilidades.map { it.id })
                     }
@@ -181,7 +181,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
     }
 
 
-    // Log do ID do psicólogo
+
     Log.d("DisponibilidadeScreen", "ID do Psicólogo: $idPsicologo")
     Column(
         modifier = Modifier
@@ -280,7 +280,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
                 Spacer(modifier = Modifier.height(16.dp))
 
 
-                // Seções de horários
+
                 DisponibilidadeHorarioSection("Manhã", morningTimes, onClick = {
                     selectedDisponibilidade = Disponibilidade(
                         dia_semana = "Manhã",
@@ -332,7 +332,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
                         } else {
                             val disponibilidades = mutableListOf<Disponibilidade>()
 
-                            // Adicionar disponibilidade para os horários da manhã
+
                             morningTimes.forEach { timeRange ->
                                 val (start, end) = timeRange.split(" - ")
                                 if (start.isNotEmpty() && end.isNotEmpty()) {
@@ -344,7 +344,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
                                                 horario_inicio = start,
                                                 horario_fim = end
                                             )
-                                            // Verifica se a disponibilidade já existe pelo ID
+
                                             if (existingDisponibilidades.none { it.id == disponibilidade.id }) {
                                                 disponibilidades.add(disponibilidade)
                                                 Log.d("DisponibilidadeScreen", "Criando Disponibilidade: $disponibilidade")
@@ -358,7 +358,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
                                 }
                             }
 
-                            // Repetir o mesmo para afternoonTimes e nightTimes...
+
                             afternoonTimes.forEach { timeRange ->
                                 val (start, end) = timeRange.split(" - ")
                                 if (start.isNotEmpty() && end.isNotEmpty()) {
@@ -372,7 +372,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
                                             )
 
 
-                                            // Verifica se a disponibilidade já existe pelo ID
+
                                             if (existingDisponibilidades.none { it.id == disponibilidade.id }) {
                                                 disponibilidades.add(disponibilidade)
                                                 Log.d("DisponibilidadeScreen", "Criando Disponibilidade: $disponibilidade")
@@ -386,7 +386,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
                                 }
                             }
 
-                            // Repetir para os horários da noite
+
                             nightTimes.forEach { timeRange ->
                                 val (start, end) = timeRange.split(" - ")
                                 if (start.isNotEmpty() && end.isNotEmpty()) {
@@ -398,8 +398,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
                                                 horario_inicio = start,
                                                 horario_fim = end
                                             )
-                                            // Verifica se a disponibilidade já existe
-                                            // Verifica se a disponibilidade já existe pelo ID
+
                                             if (existingDisponibilidades.none { it.id == disponibilidade.id }) {
                                                 disponibilidades.add(disponibilidade)
                                                 Log.d("DisponibilidadeScreen", "Criando Disponibilidade: $disponibilidade")
@@ -429,7 +428,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
                         .fillMaxWidth()
                         .height(50.dp)
                         .align(Alignment.CenterHorizontally)
-                      //  .padding(horizontal = 20.dp, vertical = 16.dp)
+
                 ) {
                     Text(text = "Confirmar Disponibilidade", color = Color.White, fontSize = 16.sp)
                 }
@@ -438,7 +437,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
             }
 
 
-        // Dialog para adicionar horários
+
         if (showAddTimeDialog) {
             AddHTimeDialog(
                 onDismiss = { showAddTimeDialog = false },
@@ -467,7 +466,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
 
 
 
-        // Dialog para mostrar detalhes da disponibilidade
+
         if (showDetailsDialog && selectedDisponibilidade != null) {
             AlertDialog(
                 onDismissRequest = { showDetailsDialog = false },
@@ -527,7 +526,7 @@ fun cadastrarDisponibilidade(
 
 
 
-    // Chamada para cadastrar a disponibilidade
+
     disponibilidadeService.cadastrarDisponibilidade(disponibilidade).enqueue(object : Callback<DisponibilidadeResponse> {
         override fun onResponse(
             call: Call<DisponibilidadeResponse>,
@@ -536,7 +535,7 @@ fun cadastrarDisponibilidade(
             if (response.isSuccessful) {
                 val disponibilidadeCadastrada = response.body()
 
-                // Log e Toast para notificar o sucesso
+
                 Log.d("DisponibilidadeService", "Disponibilidade cadastrada com sucesso: $disponibilidadeCadastrada")
                 Toast.makeText(context, "Disponibilidade cadastrada com sucesso", Toast.LENGTH_SHORT).show()
 
@@ -557,14 +556,14 @@ fun cadastrarDisponibilidade(
                 }
 
             } else {
-                // Log e Toast para notificar o erro
+
                 Log.e("DisponibilidadeService", "Erro ao cadastrar disponibilidade: ${response.errorBody()?.string()}")
                 Toast.makeText(context, "Erro ao cadastrar disponibilidade: ${response.message()}", Toast.LENGTH_SHORT).show()
             }
         }
 
         override fun onFailure(call: Call<DisponibilidadeResponse>, t: Throwable) {
-            // Log e Toast para notificar a falha
+
             Log.e("DisponibilidadeService", "Falha ao cadastrar disponibilidade: ${t.message}")
             Toast.makeText(context, "Falha ao cadastrar disponibilidade: ${t.message}", Toast.LENGTH_SHORT).show()
         }
@@ -572,24 +571,24 @@ fun cadastrarDisponibilidade(
 
 }
 
-// Função para associar o psicólogo à disponibilidade
+
 fun cadastrarDisponibilidadePsicologo(
     disponibilidadeId: Int,
     idPsicologo: Int,
     disponibilidadeService: DisponibilidadeService,
     context: android.content.Context
 ) {
-    // Verificar os parâmetros recebidos
+
     Log.d("CadastrarDisponibilidade", "disponibilidadeId: $disponibilidadeId, idPsicologo: $idPsicologo")
 
-    // Criar objeto DisponibilidadePsicologo
+
     val disponibilidadePsicologo = DisponibilidadePsicologo(
         disponibilidade = disponibilidadeId,
         id_psicologo = idPsicologo,
-        status = "Livre" // ou outro status, se necessário
+        status = "Livre"
     )
 
-    // Chamar o serviço para associar o psicólogo à disponibilidade
+
     disponibilidadeService.postDisponibilidadePsicologo(idPsicologo, disponibilidadePsicologo)
         .enqueue(object : Callback<DisponibilidadePsicologo> {
             override fun onResponse(call: Call<DisponibilidadePsicologo>, response: Response<DisponibilidadePsicologo>) {
@@ -710,7 +709,7 @@ fun AddHTimeDialog(
 }
 
 fun determineTimeOfDay(startTime: String): String {
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss") // Ajuste o formato para HH:mm:ss
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss") 
     val start = LocalTime.parse(startTime, timeFormatter)
 
     return when {
@@ -723,7 +722,7 @@ fun determineTimeOfDay(startTime: String): String {
 @Preview(showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 fun PreviewDisponibilidadeScreenV3() {
-    val navController = rememberNavController() // NavHostController para navegação de tela
+    val navController = rememberNavController()
     DisponibilidadeScreenV3(controleDeNavegacao = navController, idPsicologo = 1)
 }
 
