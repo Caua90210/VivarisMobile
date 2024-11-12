@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.vivaris.screens
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -7,12 +8,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.HeartBroken
+import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Report
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,12 +26,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,6 +63,7 @@ fun MenuItem(text: String, icon: ImageVector, onClick: () -> Unit) {
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boolean, nomeUsuario: String) {
     val loading = remember { mutableStateOf(true) }
@@ -99,7 +107,8 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .padding(top = 10.dp),
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.Center
         ) {
             Column (
                 modifier = Modifier.padding(12.dp),
@@ -124,11 +133,14 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                 )
             }
 
+
+            Spacer(modifier = Modifier.width(12.dp))
             Image(
                 painter = painterResource(id = R.drawable.vivarislogo),
                 contentDescription = "Logo Vivaris",
                 modifier = Modifier
-                    .size(80.dp),
+                    .size(80.dp)
+                    .fillMaxWidth(),
                 contentScale = ContentScale.Fit
             )
 
@@ -172,59 +184,99 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
         ) {
 
 
+
+
             if (showMenu.value) {
                 DropdownMenu(
                     expanded = showMenu.value,
                     onDismissRequest = { showMenu.value = false },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White)
+                        .fillMaxSize() 
                 ) {
 
-                    Column(
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.White)
-                            .padding(16.dp)
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.TopEnd // Alinha o conteúdo no canto superior direito
                     ) {
-                        MenuItem(text = "Meus Grupos", icon = Icons.Default.People) {
-                            //  controleDeNavegacao.navigate("meusGrupos")
-                        }
-                        MenuItem(text = "Posts Curtidos", icon = Icons.Default.HeartBroken) {
-                            //    controleDeNavegacao.navigate("postsCurtidos")
-                        }
-                        MenuItem(text = "Minhas preferências", icon = Icons.Default.Settings) {
-                            // controleDeNavegacao.navigate("preferencias")
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        MenuItem(text = "Editar Perfil", icon = Icons.Default.Edit) {
-                            //    controleDeNavegacao.navigate("editarPerfil")
-                        }
-                        MenuItem(text = "Configurações", icon = Icons.Default.Settings) {
-                            controleDeNavegacao.navigate("configuracoes")
-                        }
-                        MenuItem(text = "Denúncia", icon = Icons.Default.Report) {
-                            //    controleDeNavegacao.navigate("denuncia")
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        MenuItem(text = "FAQ", icon = Icons.Default.Chat) {
-                            //    controleDeNavegacao.navigate("faq")
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .width(250.dp)
+                                .background(Color(0xFF3FC19C)) // Cor de fundo verde claro no Column
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            // Cabeçalho do perfil
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AccountCircle,
+                                    contentDescription = "Foto de Perfil",
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .padding(end = 8.dp),
+                                    tint = Color(0xFFE0E0E0)
+                                )
+                                Text(
+                                    text = nomeUsuario,
+                                    color = Color.White,
+                                    // style = MaterialTheme.typography.h6
+                                )
+                            }
+                            Divider(color = Color.White.copy(alpha = 0.5f), thickness = 1.dp)
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Itens do menu
+                            MenuItem(text = "Meus Grupos", icon = Icons.Default.People) {
+                                // Navegar para "meusGrupos"
+                            }
+                            MenuItem(text = "Posts Curtidos", icon = Icons.Default.Favorite) {
+                                // Navegar para "postsCurtidos"
+                            }
+                            MenuItem(text = "Minhas preferências", icon = Icons.Default.Tune) {
+                                // Navegar para "preferencias"
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Divider(color = Color.White.copy(alpha = 0.5f), thickness = 1.dp)
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            MenuItem(text = "Editar Perfil", icon = Icons.Default.Edit) {
+                                // Navegar para "editarPerfil"
+                            }
+                            MenuItem(text = "Configurações", icon = Icons.Default.Settings) {
+                                // Navegar para "configuracoes"
+                            }
+                            MenuItem(text = "Denúncia", icon = Icons.Default.Report) {
+                                // Navegar para "denuncia"
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Divider(color = Color.White.copy(alpha = 0.5f), thickness = 1.dp)
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            MenuItem(text = "FAQ", icon = Icons.Default.Help) {
+                                // Navegar para "faq"
+                            }
                         }
                     }
                 }
-            }
+
+
+
+        }
 
             if (loading.value) {
                 Text("Carregando...")
             } else {
-                // Bem-vindo
-//                Text(
-//                    "Bom Dia, $nomeUsuario!",
-//                    style = MaterialTheme.typography.headlineMedium,
-//                    modifier = Modifier.align(Alignment.Start)
-//                )
 
-                Spacer(modifier = Modifier.height(70.dp))
+                Spacer(modifier = Modifier.height(100.dp))
 
                 if (!isPsicologo){
 
@@ -232,7 +284,8 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                         onClick = { /*TODO*/ },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 16.dp)
+                            .height(40.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFCBEBDA)),
                         shape = RoundedCornerShape(10.dp)
 
@@ -256,7 +309,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                         }
 
                     }
-                    Spacer(modifier = Modifier.height(5.dp))
+                    Spacer(modifier = Modifier.height(15.dp))
                 }
 
 
@@ -270,6 +323,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF15A27A)) // Corrigido aqui
                 ) {
+                    if (!isPsicologo){
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -286,7 +340,8 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
 
                         ) {
                             Row(
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
                                     .padding(horizontal = 16.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
@@ -325,7 +380,8 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                                 )
                             }
                             Row(
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
                                     .padding(horizontal = 12.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
@@ -375,6 +431,9 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                             Spacer(modifier = Modifier.height(5.dp))
 
                         }
+                    }
+                    }else{
+
                     }
                 }
 
@@ -602,12 +661,14 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                 Text("Perfil", fontSize = 12.sp, color = Color.White)
             }
         }}
+
+
         Image(
             painter = painterResource(id = R.drawable.gadets),
             contentDescription = "Logo Vivaris",
             modifier = Modifier
                 .size(250.dp)
-                .offset(x = -35.dp, y = 578.dp), // Desloca a imagem 16 dp para a direita
+                .offset(x = -35.dp, y = 663.dp),
             contentScale = ContentScale.Fit
         )
 
@@ -657,13 +718,10 @@ fun FeatureButton(
 }
 
 
-@Preview(showBackground = true, device = Devices.PIXEL_4)
+@Preview(showBackground = true, device = Devices.PIXEL_7A)
 @Composable
-fun HomePreview() {
-    // Crie um NavHostController para passar para a função Home
+fun HomePreviewMedium() {
     val navController = rememberNavController()
-
-    // Chame a função Home com parâmetros de exemplo
     Home(
         controleDeNavegacao = navController,
         userId = 1,
@@ -671,5 +729,7 @@ fun HomePreview() {
         nomeUsuario = "João da Silva"
     )
 }
+
+
 
 
