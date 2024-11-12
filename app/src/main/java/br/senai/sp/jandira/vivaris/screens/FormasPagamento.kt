@@ -39,7 +39,6 @@ import java.util.Date
 
 @Composable
 fun AddCartao() {
-
     var numeroCartao by remember { mutableStateOf("") }
     var nome by remember { mutableStateOf("") }
     var mesValidade by remember { mutableStateOf("") }
@@ -219,9 +218,9 @@ fun AddCartao() {
             Button(
                 onClick = {
                     val modalidade = selectedTab
-                    val validade = Date(/* Aqui você pode criar a data com base em mesValidade e anoValidade */)
+                    val validade = Date()
                     val cartao = Cartoes(
-                        id = 0, // O ID pode ser gerado pelo servidor, se necessário
+                        id = 0,
                         modalidade = modalidade,
                         numero_cartao = numeroCartao,
                         nome = nome,

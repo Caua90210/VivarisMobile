@@ -250,6 +250,8 @@ fun Login(controleDeNavegacao: NavHostController) {
                     Button(
                         onClick = {
                             Log.d("LoginScreen", "Botão de login clicado")
+                            // Logando os dados de entrada
+                            Log.d("LoginScreen", "Tentando login com Email: ${emailState.value} e Senha: ${senhaState.value.replace(Regex("."), "*")}")
                             val loginRequest: Any = if (isPsicologo.value) {
                                 // Cria um request de login para psicólogo (tipagem correta para psicólogo)
                                 LoginPsicologo(email = emailState.value, senha = senhaState.value)

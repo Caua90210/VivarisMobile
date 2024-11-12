@@ -449,10 +449,11 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                             isBold = true,
                             textSize = 16.sp,
                             textColor = Color(0xFF296856))
-                        FeatureButton("Gráfico  de Humor", R.drawable.graficohumor, onClick = { /* Ação */ }, fullWidth = false,
+                        FeatureButton("Gráfico de Humor", R.drawable.graficohumor, onClick = {  }, fullWidth = false,
                             isBold = true,
-                            textSize = 13.sp,
-                            textColor = Color(0xFF296856))
+                            textSize = 10.sp,
+                            textColor = Color(0xFF296856)
+                            )
                         FeatureButton("Diário", R.drawable.diario,onClick = { /* Ação */ }, fullWidth = false,
                             isBold = true,
                             textSize = 16.sp,
@@ -666,7 +667,7 @@ fun HomePreview() {
     Home(
         controleDeNavegacao = navController,
         userId = 1,
-        isPsicologo = false,
+        isPsicologo = true,
         nomeUsuario = "João da Silva"
     )
 }
