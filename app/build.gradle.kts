@@ -1,8 +1,8 @@
 
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+
 }
 
 android {
@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.compiler)
+    implementation(libs.androidx.media3.common.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -92,5 +93,12 @@ dependencies {
     implementation ("com.google.guava:guava:30.1.1-android")
     implementation ("androidx.compose.material:material-icons-extended:1.3.0")//asd
     implementation("androidx.compose.material3:material3:1.4.0-alpha01")
+
+  //  implementation ("com.squareup.okhttp3:okhttp:4.11.0") // Para requisições HTTP
+    implementation ("com.auth0.android:jwtdecode:2.0.0") // Para manipulação de JWT
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
+
+    implementation ("androidx.sqlite:sqlite:2.3.1")
+
 
 }

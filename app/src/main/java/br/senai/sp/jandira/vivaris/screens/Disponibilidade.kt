@@ -60,7 +60,7 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
 
 
     val context = LocalContext.current
-    val retrofitFactory = RetrofitFactory()
+    val retrofitFactory = RetrofitFactory(context)
     val disponibilidadeService = retrofitFactory.getDisponibilidadeService()
 
 

@@ -44,7 +44,7 @@ fun PreferenciasScreen(
     var loading by remember { mutableStateOf(true) }
     val context = LocalContext.current
     var isRegistering by remember { mutableStateOf(false) }
-    val retrofitService = RetrofitFactory().getPreferenciasService()
+    val retrofitService = RetrofitFactory(context).getPreferenciasService()
     var isSubmitting by remember { mutableStateOf(false) }
 
 
@@ -272,7 +272,7 @@ fun cadastrarPreferencia(
 
     Log.d("CadastroPreferencia", "Cliente ID: $idCliente, Preferências: $listaPreferencias")
 
-    RetrofitFactory().getPreferenciasService().cadastrarPreferenciaCliente(preferenciaCliente)
+    RetrofitFactory(context).getPreferenciasService().cadastrarPreferenciaCliente(preferenciaCliente)
         .enqueue(object : retrofit2.Callback<PreferenciasResponse> {
             override fun onResponse(
                 call: Call<PreferenciasResponse>,

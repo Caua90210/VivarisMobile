@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -67,7 +68,8 @@ fun MenuItem(text: String, icon: ImageVector, onClick: () -> Unit) {
 @Composable
 fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boolean, nomeUsuario: String) {
     val loading = remember { mutableStateOf(true) }
-    val retrofitFactory = RetrofitFactory()
+    val context = LocalContext.current
+    val retrofitFactory = RetrofitFactory(context)
     val clienteService = retrofitFactory.getClienteService()
     val showMenu = remember { mutableStateOf(false) }
 

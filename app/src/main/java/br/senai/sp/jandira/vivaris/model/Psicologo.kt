@@ -34,5 +34,6 @@ data class DataResponse(
 data class PsicologoResponse(
     val data: DataResponse?,
     val status_code: Int,
-    val message: String?
+    val message: String?,
+    val token: String
 )

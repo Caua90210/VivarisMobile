@@ -132,7 +132,7 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    val retrofitFactory = RetrofitFactory()
+    val retrofitFactory = RetrofitFactory(context)
     val clienteService = retrofitFactory.getClienteService()
     val sexoService = retrofitFactory.getSexoService()
     var sexos by remember { mutableStateOf<List<Sexo>>(emptyList()) }

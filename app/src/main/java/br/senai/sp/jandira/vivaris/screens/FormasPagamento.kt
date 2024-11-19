@@ -46,7 +46,7 @@ fun AddCartao() {
     var cvc by remember { mutableStateOf("") }
 
     val context = LocalContext.current
-    val retrofitFactory = RetrofitFactory()
+    val retrofitFactory = RetrofitFactory(context)
     val cartaoService = retrofitFactory.getCartoesService()
 
     var selectedTab by remember { mutableStateOf("Debito") } // Sem acento

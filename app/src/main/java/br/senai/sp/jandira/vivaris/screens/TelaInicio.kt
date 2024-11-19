@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.vivaris.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,17 +17,28 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.sqlite.db.SupportSQLiteCompat.Api16Impl.deleteDatabase
 import br.senai.sp.jandira.vivaris.R
+import br.senai.sp.jandira.vivaris.security.DatabaseHelper
+import br.senai.sp.jandira.vivaris.security.TokenRepository
 import kotlinx.coroutines.delay
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun SplashScreen(navController: NavHostController) {
     val infiniteTransition = rememberInfiniteTransition()
+    val context = LocalContext.current
+
+    val tokenRepository = TokenRepository(context)
+
+
+
 
     // Novo gradiente dinâmico
     val dynamicGradient = Brush.linearGradient(
@@ -85,6 +97,12 @@ fun SplashScreen(navController: NavHostController) {
         navController.navigate("login")
     }
 
+
+
+
+
+
+
     // UI da Tela de Splash
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -121,6 +139,23 @@ fun SplashScreen(navController: NavHostController) {
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        val token = tokenRepository.getToken()
+        if (token != null) {
+            val userId = tokenRepository.getUserId()
+            val isPsicologo = tokenRepository.getIsPsicologo()
+            val userName = tokenRepository.getUserName()
+
+            navController.navigate("home/$userId/$isPsicologo/$userName") {
+                popUpTo("splash") { inclusive = true }
+            }
+        } else {
+            navController.navigate("login") {
+                popUpTo("splash") { inclusive = true }
+            }
         }
     }
 }

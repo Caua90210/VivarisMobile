@@ -8,7 +8,8 @@ data class LoginUsuario(
 
 data class LoginResponse(
     val cliente: ClienteData,
-    val status_code: Int
+    val status_code: Int,
+    val token: String
 )
 
 data class ClienteData(
