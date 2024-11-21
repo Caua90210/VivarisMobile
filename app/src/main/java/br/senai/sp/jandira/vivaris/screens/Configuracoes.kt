@@ -156,6 +156,23 @@ fun Configuracoes(controleDeNavegacao: NavHostController, clearData: () -> Unit)
                         Text("Sistema", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                     }
                 }
+
+                Button(
+                    onClick = {
+                        clearData()
+                        controleDeNavegacao.navigate("login")
+                    },
+                    modifier = buttonModifier,
+                    colors = buttonColors,
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Text("Sair da Conta", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
             }
         })
 
@@ -166,27 +183,11 @@ fun Configuracoes(controleDeNavegacao: NavHostController, clearData: () -> Unit)
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
-        // ... (outros botões)
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Botão "Sair da Conta"
-        Button(
-            onClick = {
-                clearData() // Limpa os dados
-                controleDeNavegacao.navigate("login") // Navega de volta para a tela de login
-            },
-            modifier = buttonModifier,
-            colors = buttonColors,
-            shape = RoundedCornerShape(10.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Text("Sair da Conta", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            }
-        }
+
     }
 }
 //@Preview

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,7 +24,10 @@ import br.senai.sp.jandira.vivaris.screens.Configuracoes
 import br.senai.sp.jandira.vivaris.screens.Home
 import br.senai.sp.jandira.vivaris.screens.SplashScreen
 import br.senai.sp.jandira.vivaris.security.DatabaseHelper
+import br.senai.sp.jandira.vivaris.security.TokenRepository
 import br.senai.sp.jandira.vivaris.ui.theme.VivarisTheme
+
+
 
 class MainActivity : ComponentActivity() {
 
@@ -32,12 +36,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             VivarisTheme {
+                val context = LocalContext.current
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val controleDeNavegacao = rememberNavController()
                     NavHost(navController = controleDeNavegacao, startDestination = "splash") {
+
+                        val tokenRepository = TokenRepository(context)
+
+
 
                         // Splash Screen
                         composable(route = "splash") {
@@ -90,13 +99,12 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(route = "configuracoes") {
-                            // Passando a função clearData como parâmetro
                             Configuracoes(
                                 controleDeNavegacao,
                                 clearData = {
-                                    // Implementar a lógica para limpar os dados
-                                    val dbHelper = DatabaseHelper(it.)
-                                    dbHelper.
+
+                                    tokenRepository.clearData()
+
                                 }
                             )
                         }
