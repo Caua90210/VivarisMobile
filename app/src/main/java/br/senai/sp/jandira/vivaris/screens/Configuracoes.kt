@@ -31,10 +31,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.vivaris.R
+import br.senai.sp.jandira.vivaris.security.DatabaseHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Configuracoes(controleDeNavegacao: NavHostController) {
+fun Configuracoes(controleDeNavegacao: NavHostController, clearData: () -> Unit) {
 
     val buttonModifier = Modifier
         .fillMaxWidth()
@@ -157,10 +158,48 @@ fun Configuracoes(controleDeNavegacao: NavHostController) {
                 }
             }
         })
-}
-        @Preview
-        @Composable
-        fun PreviewConfiguracoes() {
-            val navController = rememberNavController()
-            Configuracoes(controleDeNavegacao = navController)
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Top
+    ) {
+        // ... (outros botões)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Botão "Sair da Conta"
+        Button(
+            onClick = {
+                clearData() // Limpa os dados
+                controleDeNavegacao.navigate("login") // Navega de volta para a tela de login
+            },
+            modifier = buttonModifier,
+            colors = buttonColors,
+            shape = RoundedCornerShape(10.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text("Sair da Conta", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            }
         }
+    }
+}
+//@Preview
+//@Composable
+//fun PreviewConfiguracoes() {
+//    val navController = rememberNavController()
+//
+//    // Simulando a função clearData
+//    val clearData = {
+//        // Aqui você chamaria a função que limpa os dados
+//        val dbHelper = DatabaseHelper(/* contexto aqui */)
+//        dbHelper.clearData()
+//    }
+//
+//    Configuracoes(controleDeNavegacao = navController, clearData = clearData)
+//}

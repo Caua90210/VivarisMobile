@@ -22,6 +22,7 @@ import br.senai.sp.jandira.vivaris.screens.AddCartao
 import br.senai.sp.jandira.vivaris.screens.Configuracoes
 import br.senai.sp.jandira.vivaris.screens.Home
 import br.senai.sp.jandira.vivaris.screens.SplashScreen
+import br.senai.sp.jandira.vivaris.security.DatabaseHelper
 import br.senai.sp.jandira.vivaris.ui.theme.VivarisTheme
 
 class MainActivity : ComponentActivity() {
@@ -89,7 +90,15 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(route = "configuracoes") {
-                           Configuracoes(controleDeNavegacao)
+                            // Passando a função clearData como parâmetro
+                            Configuracoes(
+                                controleDeNavegacao,
+                                clearData = {
+                                    // Implementar a lógica para limpar os dados
+                                    val dbHelper = DatabaseHelper(it.)
+                                    dbHelper.
+                                }
+                            )
                         }
 
                         composable(route = "addcartao"){

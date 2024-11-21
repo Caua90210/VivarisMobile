@@ -189,25 +189,25 @@ fun DisponibilidadeScreenV3(controleDeNavegacao: NavHostController, idPsicologo:
             .background(color = Color(0xF1F1F1F1))
     ) {
 
-        if (disponibilidades.isNotEmpty()) {
-//            Text(
-//                text = "Disponibilidades Cadastradas",
-//                fontSize = 24.sp,
-//                fontWeight = FontWeight.Bold,
-//                color = Color(0xFF296856)
-//            )
-
-//            LazyColumn {
-//                items(disponibilidades) { disponibilidade ->
-//                    DisponibilidadeItem(disponibilidade) {
-//                        selectedDisponibilidade = disponibilidade
-//                        showDetailsDialog = true
-//                    }
-//                }
-//            }
-        } else {
-            Text(text = "Nenhuma disponibilidade cadastrada", fontSize = 16.sp)
-        }
+//        if (disponibilidades.isNotEmpty()) {
+////            Text(
+////                text = "Disponibilidades Cadastradas",
+////                fontSize = 24.sp,
+////                fontWeight = FontWeight.Bold,
+////                color = Color(0xFF296856)
+////            )
+//
+////            LazyColumn {
+////                items(disponibilidades) { disponibilidade ->
+////                    DisponibilidadeItem(disponibilidade) {
+////                        selectedDisponibilidade = disponibilidade
+////                        showDetailsDialog = true
+////                    }
+////                }
+////            }
+//        } else {
+//            Text(text = "Nenhuma disponibilidade cadastrada", fontSize = 16.sp)
+//        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()

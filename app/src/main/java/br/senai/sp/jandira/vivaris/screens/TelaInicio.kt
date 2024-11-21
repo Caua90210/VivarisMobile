@@ -94,7 +94,6 @@ fun SplashScreen(navController: NavHostController) {
     var isNavigating by remember { mutableStateOf(false) }
 
     // Verificação do token em um LaunchedEffect separado
-    // Verificação do token em um LaunchedEffect separado
     LaunchedEffect(Unit) {
         delay(3000)
         val token = tokenRepository.getToken()
@@ -140,7 +139,7 @@ fun SplashScreen(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Imagem do logo com animações de escala e rotação
+
             Image(
                 painter = painterResource(id = R.drawable.vivarislogo),
                 contentDescription = "Logo",
@@ -153,7 +152,6 @@ fun SplashScreen(navController: NavHostController) {
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Texto do nome do aplicativo com animação de digitação
             Text(
                 text = typedText,
                 fontSize = 28.sp,
