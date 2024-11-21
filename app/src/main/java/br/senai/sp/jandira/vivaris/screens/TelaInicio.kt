@@ -1,6 +1,7 @@
 package br.senai.sp.jandira.vivaris.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,9 +37,6 @@ fun SplashScreen(navController: NavHostController) {
     val context = LocalContext.current
 
     val tokenRepository = TokenRepository(context)
-
-
-
 
     // Novo gradiente dinâmico
     val dynamicGradient = Brush.linearGradient(
@@ -91,17 +89,40 @@ fun SplashScreen(navController: NavHostController) {
         }
     }
 
-    // Navegar para a tela de login após 5 segundos
+
+    // Estado para controlar a navegação
+    var isNavigating by remember { mutableStateOf(false) }
+
+    // Verificação do token em um LaunchedEffect separado
+    // Verificação do token em um LaunchedEffect separado
     LaunchedEffect(Unit) {
-        delay(5000)
-        navController.navigate("login")
+        delay(3000)
+        val token = tokenRepository.getToken()
+        if (token != null) {
+            val userId = tokenRepository.getUserId()
+            val isPsicologo = tokenRepository.getIsPsicologo()
+            val userName = tokenRepository.getUserName()
+
+            // Verifica se o userId é nulo
+            if (userId != null) {
+                Log.d("Dados passados", "$userId, $isPsicologo, $userName ")
+
+                navController.navigate("home/$userId/$isPsicologo/$userName") {
+                    popUpTo("splash") { inclusive = true }
+                }
+            } else {
+                // Limpa os dados do token se o userId não for encontrado
+                tokenRepository.clearData()
+                navController.navigate("login") {
+                    popUpTo("splash") { inclusive = true }
+                }
+            }
+        } else {
+            navController.navigate("login") {
+                popUpTo("splash") { inclusive = true }
+            }
+        }
     }
-
-
-
-
-
-
 
     // UI da Tela de Splash
     Box(
@@ -141,21 +162,4 @@ fun SplashScreen(navController: NavHostController) {
             )
         }
     }
-
-//    LaunchedEffect(Unit) {
-//        val token = tokenRepository.getToken()
-//        if (token != null) {
-//            val userId = tokenRepository.getUserId()
-//            val isPsicologo = tokenRepository.getIsPsicologo()
-//            val userName = tokenRepository.getUserName()
-//
-//            navController.navigate("home/$userId/$isPsicologo/$userName") {
-//                popUpTo("splash") { inclusive = true }
-//            }
-//        } else {
-//            navController.navigate("login") {
-//                popUpTo("splash") { inclusive = true }
-//            }
-//        }
-//    }
 }

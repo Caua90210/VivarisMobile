@@ -58,7 +58,9 @@ fun Configuracoes(controleDeNavegacao: NavHostController) {
                 ,
                 title = { Text("") },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back navigation */ }) {
+                    IconButton(onClick = {
+                      //  controleDeNavegacao.navigate()
+                    }) {
                         Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back",
                             tint = Color(0xFFFFFFFFF))
                     }
