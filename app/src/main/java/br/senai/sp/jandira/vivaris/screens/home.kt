@@ -192,10 +192,8 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                 DropdownMenu(
                     expanded = showMenu.value,
                     onDismissRequest = { showMenu.value = false },
-                    modifier = Modifier
-                        .fillMaxSize() 
+                    modifier = Modifier.wrapContentSize() // Use wrapContentSize para que o menu não tenha fundo
                 ) {
-
                     Box(
                         modifier = Modifier
                             .fillMaxSize(),
@@ -253,7 +251,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                                 // Navegar para "editarPerfil"
                             }
                             MenuItem(text = "Configurações", icon = Icons.Default.Settings) {
-                                // Navegar para "configuracoes"
+                                controleDeNavegacao.navigate("configuracoes")
                             }
                             MenuItem(text = "Denúncia", icon = Icons.Default.Report) {
                                 // Navegar para "denuncia"
@@ -269,10 +267,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                         }
                     }
                 }
-
-
-
-        }
+            }
 
             if (loading.value) {
                 Text("Carregando...")

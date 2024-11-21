@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val controleDeNavegacao = rememberNavController()
-                    NavHost(navController = controleDeNavegacao, startDestination = "splash") {
+                    NavHost(navController = controleDeNavegacao, startDestination = "home/1/false/pedro") {
 
                         // Splash Screen
                         composable(route = "splash") {

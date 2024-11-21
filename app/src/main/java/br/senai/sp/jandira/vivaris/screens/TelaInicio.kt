@@ -142,20 +142,20 @@ fun SplashScreen(navController: NavHostController) {
         }
     }
 
-    LaunchedEffect(Unit) {
-        val token = tokenRepository.getToken()
-        if (token != null) {
-            val userId = tokenRepository.getUserId()
-            val isPsicologo = tokenRepository.getIsPsicologo()
-            val userName = tokenRepository.getUserName()
-
-            navController.navigate("home/$userId/$isPsicologo/$userName") {
-                popUpTo("splash") { inclusive = true }
-            }
-        } else {
-            navController.navigate("login") {
-                popUpTo("splash") { inclusive = true }
-            }
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        val token = tokenRepository.getToken()
+//        if (token != null) {
+//            val userId = tokenRepository.getUserId()
+//            val isPsicologo = tokenRepository.getIsPsicologo()
+//            val userName = tokenRepository.getUserName()
+//
+//            navController.navigate("home/$userId/$isPsicologo/$userName") {
+//                popUpTo("splash") { inclusive = true }
+//            }
+//        } else {
+//            navController.navigate("login") {
+//                popUpTo("splash") { inclusive = true }
+//            }
+//        }
+//    }
 }

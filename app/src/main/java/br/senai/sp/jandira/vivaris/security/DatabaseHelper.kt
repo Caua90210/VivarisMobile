@@ -3,7 +3,8 @@ package br.senai.sp.jandira.vivaris.security
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import androidx.media3.common.util.Log
+import android.util.Log
+
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
