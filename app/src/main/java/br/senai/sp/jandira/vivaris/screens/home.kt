@@ -77,7 +77,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
     // Fetch user data apenas se o nome não foi passado
     LaunchedEffect(userId) {
         if (nomeUsuario.isEmpty()) {
-            clienteService.getClienteById(userId).enqueue(object : Callback<Cliente> {
+            clienteService.getClienteById(userID).enqueue(object : Callback<Cliente> {
                 override fun onResponse(call: Call<Cliente>, response: Response<Cliente>) {
                     if (response.isSuccessful) {
                         val nome = response.body()?.nome ?: "Nome não encontrado"
@@ -643,7 +643,14 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(8.dp),
+                    .padding(8.dp)
+                    .clickable(onClick = {
+                        if (isPsicologo) {
+                            controleDeNavegacao.navigate("perfilpsicologo/$userId")
+                        } else {
+                            controleDeNavegacao.navigate("perfilcliente")
+                        }
+                    }),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {

@@ -23,3 +23,8 @@ data class ClienteResponse(
     val message: String
 )
 
+data class ClienteResponsebyID(
+    val data: Cliente,
+    val status_code: Int
+)
+
