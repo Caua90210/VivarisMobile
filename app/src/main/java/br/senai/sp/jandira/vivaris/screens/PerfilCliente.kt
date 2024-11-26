@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import br.senai.sp.jandira.vivaris.model.Cliente
+import br.senai.sp.jandira.vivaris.model.ClienteResponse
 import br.senai.sp.jandira.vivaris.model.ClienteResponsebyID
 import br.senai.sp.jandira.vivaris.security.TokenRepository
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
@@ -28,7 +30,7 @@ import retrofit2.Response
 
 @Composable
 fun PerfilCliente(controleDeNavegacao: NavHostController, id: Int) {
-    var clienteResponse by remember { mutableStateOf<ClienteResponsebyID?>(null) }
+    var cliente by remember { mutableStateOf<Cliente?>(null) }
     var isLoading by remember {
         mutableStateOf(true)
     }
@@ -39,22 +41,20 @@ fun PerfilCliente(controleDeNavegacao: NavHostController, id: Int) {
         val token = TokenRepository(context).getToken()
         if (token != null){
             retrofitFactory.getClienteService().getClienteById(id, token).enqueue(
-                object : Callback<ClienteResponsebyID>{
-                    override fun onResponse(
-                        p0: Call<ClienteResponsebyID>,
-                        response: Response<ClienteResponsebyID>
-                    ) {
-                     if (response.isSuccessful){
-                         clienteResponse = response.body()
-                         Log.d("Dados recebidos do cliente: ", clienteResponse.toString())
+                object : Callback<Cliente>{
 
-                     }else{
-                         Log.d("API Error ", "Erro ao carregar cliente: ${response.errorBody()?.string()}")
-                     }
-                     isLoading = false
+                    override fun onResponse(p0: Call<Cliente>, response: Response<Cliente>) {
+                        if (response.isSuccessful){
+                            cliente = response.body()!!
+                            Log.d("Dados recebidos do cliente: ", cliente.toString())
+
+                        }else{
+                            Log.d("API Error ", "Erro ao carregar cliente: ${response.errorBody()?.string()}")
+                        }
+                        isLoading = false
                     }
 
-                    override fun onFailure(p0: Call<ClienteResponsebyID>, erro: Throwable) {
+                    override fun onFailure(p0: Call<Cliente>, erro: Throwable) {
                         Log.e("Api Failure", "Falha ao conectar com a api: ${erro.message}")
                         isLoading = false
                     }
@@ -72,7 +72,7 @@ fun PerfilCliente(controleDeNavegacao: NavHostController, id: Int) {
             CircularProgressIndicator()
         }
     }else{
-        clienteResponse?.data.let { clienteData ->
+        cliente?.let { clienteData ->
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {

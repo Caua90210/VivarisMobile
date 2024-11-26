@@ -43,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.vivaris.R
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
 import br.senai.sp.jandira.vivaris.model.Cliente
+import br.senai.sp.jandira.vivaris.security.TokenRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -76,23 +77,26 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
 
     // Fetch user data apenas se o nome não foi passado
     LaunchedEffect(userId) {
+        val token = TokenRepository(context).getToken()
         if (nomeUsuario.isEmpty()) {
-            clienteService.getClienteById(userID).enqueue(object : Callback<Cliente> {
-                override fun onResponse(call: Call<Cliente>, response: Response<Cliente>) {
-                    if (response.isSuccessful) {
-                        val nome = response.body()?.nome ?: "Nome não encontrado"
-                        Log.d("Home", "Nome do usuário: $nome")
-                    } else {
-                        Log.e("Home", "Erro ao buscar usuário: ${response.code()}")
+            if (token != null) {
+                clienteService.getClienteById(userId,token).enqueue(object : Callback<Cliente> {
+                    override fun onResponse(call: Call<Cliente>, response: Response<Cliente>) {
+                        if (response.isSuccessful) {
+                            val nome = response.body()?.nome ?: "Nome não encontrado"
+                            Log.d("Home", "Nome do usuário: $nome")
+                        } else {
+                            Log.e("Home", "Erro ao buscar usuário: ${response.code()}")
+                        }
+                        loading.value = false
                     }
-                    loading.value = false
-                }
 
-                override fun onFailure(call: Call<Cliente>, t: Throwable) {
-                    Log.e("Home", "Falha na chamada: ${t.message}")
-                    loading.value = false
-                }
-            })
+                    override fun onFailure(call: Call<Cliente>, t: Throwable) {
+                        Log.e("Home", "Falha na chamada: ${t.message}")
+                        loading.value = false
+                    }
+                })
+            }
         } else {
             Log.d("Home", "Nome do usuário passado: $nomeUsuario")
             loading.value = false
