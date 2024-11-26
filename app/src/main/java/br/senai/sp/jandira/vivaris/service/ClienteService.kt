@@ -25,7 +25,7 @@ interface ClienteService {
     fun getClienteById(
         @Path("id") id: Int,
         @Header("x-access-token") authorization: String
-    ): Call<Cliente>
+    ): Call<ClienteResponsebyID>
 
     @Headers("Content-Type: application/json")
     @POST("login/usuario")

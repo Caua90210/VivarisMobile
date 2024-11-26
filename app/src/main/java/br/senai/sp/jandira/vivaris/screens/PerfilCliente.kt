@@ -17,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.vivaris.model.Cliente
@@ -31,36 +33,32 @@ import retrofit2.Response
 @Composable
 fun PerfilCliente(controleDeNavegacao: NavHostController, id: Int) {
     var cliente by remember { mutableStateOf<Cliente?>(null) }
-    var isLoading by remember {
-        mutableStateOf(true)
-    }
-    var context = LocalContext.current
+    var isLoading by remember { mutableStateOf(true) }
+    val context = LocalContext.current
     val retrofitFactory = RetrofitFactory(context)
+    val clienteService = retrofitFactory.getClienteService()
 
     LaunchedEffect(id) {
         val token = TokenRepository(context).getToken()
-        if (token != null){
-            retrofitFactory.getClienteService().getClienteById(id, token).enqueue(
-                object : Callback<Cliente>{
-
-                    override fun onResponse(p0: Call<Cliente>, response: Response<Cliente>) {
-                        if (response.isSuccessful){
-                            cliente = response.body()!!
-                            Log.d("Dados recebidos do cliente: ", cliente.toString())
-
-                        }else{
-                            Log.d("API Error ", "Erro ao carregar cliente: ${response.errorBody()?.string()}")
-                        }
-                        isLoading = false
+        if (token != null) {
+            clienteService.getClienteById(id, token).enqueue(object : Callback<ClienteResponsebyID> {
+                override fun onResponse(call: Call<ClienteResponsebyID>, response: Response<ClienteResponsebyID>) {
+                    if (response.isSuccessful) {
+                        cliente = response.body()?.data
+                    } else {
+                        Log.e("PerfilCliente", "Erro ao buscar cliente: ${response.code()}")
                     }
-
-                    override fun onFailure(p0: Call<Cliente>, erro: Throwable) {
-                        Log.e("Api Failure", "Falha ao conectar com a api: ${erro.message}")
-                        isLoading = false
-                    }
-
+                    isLoading = false
                 }
-            )
+
+                override fun onFailure(call: Call<ClienteResponsebyID>, t: Throwable) {
+                    Log.e("PerfilCliente", "Falha na chamada: ${t.message}")
+                    isLoading = false
+                }
+            })
+        } else {
+            isLoading = false
+            Log.e("PerfilCliente", "Token não encontrado")
         }
     }
 
@@ -71,26 +69,91 @@ fun PerfilCliente(controleDeNavegacao: NavHostController, id: Int) {
         ) {
             CircularProgressIndicator()
         }
-    }else{
+    } else {
         cliente?.let { clienteData ->
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Nome: ${clienteData?.nome}")
-                Text(text = "Email: ${clienteData?.email}")
-                Text(text = "${clienteData?.senha}")
-                Text(text = "${clienteData?.telefone}")
-                Text(text = "${clienteData?.link_instagram}")
+                Text(
+                    text = "Perfil do Cliente",
 
+                )
+
+                Box(
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Exibição de informações com design limpo
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        // Nome
+                        Text(
+                            text = "Nome:",
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                            )
+
+                        Text(text = clienteData.nome ?: "N/A",
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+
+                        // Email
+                        Text(
+                            text = "Email:",
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                        Text(
+                            text = clienteData.email ?: "N/A",
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+
+                        // Telefone
+                        Text(
+                            text = "Telefone:",
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                        Text(
+                            text = clienteData.telefone ?: "N/A",
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+
+                        // Instagram
+                        Text(
+                            text = "Instagram:",
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                        Text(
+                            text = clienteData.link_instagram ?: "Não informado",
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+                    }
+                }
             }
-
         } ?: run {
-            Text(text = "CLiente não encontrado", color = Color.Red)
+            // Cliente não encontrado
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Cliente não encontrado.",
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
-
-
-
-
-
 }
+
+

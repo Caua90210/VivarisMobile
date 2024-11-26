@@ -43,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.vivaris.R
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
 import br.senai.sp.jandira.vivaris.model.Cliente
+import br.senai.sp.jandira.vivaris.model.ClienteResponsebyID
 import br.senai.sp.jandira.vivaris.security.TokenRepository
 import retrofit2.Call
 import retrofit2.Callback
@@ -80,10 +81,10 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
         val token = TokenRepository(context).getToken()
         if (nomeUsuario.isEmpty()) {
             if (token != null) {
-                clienteService.getClienteById(userId,token).enqueue(object : Callback<Cliente> {
-                    override fun onResponse(call: Call<Cliente>, response: Response<Cliente>) {
+                clienteService.getClienteById(userId,token).enqueue(object : Callback<ClienteResponsebyID> {
+                    override fun onResponse(call: Call<ClienteResponsebyID>, response: Response<ClienteResponsebyID>) {
                         if (response.isSuccessful) {
-                            val nome = response.body()?.nome ?: "Nome não encontrado"
+                            val nome = response.body()?.data?.nome ?: "Nome não encontrado"
                             Log.d("Home", "Nome do usuário: $nome")
                         } else {
                             Log.e("Home", "Erro ao buscar usuário: ${response.code()}")
@@ -91,7 +92,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                         loading.value = false
                     }
 
-                    override fun onFailure(call: Call<Cliente>, t: Throwable) {
+                    override fun onFailure(call: Call<ClienteResponsebyID>, t: Throwable) {
                         Log.e("Home", "Falha na chamada: ${t.message}")
                         loading.value = false
                     }
@@ -652,7 +653,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                         if (isPsicologo) {
                             controleDeNavegacao.navigate("perfilpsicologo/$userId")
                         } else {
-                            controleDeNavegacao.navigate("perfilcliente")
+                            controleDeNavegacao.navigate("perfilcliente/$userId")
                         }
                     }),
                 horizontalAlignment = Alignment.CenterHorizontally,
