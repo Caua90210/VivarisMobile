@@ -192,18 +192,18 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                 DropdownMenu(
                     expanded = showMenu.value,
                     onDismissRequest = { showMenu.value = false },
-                    modifier = Modifier.wrapContentSize() // Use wrapContentSize para que o menu não tenha fundo
+                    modifier = Modifier.wrapContentSize()
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize(),
-                        contentAlignment = Alignment.TopEnd // Alinha o conteúdo no canto superior direito
+                        contentAlignment = Alignment.TopEnd
                     ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .width(250.dp)
-                                .background(Color(0xFF3FC19C)) // Cor de fundo verde claro no Column
+                                .background(Color(0xFF3FC19C))
                                 .padding(16.dp),
                             horizontalAlignment = Alignment.End
                         ) {
@@ -225,7 +225,6 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                                 Text(
                                     text = nomeUsuario,
                                     color = Color.White,
-                                    // style = MaterialTheme.typography.h6
                                 )
                             }
                             Divider(color = Color.White.copy(alpha = 0.5f), thickness = 1.dp)
@@ -278,7 +277,9 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                 if (!isPsicologo){
 
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            controleDeNavegacao.navigate("pesquisapsicologo")
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
@@ -345,35 +346,35 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                                 Image(
                                     painter = painterResource(id = R.drawable.starstruck),
                                     contentDescription = "",
-                                    modifier = Modifier.size(40.dp) // Definindo o tamanho da imagem
+                                    modifier = Modifier.size(40.dp)
                                 )
 
 
                                 Image(
                                     painter = painterResource(id = R.drawable.sorrindo),
                                     contentDescription = "",
-                                    modifier = Modifier.size(40.dp) // Definindo o tamanho da imagem
+                                    modifier = Modifier.size(40.dp)
                                 )
 
 
                                 Image(
                                     painter = painterResource(id = R.drawable.neutro),
                                     contentDescription = "",
-                                    modifier = Modifier.size(40.dp) // Definindo o tamanho da imagem
+                                    modifier = Modifier.size(40.dp)
                                 )
 
 
                                 Image(
                                     painter = painterResource(id = R.drawable.desapontado),
                                     contentDescription = "",
-                                    modifier = Modifier.size(40.dp) // Definindo o tamanho da imagem
+                                    modifier = Modifier.size(40.dp)
                                 )
 
 
                                 Image(
                                     painter = painterResource(id = R.drawable.chorando),
                                     contentDescription = "",
-                                    modifier = Modifier.size(40.dp) // Definindo o tamanho da imagem
+                                    modifier = Modifier.size(40.dp)
                                 )
                             }
                             Row(
@@ -435,8 +436,6 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                 }
 
                 if (isPsicologo) {
-
-
 
                     // Botões inferiores
                     Row(

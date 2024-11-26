@@ -20,15 +20,10 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.launch
@@ -41,20 +36,11 @@ import br.senai.sp.jandira.vivaris.model.ClienteResponse
 import br.senai.sp.jandira.vivaris.model.Psicologo
 import br.senai.sp.jandira.vivaris.model.Sexo
 import br.senai.sp.jandira.vivaris.model.SexoResponse
-import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
 import java.util.Locale
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerState
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.toSize
 import br.senai.sp.jandira.vivaris.R
 
 
@@ -520,12 +506,13 @@ fun Cadastro(controleDeNavegacao: NavHostController) {
                                 email = emailState,
                                 data_nascimento = dataNascimentoFormatada,
                                 senha = senhaState,
-                                id_sexo = 1,
+                                id_sexo = sexos.find { it.sexo == sexoSelecionado?.sexo }?.id ?: 1,
                                 cpf = cpfState,
                                 cip = crpState,
                                 link_instagram = null.toString(),
                                 foto_perfil = null,
-                                descricao = "teste"
+                                descricao = "teste",
+                                 tbl_psicologo_disponibilidade = emptyList(),
 
                             )
 

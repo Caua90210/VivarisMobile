@@ -22,8 +22,9 @@ import androidx.navigation.navDeepLink
 import br.senai.sp.jandira.vivaris.screens.AddCartao
 import br.senai.sp.jandira.vivaris.screens.Configuracoes
 import br.senai.sp.jandira.vivaris.screens.Home
+import br.senai.sp.jandira.vivaris.screens.PerfilPsicologo
+import br.senai.sp.jandira.vivaris.screens.PsicologoPesquisa
 import br.senai.sp.jandira.vivaris.screens.SplashScreen
-import br.senai.sp.jandira.vivaris.security.DatabaseHelper
 import br.senai.sp.jandira.vivaris.security.TokenRepository
 import br.senai.sp.jandira.vivaris.ui.theme.VivarisTheme
 
@@ -111,6 +112,20 @@ class MainActivity : ComponentActivity() {
 
                         composable(route = "addcartao"){
                             AddCartao()
+                        }
+
+                        composable(route = "pesquisapsicologo"){
+                            PsicologoPesquisa(controleDeNavegacao)
+                        }
+
+                        composable(
+                            route = "perfilpsicologo/{id}",
+                            arguments = listOf(navArgument("id") { type = NavType.IntType })
+                        ) { backStackEntry ->
+                            val id = backStackEntry.arguments?.getInt("id")
+                            if (id != null) {
+                                PerfilPsicologo(controleDeNavegacao, id)
+                            }
                         }
 
 
