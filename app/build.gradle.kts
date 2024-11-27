@@ -67,7 +67,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.compiler)
-   // implementation("androidx.media3:media3-common-ktx:1.4.0")
+    implementation(libs.places)
+    // implementation("androidx.media3:media3-common-ktx:1.4.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

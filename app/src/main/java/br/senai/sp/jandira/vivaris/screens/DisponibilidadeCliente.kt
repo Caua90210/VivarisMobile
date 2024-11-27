@@ -35,8 +35,8 @@ import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun DisponibilidadeCliente(){
-    var selectedDays by remember { mutableStateOf(setOf<String>()) }
 
+    var selectedDays by remember { mutableStateOf(setOf<String>()) }
 
     // Mapeamento dos dias da semana
     val daysOfWeekMap = mapOf(
@@ -139,23 +139,13 @@ fun DisponibilidadeCliente(){
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-
-
-
-
                 }
-
-
 
             }
         }
 
-
     }
 }
-
-
-
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

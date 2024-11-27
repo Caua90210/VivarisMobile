@@ -21,6 +21,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import br.senai.sp.jandira.vivaris.screens.AddCartao
 import br.senai.sp.jandira.vivaris.screens.Configuracoes
+import br.senai.sp.jandira.vivaris.screens.DisponibilidadeScreenV4
 import br.senai.sp.jandira.vivaris.screens.Home
 import br.senai.sp.jandira.vivaris.screens.PerfilCliente
 import br.senai.sp.jandira.vivaris.screens.PerfilPsicologo
