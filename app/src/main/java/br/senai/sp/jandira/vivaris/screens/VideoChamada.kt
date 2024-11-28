@@ -3,6 +3,7 @@ package br.senai.sp.jandira.vivaris.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,11 +17,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -40,7 +43,7 @@ fun videoCall(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(70.dp),
+                .height(80.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
@@ -68,32 +71,90 @@ fun videoCall(modifier: Modifier = Modifier) {
                     contentDescription = "",
                     modifier = Modifier.size(60.dp)
                 )
-                Row {
+                Row(
+                    modifier = Modifier.height(100.dp)
+                ) {
                     Text(
                         text = "Em chamada com",
-                        color = Color.White
+                        color = Color.Black
                     )
 
                     Spacer(modifier = Modifier.width(2.dp))
 
                     Text(
                         text = "Giovana Costa",
-                        color =  Color.White,
+                        color =  Color.Black,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
         }
 
+        Spacer(modifier = Modifier.height(5.dp))
+
         Column(
             modifier = Modifier
                 .width(380.dp)
-                .offset(x= 6.dp)
+                .offset(x = 6.dp)
+                .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 16.dp, bottomEnd = 16.dp))
                 .background(color = Color.Red)
-                .height(620.dp)
+                .height(610.dp)
+        ) {}
+        Spacer(modifier = Modifier.height(10.dp))
 
-        ){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 16.dp))
+                .background(color = Color(0xFF3E9C81))
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Image(
+                painter = painterResource(
+                    id = R.drawable.camera
+                ),
+                modifier = Modifier
+                    .height(60.dp)
+                    .width(60.dp)
+                    .clickable {},
+                contentDescription = "",
+            )
 
+            Image(
+                painter = painterResource(
+                    id = R.drawable.video
+                ),
+                modifier = Modifier
+                    .height(60.dp)
+                    .width(60.dp)
+                    .clickable {},
+                contentDescription = "",
+            )
+
+            Image(
+                painter = painterResource(
+                    id = R.drawable.microfone
+                ),
+                modifier = Modifier
+                    .height(60.dp)
+                    .width(60.dp)
+                    .clickable {},
+                contentDescription = "",
+            )
+
+            Image(
+                painter = painterResource(
+                    id = R.drawable.desligar
+                ),
+                modifier = Modifier
+                    .height(60.dp)
+                    .width(60.dp)
+                    .clickable {},
+                contentDescription = "",
+            )
         }
     }
 }
