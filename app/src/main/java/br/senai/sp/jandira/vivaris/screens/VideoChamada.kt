@@ -28,7 +28,7 @@ import androidx.navigation.NavHostController
 import br.senai.sp.jandira.vivaris.R
 
 @Composable
-fun videoCall(modifier: NavHostController, controleNavegacao: NavHostController) {
+fun videoCall(modifier: Modifier, controleNavegacao: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()

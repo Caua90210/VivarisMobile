@@ -144,7 +144,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(route = "videochamada"){
-                            videoCall(controleDeNavegacao)
+                            videoCall(modifier = Modifier, controleDeNavegacao)
                         }
 
                     }
