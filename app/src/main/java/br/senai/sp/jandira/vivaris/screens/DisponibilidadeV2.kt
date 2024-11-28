@@ -26,7 +26,6 @@ import br.senai.sp.jandira.vivaris.model.DisponibilidadePsicologo
 import br.senai.sp.jandira.vivaris.model.DisponibilidadeResponse
 import br.senai.sp.jandira.vivaris.service.DisponibilidadeService
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
-import com.google.android.libraries.places.api.model.DayOfWeek
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
