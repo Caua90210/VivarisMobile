@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.vivaris.model.Disponibilidade
 import br.senai.sp.jandira.vivaris.model.DisponibilidadeInfo
+import br.senai.sp.jandira.vivaris.model.DisponibilidadeResponse
 import br.senai.sp.jandira.vivaris.model.Psicologo
 import br.senai.sp.jandira.vivaris.model.PsicologoDisponibilidadeResponse
 import br.senai.sp.jandira.vivaris.model.PsicologoResponsebyID
@@ -65,6 +66,7 @@ fun PerfilPsicologo(controleDeNavegacao: NavHostController, id: Int, isPsicologo
     val disponibilidadeService = retrofitFactory.getDisponibilidadeService()
     var disponibilidades by remember { mutableStateOf<List<Disponibilidade>>(emptyList()) }
     var existingDisponibilidades by remember { mutableStateOf<Set<Disponibilidade>>(emptySet()) }
+    var disponibilidadeResponse by remember { mutableStateOf<DisponibilidadeResponse?>(null) }
 
 
    //Funcao para chamar detalhes da disponibilidade
@@ -143,11 +145,11 @@ fun PerfilPsicologo(controleDeNavegacao: NavHostController, id: Int, isPsicologo
 
             }
             
-            fetchDisponibilidades()?.let { disponibilidadeData ->
+            disponibilidadeResponse?.let { disponibilidadeData ->
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ){
-                    Text(text = "Data: ${disponibilidadeData.toString()}")
+                    Text(text = "Data: ${disponibilidadeData.data.horario_inicio}")
                     
                 }
                 
