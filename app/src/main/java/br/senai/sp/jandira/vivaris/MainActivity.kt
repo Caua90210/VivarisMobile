@@ -21,12 +21,12 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import br.senai.sp.jandira.vivaris.screens.AddCartao
 import br.senai.sp.jandira.vivaris.screens.Configuracoes
-import br.senai.sp.jandira.vivaris.screens.DisponibilidadeScreenV4
 import br.senai.sp.jandira.vivaris.screens.Home
 import br.senai.sp.jandira.vivaris.screens.PerfilCliente
 import br.senai.sp.jandira.vivaris.screens.PerfilPsicologo
 import br.senai.sp.jandira.vivaris.screens.PsicologoPesquisa
 import br.senai.sp.jandira.vivaris.screens.SplashScreen
+import br.senai.sp.jandira.vivaris.screens.videoCall
 import br.senai.sp.jandira.vivaris.security.TokenRepository
 import br.senai.sp.jandira.vivaris.ui.theme.VivarisTheme
 
@@ -143,6 +143,9 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
+                        composable(route = "videochamada"){
+                            videoCall(controleDeNavegacao)
+                        }
 
                     }
                 }
