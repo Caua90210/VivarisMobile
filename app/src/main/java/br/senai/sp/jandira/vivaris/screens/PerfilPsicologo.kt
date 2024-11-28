@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import br.senai.sp.jandira.vivaris.model.Psicologo
 import br.senai.sp.jandira.vivaris.model.PsicologoResponsebyID
 import br.senai.sp.jandira.vivaris.security.TokenRepository
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
@@ -22,7 +23,7 @@ import retrofit2.Response
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PerfilPsicologo(controleDeNavegacao: NavHostController, id: Int) {
+fun PerfilPsicologo(controleDeNavegacao: NavHostController, id: Int, isPsicologo: Boolean){
     var psicologoResponse by remember { mutableStateOf<PsicologoResponsebyID?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     val context = LocalContext.current
@@ -53,6 +54,9 @@ fun PerfilPsicologo(controleDeNavegacao: NavHostController, id: Int) {
         }
     }
 
+
+
+
     if (isLoading) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -61,7 +65,10 @@ fun PerfilPsicologo(controleDeNavegacao: NavHostController, id: Int) {
             CircularProgressIndicator()
         }
     } else {
-        psicologoResponse?.data?.professional?.let { psicologoData -> // Acesso ao objeto professional
+        if(isPsicologo){
+
+        }
+        psicologoResponse?.data?.professional?.let { psicologoData ->
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(text = "Nome: ${psicologoData.nome}", style = MaterialTheme.typography.titleMedium)
                 Text(text = "Email: ${psicologoData.email}", style = MaterialTheme.typography.bodyMedium)
@@ -74,7 +81,7 @@ fun PerfilPsicologo(controleDeNavegacao: NavHostController, id: Int) {
                         modifier = Modifier.size(100.dp)
                     )
                 }
-                // Exibir outras informações conforme necessário
+
             }
         } ?: run {
             Text(text = "Psicólogo não encontrado", color = Color.Red)

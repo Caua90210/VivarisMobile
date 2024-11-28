@@ -17,11 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.vivaris.model.DataResponse
 import br.senai.sp.jandira.vivaris.model.Psicologo
 import br.senai.sp.jandira.vivaris.model.PsicologoPesquisa
+import br.senai.sp.jandira.vivaris.model.Sexo
+import br.senai.sp.jandira.vivaris.model.SexoResponse
 import br.senai.sp.jandira.vivaris.security.TokenRepository
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
 import coil.compose.rememberAsyncImagePainter
@@ -37,10 +41,10 @@ fun mapToPsicologo(dataResponse: DataResponse): Psicologo {
         cip = dataResponse.cip,
         cpf = dataResponse.cpf,
         email = dataResponse.email,
-        senha = "", // Defina o valor adequado ou obtenha de outro lugar
+        senha = "",
         telefone = dataResponse.telefone,
         foto_perfil = dataResponse.foto_perfil,
-        descricao = "", // Defina o valor adequado ou obtenha de outro lugar
+        descricao = "",
         link_instagram = dataResponse.link_instagram,
         id_sexo = dataResponse.id_sexo?.data ?: 0,
         tbl_psicologo_disponibilidade = dataResponse.tbl_psicologo_disponibilidade
@@ -49,52 +53,49 @@ fun mapToPsicologo(dataResponse: DataResponse): Psicologo {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PsicologoPesquisa(controleDeNavegacao: NavHostController) {
-    var profissionais by remember { mutableStateOf(listOf<Psicologo>()) }
-    var isLoading by remember { mutableStateOf(true) }
+fun PsicologoPesquisa(controleDeNavegacao: NavHostController, isPsicologo: Boolean, profissionais: List<Psicologo> = emptyList(), isLoading: Boolean = false) {
+
+
+
+
     var searchQuery by remember { mutableStateOf("") }
     val context = LocalContext.current
-    val retrofitFactory = RetrofitFactory(context)
-
-    LaunchedEffect(Unit) {
-        val token = TokenRepository(context).getToken()
-        if (token != null) {
-            retrofitFactory.getPsicologoService().getAllPsicologos(token).enqueue(object : Callback<PsicologoPesquisa> {
-                override fun onResponse(call: Call<PsicologoPesquisa>, response: Response<PsicologoPesquisa>) {
-                    if (response.isSuccessful) {
-                        response.body()?.let { responseData ->
-                            Log.d("API Response", "Dados recebidos: ${responseData.data.data}") // Acessando a lista de psicólogos
-                            profissionais = responseData.data.data.map { dataResponse ->
-                                mapToPsicologo(dataResponse)
-                            }
-                        } ?: run {
-                            Log.e("API Error", "Resposta sem corpo")
-                            Toast.makeText(context, "Resposta vazia", Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        Log.e("API Error", "Erro ao carregar: ${response.errorBody()?.string()}")
-                        Toast.makeText(context, "Erro ao carregar profissionais: ${response.code()}", Toast.LENGTH_SHORT).show()
-                    }
-                    isLoading = false
-                }
-
-                override fun onFailure(call: Call<PsicologoPesquisa>, t: Throwable) {
-                    Log.e("API Failure", "Falha na requisição: ${t.message}")
-                    Toast.makeText(context, "Erro: ${t.message}", Toast.LENGTH_SHORT).show()
-                    isLoading = false
-                }
-            })
-        }
-    }
 
     // Filtrando a lista de psicólogos com base na consulta de pesquisa
     val filteredProfissionais = profissionais.filter { profissional ->
         profissional.nome.contains(searchQuery, ignoreCase = true)
+
     }
+    var loadingSexos by remember { mutableStateOf(true) }
+    val sexoService = RetrofitFactory(context).getSexoService()
+    var sexos by remember { mutableStateOf<List<Sexo>>(emptyList()) }
+
+//
+//    LaunchedEffect(Unit) {
+//        sexoService.getSexoByID().enqueue(object : Callback<SexoResponse> {
+//            override fun onResponse(call: Call<SexoResponse>, response: Response<SexoResponse>) {
+//                if (response.isSuccessful) {
+//                    sexos = response.body()?.data ?: emptyList()
+//                    Log.d("Sexos", "Sexos carregados: $sexos")
+//                } else {
+//                    Toast.makeText(context, "Erro ao carregar sexos: ${response.code()}", Toast.LENGTH_SHORT).show()
+//                    Log.e("Erro", "Corpo da resposta: ${response.errorBody()?.string()}")
+//                }
+//                loadingSexos = false
+//            }
+//
+//            override fun onFailure(call: Call<SexoResponse>, t: Throwable) {
+//                Toast.makeText(context, "Erro: ${t.message}", Toast.LENGTH_SHORT).show()
+//                loadingSexos = false
+//            }
+//        })
+//    }
 
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
+
+        Spacer(modifier = Modifier.height(30.dp))
 
         // Campo de entrada de pesquisa
         TextField(
@@ -103,10 +104,14 @@ fun PsicologoPesquisa(controleDeNavegacao: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
-            placeholder = { Text("Pesquisar psicólogos...") },
+            placeholder = { Text("Busque por psicológos...",
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+                )
+                          },
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.White,
+                containerColor = Color(0xFF99BFB5),
                 focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedLabelColor = MaterialTheme.colorScheme.primary,
@@ -116,7 +121,7 @@ fun PsicologoPesquisa(controleDeNavegacao: NavHostController) {
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = "Pesquisar",
-                    tint = Color.Gray
+                    tint = Color.White
                 )
             }
         )
@@ -132,19 +137,20 @@ fun PsicologoPesquisa(controleDeNavegacao: NavHostController) {
             LazyColumn {
                 items(filteredProfissionais) { profissional ->
                     Card(
-                        modifier = Modifier.padding(8.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
                             .clickable(onClick = {
-                            Log.d("Card Clicked", "Profissional: ${profissional.nome}")
-                                controleDeNavegacao.navigate("perfilpsicologo/${profissional.id}")
-                        }),
+                                Log.d("Card Clicked", "Profissional: ${profissional.nome}")
+                                controleDeNavegacao.navigate("perfilpsicologo/${profissional.id}/${isPsicologo}")
+                            }),
                         shape = RoundedCornerShape(8.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(text = profissional.nome, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
-                            Text(text = "Email: ${profissional.email}", style = MaterialTheme.typography.bodyMedium)
-                            Text(text = "Telefone: ${profissional.telefone}", style = MaterialTheme.typography.bodyMedium)
-                            Text(text = "Data de Nascimento: ${profissional.data_nascimento}", style = MaterialTheme.typography.bodyMedium)
+                            Text(text = "", style = MaterialTheme.typography.bodyMedium)
+                            //Text(text = "Telefone: ${profissional.telefone}", style = MaterialTheme.typography.bodyMedium)
                             profissional.foto_perfil?.let { foto ->
                                 Image(
                                     painter = rememberAsyncImagePainter(foto),
@@ -160,4 +166,47 @@ fun PsicologoPesquisa(controleDeNavegacao: NavHostController) {
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewPsicologoPesquisa() {
+    val navController = rememberNavController()
+
+    // Mock de dados para a preview
+    val mockPsicologos = listOf(
+        Psicologo(
+            id = 1,
+            nome = "Dr. João Silva",
+            data_nascimento = "01/01/1980",
+            cip = "123456",
+            cpf = "123.456.789-00",
+            email = "joao.silva@example.com",
+            senha = "",
+            telefone = "(11) 91234-5678",
+            foto_perfil = "https://example.com/foto1.jpg",
+            descricao = "",
+            link_instagram = "",
+            id_sexo = 1,
+            tbl_psicologo_disponibilidade = emptyList()
+        ),
+        Psicologo(
+            id = 2,
+            nome = "Dra. Maria Oliveira",
+            data_nascimento = "02/02/1985",
+            cip = "654321",
+            cpf = "987.654.321-00",
+            email = "maria.oliveira@example.com",
+            senha = "",
+            telefone = "(11) 98765-4321",
+            foto_perfil = "https://example.com/foto2.jpg",
+            descricao = "",
+            link_instagram = "",
+            id_sexo = 2,
+            tbl_psicologo_disponibilidade = emptyList()
+        )
+    )
+
+    // Chamando o Composable com dados mockados
+    PsicologoPesquisa(controleDeNavegacao = navController, isPsicologo = true, profissionais = mockPsicologos, isLoading = false)
 }

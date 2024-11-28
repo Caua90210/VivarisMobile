@@ -82,9 +82,9 @@ fun Login(controleDeNavegacao: NavHostController) {
             )
     ) {
         AnimatedVisibility(
-            visible = !isLoggingIn, // Controla a visibilidade da tela com base no estado de login
-            enter = fadeIn(),        // Animação de fade-in ao entrar
-            exit = fadeOut()         // Animação de fade-out ao sair
+            visible = !isLoggingIn,
+            enter = fadeIn(),
+            exit = fadeOut()
         ) {
             Column(
                 modifier = Modifier
@@ -176,7 +176,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                             .background(
                                 Color(0xFFAACFBE),
                                 shape = RoundedCornerShape(16.dp)
-                            ) // Cor de fundo do campo
+                            )
                     ) {
                         OutlinedTextField(
                             value = emailState.value,
@@ -191,7 +191,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                                 unfocusedBorderColor = Color(0xFFAACFBE),
                                 focusedTextColor = Color.White,
                                 unfocusedTextColor = Color.White,
-                                cursorColor = Color.White // Para a cor do cursor
+                                cursorColor = Color.White
                             ),
                             leadingIcon = {
                                 Icon(
@@ -212,7 +212,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                             .background(
                                 Color(0xFFAACFBE),
                                 shape = RoundedCornerShape(16.dp)
-                            ) // Cor de fundo do campo
+                            )
                     ) {
                         OutlinedTextField(
                             value = senhaState.value,
@@ -227,7 +227,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                                 unfocusedBorderColor = Color(0xFFAACFBE),
                                 focusedTextColor = Color.White,
                                 unfocusedTextColor = Color.White,
-                                cursorColor = Color.White // Para a cor do cursor
+                                cursorColor = Color.White
                             ),
                             leadingIcon = {
                                 Icon(
@@ -239,10 +239,10 @@ fun Login(controleDeNavegacao: NavHostController) {
                             trailingIcon = {
                                 IconButton(onClick = {
                                     senhaVisivel.value =
-                                        !senhaVisivel.value // Alterna a visibilidade da senha
+                                        !senhaVisivel.value
                                 }) {
                                     Icon(
-                                        imageVector = if (senhaVisivel.value) Icons.Filled.Visibility else Icons.Filled.VisibilityOff, // Corrigido para incluir ambos os ícones
+                                        imageVector = if (senhaVisivel.value) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                                         contentDescription = if (senhaVisivel.value) "Esconder senha" else "Mostrar senha",
                                         tint = Color(0xFFFFFFFF)
                                     )
@@ -253,7 +253,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                     }
 
                     Spacer(modifier = Modifier.height(28.dp))
-                    // Parte do botão de login
+
 
                     fun saveLoginData(
                         context: Context,
@@ -266,7 +266,6 @@ fun Login(controleDeNavegacao: NavHostController) {
                         tokenRepository.saveUserData(token, userId, isPsicologo, userName)
                     }
 
-                    // Função auxiliar para tratar erros de login
                     fun handleLoginError(response: Response<*>) {
                         when (response.code()) {
                             404 -> {
@@ -286,14 +285,14 @@ fun Login(controleDeNavegacao: NavHostController) {
                         senha: String,
                         isPsicologo: Boolean
                     ) {
-                        // Cria o request de login com base no tipo de usuário (psicólogo ou cliente)
+
                         val loginRequest: Any = if (isPsicologo) {
                             LoginPsicologo(email = email, senha = senha)
                         } else {
                             LoginUsuario(email = email, senha = senha)
                         }
 
-                        // Verifica se é psicólogo ou cliente e faz a requisição apropriada
+
                         if (isPsicologo) {
                             // Login para psicólogo
                             psicologoService.psicologoLogin(loginRequest as LoginPsicologo)
@@ -338,7 +337,7 @@ fun Login(controleDeNavegacao: NavHostController) {
                                     }
                                 })
                         } else {
-                            // Login para cliente
+
                             clienteService.loginUsuario(loginRequest as LoginUsuario)
                                 .enqueue(object : Callback<LoginResponse> {
                                     override fun onResponse(
@@ -350,7 +349,6 @@ fun Login(controleDeNavegacao: NavHostController) {
                                             if (loginResponse != null && loginResponse.cliente.usuario.id != 0) {
                                                 val token = loginResponse.token
                                                 if (token != null) {
-                                                    // Salva os dados do cliente
                                                     saveLoginData(
                                                         context = context,
                                                         token = token,
@@ -380,10 +378,8 @@ fun Login(controleDeNavegacao: NavHostController) {
                     Button(
                         onClick = {
                             Log.d("LoginScreen", "Botão de login clicado")
-                            // Logando os dados de entrada
                             Log.d("LoginScreen", "Tentando login com Email: ${emailState.value} e Senha: ${senhaState.value.replace(Regex("."), "*")}")
 
-                            // Chama a função para fazer o login
                             fazerLogin(
                                 context = context,
                                 email = emailState.value,
@@ -398,10 +394,6 @@ fun Login(controleDeNavegacao: NavHostController) {
                     ) {
                         Text("Entrar", color = Color.White, fontSize = 24.sp)
                     }
-
-
-
-
 
 
                     Spacer(modifier = Modifier.height(80.dp))

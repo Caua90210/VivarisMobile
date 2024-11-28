@@ -283,7 +283,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
 
                     Button(
                         onClick = {
-                            controleDeNavegacao.navigate("pesquisapsicologo")
+                            controleDeNavegacao.navigate("pesquisapsicologo/${isPsicologo}")
                         },
                         modifier = Modifier
                             .fillMaxWidth()

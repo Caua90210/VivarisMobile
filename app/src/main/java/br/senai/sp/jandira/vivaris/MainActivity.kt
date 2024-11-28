@@ -1,7 +1,6 @@
 package br.senai.sp.jandira.vivaris
 
 import Cadastro
-import DisponibilidadeScreenV3
 import Login
 import PreferenciasScreen
 import android.os.Bundle
@@ -71,7 +70,7 @@ class MainActivity : ComponentActivity() {
                             arguments = listOf(
                                 navArgument("id") { type = NavType.IntType },
                                 navArgument("isPsicologo") { type = NavType.BoolType },
-                                navArgument("nome") { type = NavType.StringType }  // Added this for the "nome" argument
+                                navArgument("nome") { type = NavType.StringType }
                             )
                         ) { backStackEntry ->
                             val userId = backStackEntry.arguments?.getInt("id") ?: 0
@@ -89,7 +88,7 @@ class MainActivity : ComponentActivity() {
                         composable("disponibilidade/{idPsicologo}") { backStackEntry ->
                             val idPsicologo = backStackEntry.arguments?.getString("idPsicologo")?.toIntOrNull()
                             if (idPsicologo != null) {
-                                DisponibilidadeScreenV3(controleDeNavegacao, idPsicologo)
+                                DisponibilidadeScreenV4(controleDeNavegacao, idPsicologo)
                             }
                         }
 
@@ -116,8 +115,17 @@ class MainActivity : ComponentActivity() {
                             AddCartao()
                         }
 
-                        composable(route = "pesquisapsicologo"){
-                            PsicologoPesquisa(controleDeNavegacao)
+                        composable(
+                            route = "pesquisapsicologo",
+                            arguments = listOf(
+                                navArgument("isPsicologo") { type = NavType.BoolType },
+                            )
+                        ) { backStackEntry ->
+                            val isPsicologo = backStackEntry.arguments?.getBoolean("isPsicologo") ?: false
+                            PsicologoPesquisa(
+                                controleDeNavegacao = controleDeNavegacao,
+                                isPsicologo = isPsicologo
+                            )
                         }
 
                         composable(
@@ -135,11 +143,15 @@ class MainActivity : ComponentActivity() {
 
                         composable(
                             route = "perfilpsicologo/{id}",
-                            arguments = listOf(navArgument("id") { type = NavType.IntType })
+                            arguments = listOf(navArgument("id") { type = NavType.IntType },
+                                navArgument("isPsicologo") { type = NavType.BoolType },
+                                ),
+
                         ) { backStackEntry ->
+                            val isPsicologo = backStackEntry.arguments?.getBoolean("isPsicologo") ?: false
                             val id = backStackEntry.arguments?.getInt("id")
                             if (id != null) {
-                                PerfilPsicologo(controleDeNavegacao, id)
+                                PerfilPsicologo(controleDeNavegacao, id,isPsicologo = isPsicologo)
                             }
                         }
 

@@ -217,7 +217,7 @@ fun AddTimeDialog(onDismiss: () -> Unit, onAddTime: (String, String) -> Unit) {
         TimePickerDialog(
             LocalContext.current,
             { _, selectedHour, selectedMinute ->
-                startTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+                startTime = String.format("%02d:%02d:%02d", selectedHour, selectedMinute, 0)
                 showTimePickerInicio = false
             },
             LocalTime.now().hour,
@@ -230,7 +230,7 @@ fun AddTimeDialog(onDismiss: () -> Unit, onAddTime: (String, String) -> Unit) {
         TimePickerDialog(
             LocalContext.current,
             { _, selectedHour, selectedMinute ->
-                endTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+                endTime = String.format("%02d:%02d:%02d", selectedHour, selectedMinute, 0)
                 showTimePickerFim = false
             },
             LocalTime.now().hour,
