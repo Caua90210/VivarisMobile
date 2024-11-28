@@ -1,6 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Android" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
-    <module name="Vivaris.app.main" />
     <option name="DEPLOY" value="true" />
     <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
     <option name="DEPLOY_AS_INSTANT" value="false" />
@@ -12,8 +11,8 @@
     <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
     <option name="ACTIVITY_EXTRA_FLAGS" value="" />
     <option name="MODE" value="default_activity" />
-    <option name="CLEAR_LOGCAT" value="false" />
-    <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
+    <option name="CLEAR_LOGCAT" value="true" />
+    <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
     <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
     <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
     <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
