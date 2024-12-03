@@ -21,12 +21,12 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import br.senai.sp.jandira.vivaris.screens.AddCartao
 import br.senai.sp.jandira.vivaris.screens.Configuracoes
-import br.senai.sp.jandira.vivaris.screens.DisponibilidadeScreenV4
 import br.senai.sp.jandira.vivaris.screens.Home
 import br.senai.sp.jandira.vivaris.screens.PagamentoScreen
 import br.senai.sp.jandira.vivaris.screens.PerfilCliente
 import br.senai.sp.jandira.vivaris.screens.PsicologoPesquisa
 import br.senai.sp.jandira.vivaris.screens.SplashScreen
+import br.senai.sp.jandira.vivaris.screens.videoCall
 import br.senai.sp.jandira.vivaris.security.TokenRepository
 import br.senai.sp.jandira.vivaris.service.PagamentoService
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
@@ -168,6 +168,9 @@ class MainActivity : ComponentActivity() {
                             PagamentoScreen(sessionId = sessionId, pagamentoService = pagamentoService)
                         }
 
+                        composable(route = "videochamada"){
+                            videoCall(modifier = Modifier, controleDeNavegacao)
+                        }
 
                     }
                 }
