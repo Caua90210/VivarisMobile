@@ -286,7 +286,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
 
                     Button(
                         onClick = {
-                            controleDeNavegacao.navigate("pesquisapsicologo/$isPsicologo")
+                            controleDeNavegacao.navigate("pesquisapsicologo/$isPsicologo/$userId")
 
                         },
                         modifier = Modifier

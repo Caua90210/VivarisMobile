@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 class RetrofitFactory(private val context: Context) {
 
-    private val BASE_URL = "http://192.168.56.1:8080/v1/vivaris/"
+    private val BASE_URL = "http://10.107.144.15:8080/v1/vivaris/"
 
     // Interceptor para adicionar o token JWT ao cabeçalho das requisições
     private val authInterceptor = Interceptor { chain ->
@@ -68,5 +68,9 @@ class RetrofitFactory(private val context: Context) {
 
     fun getPagamentoService(): PagamentoService {
         return retrofitFactory.create(PagamentoService::class.java)
+    }
+
+    fun getConsultaService(): ConsultaService{
+        return retrofitFactory.create(ConsultaService::class.java)
     }
 }
