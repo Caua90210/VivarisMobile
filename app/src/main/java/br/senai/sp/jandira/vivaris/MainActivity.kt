@@ -2,6 +2,7 @@ package br.senai.sp.jandira.vivaris
 
 import Cadastro
 import Login
+import PerfilPsicologo
 import PreferenciasScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,11 +25,12 @@ import br.senai.sp.jandira.vivaris.screens.DisponibilidadeScreenV4
 import br.senai.sp.jandira.vivaris.screens.Home
 import br.senai.sp.jandira.vivaris.screens.PagamentoScreen
 import br.senai.sp.jandira.vivaris.screens.PerfilCliente
-import br.senai.sp.jandira.vivaris.screens.PerfilPsicologo
 import br.senai.sp.jandira.vivaris.screens.PsicologoPesquisa
 import br.senai.sp.jandira.vivaris.screens.SplashScreen
+import br.senai.sp.jandira.vivaris.screens.developing
 import br.senai.sp.jandira.vivaris.screens.videoCall
 import br.senai.sp.jandira.vivaris.security.TokenRepository
+import br.senai.sp.jandira.vivaris.service.PagamentoService
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
 import br.senai.sp.jandira.vivaris.ui.theme.VivarisTheme
 
@@ -156,6 +158,7 @@ class MainActivity : ComponentActivity() {
                                 navArgument("id") { type = NavType.IntType },
                                 navArgument("isPsicologo") { type = NavType.BoolType; defaultValue = false },
                                 navArgument("idCliente") { type = NavType.IntType }
+
                             )
                         ) { backStackEntry ->
                             val isPsicologo = backStackEntry.arguments?.getBoolean("isPsicologo") ?: false
@@ -177,6 +180,10 @@ class MainActivity : ComponentActivity() {
 
                         composable(route = "videochamada"){
                             videoCall(modifier = Modifier, controleDeNavegacao)
+                        }
+
+                        composable(route = "desenvolvendo"){
+                            developing(modifier = Modifier, controleNavegacao = controleDeNavegacao)
                         }
 
                     }
