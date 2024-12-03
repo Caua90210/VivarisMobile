@@ -42,7 +42,7 @@ class TokenRepository(context: Context) {
     }
 
 
-    // Recuperar ID do usuário
+
     fun getUserId(): Int? {
         val db = dbHelper.readableDatabase
         val cursor = db.query(
@@ -59,7 +59,7 @@ class TokenRepository(context: Context) {
         return userId
     }
 
-    // Recuperar se é psicólogo
+
     fun getIsPsicologo(): Boolean {
         val db = dbHelper.readableDatabase
         val cursor = db.query(
@@ -76,7 +76,7 @@ class TokenRepository(context: Context) {
         return isPsicologo
     }
 
-    // Recuperar nome do usuário
+
     fun getUserName(): String? {
         val db = dbHelper.readableDatabase
         val cursor = db.query(
@@ -93,7 +93,7 @@ class TokenRepository(context: Context) {
         return userName
     }
 
-    // Limpar todos os dados
+
     fun clearData() {
         val db = dbHelper.writableDatabase
         db.execSQL("DELETE FROM ${DatabaseHelper.TABLE_NAME}")

@@ -79,7 +79,6 @@ fun PerfilCliente(controleDeNavegacao: NavHostController, id: Int) {
             ) {
                 Text(
                     text = "Perfil do Cliente",
-
                 )
 
                 Box(
@@ -88,12 +87,12 @@ fun PerfilCliente(controleDeNavegacao: NavHostController, id: Int) {
                         .fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Exibição de informações com design limpo
+
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.Start
                     ) {
-                        // Nome
+
                         Text(
                             text = "Nome:",
                             fontWeight = FontWeight.Bold,
@@ -140,7 +139,7 @@ fun PerfilCliente(controleDeNavegacao: NavHostController, id: Int) {
                 }
             }
         } ?: run {
-            // Cliente não encontrado
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()

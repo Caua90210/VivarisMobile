@@ -158,5 +158,5 @@ fun videoCall(modifier: Modifier, controleNavegacao: NavHostController) {
 @androidx.compose.ui.tooling.preview.Preview(showSystemUi = true)
 @androidx.compose.runtime.Composable
 private fun PreviewVideoCall() {
-    videoCall()
+   // videoCall()
 }

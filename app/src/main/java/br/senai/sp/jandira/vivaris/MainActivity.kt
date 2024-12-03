@@ -121,16 +121,21 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = "pesquisapsicologo/{isPsicologo}",
+                            route = "pesquisapsicologo/{isPsicologo}/{idCliente}",
                             arguments = listOf(
-                                navArgument("isPsicologo") { type = NavType.BoolType }
+                                navArgument("isPsicologo") { type = NavType.BoolType },
+                                navArgument("idCliente") { type = NavType.IntType }
                             )
                         ) { backStackEntry ->
                             val isPsicologo = backStackEntry.arguments?.getBoolean("isPsicologo") ?: false
-                            PsicologoPesquisa(
-                                controleDeNavegacao = controleDeNavegacao,
-                                isPsicologo = isPsicologo
-                            )
+                            val idCliente = backStackEntry.arguments?.getInt("idCliente")
+                            if (idCliente != null) {
+                                PsicologoPesquisa(
+                                    controleDeNavegacao = controleDeNavegacao,
+                                    isPsicologo = isPsicologo,
+                                    id = idCliente
+                                )
+                            }
                         }
 
 
@@ -148,16 +153,19 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = "perfilpsicologo/{id}?isPsicologo={isPsicologo}",
+                            route = "perfilpsicologo/{id}/{isPsicologo}/{idCliente}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.IntType },
-                                navArgument("isPsicologo") { type = NavType.BoolType; defaultValue = false } // Set a default value
+                                navArgument("isPsicologo") { type = NavType.BoolType; defaultValue = false },
+                                navArgument("idCliente") { type = NavType.IntType }
+
                             )
                         ) { backStackEntry ->
                             val isPsicologo = backStackEntry.arguments?.getBoolean("isPsicologo") ?: false
                             val id = backStackEntry.arguments?.getInt("id")
-                            if (id != null) {
-                                PerfilPsicologo(controleDeNavegacao, id, isPsicologo = isPsicologo)
+                            val idCliente = backStackEntry.arguments?.getInt("idCliente")
+                            if (id != null && idCliente != null) {
+                                PerfilPsicologo(controleDeNavegacao, id, isPsicologo, idCliente)
                             }
                         }
                         composable(

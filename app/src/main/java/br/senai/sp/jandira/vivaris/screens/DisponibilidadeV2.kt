@@ -26,7 +26,6 @@ import br.senai.sp.jandira.vivaris.model.DisponibilidadePsicologo
 import br.senai.sp.jandira.vivaris.model.DisponibilidadeResponse
 import br.senai.sp.jandira.vivaris.service.DisponibilidadeService
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
-import com.google.android.libraries.places.api.model.DayOfWeek
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -217,7 +216,7 @@ fun AddTimeDialog(onDismiss: () -> Unit, onAddTime: (String, String) -> Unit) {
         TimePickerDialog(
             LocalContext.current,
             { _, selectedHour, selectedMinute ->
-                startTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+                startTime = String.format("%02d:%02d:%02d", selectedHour, selectedMinute, 0)
                 showTimePickerInicio = false
             },
             LocalTime.now().hour,
@@ -230,7 +229,7 @@ fun AddTimeDialog(onDismiss: () -> Unit, onAddTime: (String, String) -> Unit) {
         TimePickerDialog(
             LocalContext.current,
             { _, selectedHour, selectedMinute ->
-                endTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+                endTime = String.format("%02d:%02d:%02d", selectedHour, selectedMinute, 0)
                 showTimePickerFim = false
             },
             LocalTime.now().hour,
