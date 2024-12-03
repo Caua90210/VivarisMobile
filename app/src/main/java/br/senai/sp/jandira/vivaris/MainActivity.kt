@@ -2,7 +2,6 @@ package br.senai.sp.jandira.vivaris
 
 import Cadastro
 import Login
-import PerfilPsicologo
 import PreferenciasScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -25,6 +24,7 @@ import br.senai.sp.jandira.vivaris.screens.DisponibilidadeScreenV4
 import br.senai.sp.jandira.vivaris.screens.Home
 import br.senai.sp.jandira.vivaris.screens.PagamentoScreen
 import br.senai.sp.jandira.vivaris.screens.PerfilCliente
+import br.senai.sp.jandira.vivaris.screens.PerfilPsicologo
 import br.senai.sp.jandira.vivaris.screens.PsicologoPesquisa
 import br.senai.sp.jandira.vivaris.screens.SplashScreen
 import br.senai.sp.jandira.vivaris.screens.developing
