@@ -17,18 +17,27 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.vivaris.R
+import br.senai.sp.jandira.vivaris.model.Cliente
 
 @Composable
 fun videoCall(modifier: Modifier, controleNavegacao: NavHostController) {
+    var cliente by remember { mutableStateOf<Cliente?>(null) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -78,7 +87,7 @@ fun videoCall(modifier: Modifier, controleNavegacao: NavHostController) {
                     Spacer(modifier = Modifier.width(2.dp))
 
                     Text(
-                        text = "Giovana Costa",
+                        text = cliente!!.nome,
                         color =  Color.Black,
                         fontWeight = FontWeight.Bold
                     )
@@ -158,5 +167,6 @@ fun videoCall(modifier: Modifier, controleNavegacao: NavHostController) {
 @androidx.compose.ui.tooling.preview.Preview(showSystemUi = true)
 @androidx.compose.runtime.Composable
 private fun PreviewVideoCall() {
-    videoCall()
+    val navController = rememberNavController()
+    videoCall(controleNavegacao = navController, modifier = Modifier)
 }
