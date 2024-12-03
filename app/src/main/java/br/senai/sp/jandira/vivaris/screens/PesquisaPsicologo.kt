@@ -20,14 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import br.senai.sp.jandira.vivaris.R
 import br.senai.sp.jandira.vivaris.model.DataResponse
 import br.senai.sp.jandira.vivaris.model.Psicologo
 import br.senai.sp.jandira.vivaris.model.PsicologoPesquisa
@@ -57,12 +52,14 @@ fun mapToPsicologo(dataResponse: DataResponse): Psicologo {
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PsicologoPesquisa(controleDeNavegacao: NavHostController, isPsicologo: Boolean) {
+fun PsicologoPesquisa(controleDeNavegacao: NavHostController, isPsicologo: Boolean, id: Int) {
     val profissionais = remember { mutableStateListOf<Psicologo>() }
     var searchQuery by remember { mutableStateOf("") }
     var selectedSexo by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
     var isLoading by remember { mutableStateOf(false) }
+
+    Log.e("Id do cliente", "$id")
 
     // Filtrando a lista de psicólogos com base na consulta de pesquisa
     val filteredProfissionais = profissionais.filter { profissional ->
@@ -194,7 +191,7 @@ fun PsicologoPesquisa(controleDeNavegacao: NavHostController, isPsicologo: Boole
                                 .padding(8.dp)
                                 .clickable(onClick = {
                                     Log.d("Card Clicked", "Profissional: ${profissional.nome}")
-                                    controleDeNavegacao.navigate("perfilpsicologo/${profissional.id}?isPsicologo=$isPsicologo")
+                                    controleDeNavegacao.navigate("perfilpsicologo/${profissional.id}/$isPsicologo/$id")
                                 }),
                             shape = RoundedCornerShape(16.dp),
                             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),

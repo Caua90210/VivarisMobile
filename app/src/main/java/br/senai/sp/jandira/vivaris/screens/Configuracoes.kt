@@ -157,6 +157,8 @@ fun Configuracoes(controleDeNavegacao: NavHostController, clearData: () -> Unit)
                     }
                 }
 
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Button(
                     onClick = {
                         clearData()

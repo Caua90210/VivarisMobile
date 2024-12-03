@@ -2,7 +2,6 @@ package br.senai.sp.jandira.vivaris
 
 import Cadastro
 import Login
-import PerfilPsicologo
 import PreferenciasScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -21,14 +20,15 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import br.senai.sp.jandira.vivaris.screens.AddCartao
 import br.senai.sp.jandira.vivaris.screens.Configuracoes
+import br.senai.sp.jandira.vivaris.screens.DisponibilidadeScreenV4
 import br.senai.sp.jandira.vivaris.screens.Home
 import br.senai.sp.jandira.vivaris.screens.PagamentoScreen
 import br.senai.sp.jandira.vivaris.screens.PerfilCliente
+import br.senai.sp.jandira.vivaris.screens.PerfilPsicologo
 import br.senai.sp.jandira.vivaris.screens.PsicologoPesquisa
 import br.senai.sp.jandira.vivaris.screens.SplashScreen
 import br.senai.sp.jandira.vivaris.screens.videoCall
 import br.senai.sp.jandira.vivaris.security.TokenRepository
-import br.senai.sp.jandira.vivaris.service.PagamentoService
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
 import br.senai.sp.jandira.vivaris.ui.theme.VivarisTheme
 
@@ -119,16 +119,21 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = "pesquisapsicologo/{isPsicologo}",
+                            route = "pesquisapsicologo/{isPsicologo}/{idCliente}",
                             arguments = listOf(
-                                navArgument("isPsicologo") { type = NavType.BoolType }
+                                navArgument("isPsicologo") { type = NavType.BoolType },
+                                navArgument("idCliente") { type = NavType.IntType }
                             )
                         ) { backStackEntry ->
                             val isPsicologo = backStackEntry.arguments?.getBoolean("isPsicologo") ?: false
-                            PsicologoPesquisa(
-                                controleDeNavegacao = controleDeNavegacao,
-                                isPsicologo = isPsicologo
-                            )
+                            val idCliente = backStackEntry.arguments?.getInt("idCliente")
+                            if (idCliente != null) {
+                                PsicologoPesquisa(
+                                    controleDeNavegacao = controleDeNavegacao,
+                                    isPsicologo = isPsicologo,
+                                    id = idCliente
+                                )
+                            }
                         }
 
 
@@ -146,16 +151,18 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = "perfilpsicologo/{id}?isPsicologo={isPsicologo}",
+                            route = "perfilpsicologo/{id}/{isPsicologo}/{idCliente}",
                             arguments = listOf(
                                 navArgument("id") { type = NavType.IntType },
-                                navArgument("isPsicologo") { type = NavType.BoolType; defaultValue = false } // Set a default value
+                                navArgument("isPsicologo") { type = NavType.BoolType; defaultValue = false },
+                                navArgument("idCliente") { type = NavType.IntType }
                             )
                         ) { backStackEntry ->
                             val isPsicologo = backStackEntry.arguments?.getBoolean("isPsicologo") ?: false
                             val id = backStackEntry.arguments?.getInt("id")
-                            if (id != null) {
-                                PerfilPsicologo(controleDeNavegacao, id, isPsicologo = isPsicologo)
+                            val idCliente = backStackEntry.arguments?.getInt("idCliente")
+                            if (id != null && idCliente != null) {
+                                PerfilPsicologo(controleDeNavegacao, id, isPsicologo, idCliente)
                             }
                         }
                         composable(
