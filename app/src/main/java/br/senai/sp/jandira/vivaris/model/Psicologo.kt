@@ -14,7 +14,7 @@ data class Psicologo(
     val descricao: String,
     val link_instagram: String?,
     val id_sexo: Any,
-    val tbl_psicologo_disponibilidade: List<TblPsicologoDisponibilidade> // Lista de disponibilidades do psicólogo
+    val tbl_psicologo_disponibilidade: List<TblPsicologoDisponibilidade>
 )
 
 data class PsicologoResponsebyID(
@@ -23,17 +23,16 @@ data class PsicologoResponsebyID(
 )
 
 data class PsicologoData2(
-    val professional: Psicologo // O psicólogo em si
+    val professional: Psicologo
 )
 
-// Para a resposta completa que a API retorna
 data class PsicologoPesquisa(
-    val data: DataWrapper, // Agora é um objeto que contém a lista
+    val data: DataWrapper,
     val status_code: Int
 )
 
 data class DataWrapper(
-    val data: List<DataResponse> // Lista de psicólogos
+    val data: List<DataResponse>
 )
 
 data class DataResponse(
@@ -47,13 +46,13 @@ data class DataResponse(
     val email: String,
     val link_instagram: String?,
     val id_sexo: SexoResponse,
-    val tbl_psicologo_disponibilidade: List<TblPsicologoDisponibilidade> // Lista de disponibilidades
+    val tbl_psicologo_disponibilidade: List<TblPsicologoDisponibilidade>
 )
 data class PsicologoResponse(
-    val data: DataResponse?,  // Pode ser nulo caso não exista um psicólogo
+    val data: DataResponse?,
     val status_code: Int,
     val message: String?,
-    val token: String?  // Token de autenticação (caso seja necessário)
+    val token: String?
 )
 
 

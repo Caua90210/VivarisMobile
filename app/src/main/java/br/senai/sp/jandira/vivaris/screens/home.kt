@@ -192,8 +192,12 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
 
 
 
-
             if (showMenu.value) {
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.Top
+                ) {
+
                 DropdownMenu(
                     expanded = showMenu.value,
                     onDismissRequest = { showMenu.value = false },
@@ -201,16 +205,15 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                 ) {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.TopEnd
+                            .fillMaxSize()
                     ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .width(250.dp)
                                 .background(Color(0xFF3FC19C))
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.End
+                                .padding(16.dp)
+                            .align(Alignment.TopEnd)
                         ) {
                             // Cabeçalho do perfil
                             Row(
@@ -271,7 +274,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                         }
                     }
                 }
-            }
+            }}
 
             if (loading.value) {
                 Text("Carregando...")
@@ -283,7 +286,8 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
 
                     Button(
                         onClick = {
-                            controleDeNavegacao.navigate("pesquisapsicologo/${isPsicologo}")
+                            controleDeNavegacao.navigate("pesquisapsicologo/$isPsicologo")
+
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -569,7 +573,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
 
 
 
-
+        //Area de navegação
         Row(
             modifier = Modifier
                 .fillMaxWidth()
