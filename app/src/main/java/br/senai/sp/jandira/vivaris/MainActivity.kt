@@ -1,8 +1,8 @@
 package br.senai.sp.jandira.vivaris
 
 import Cadastro
-import DisponibilidadeScreenV3
 import Login
+import PerfilPsicologo
 import PreferenciasScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -21,13 +21,17 @@ import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import br.senai.sp.jandira.vivaris.screens.AddCartao
 import br.senai.sp.jandira.vivaris.screens.Configuracoes
+import br.senai.sp.jandira.vivaris.screens.DisponibilidadeScreenV4
 import br.senai.sp.jandira.vivaris.screens.Home
+import br.senai.sp.jandira.vivaris.screens.PagamentoScreen
 import br.senai.sp.jandira.vivaris.screens.PerfilCliente
-import br.senai.sp.jandira.vivaris.screens.PerfilPsicologo
 import br.senai.sp.jandira.vivaris.screens.PsicologoPesquisa
 import br.senai.sp.jandira.vivaris.screens.SplashScreen
+import br.senai.sp.jandira.vivaris.screens.developing
 import br.senai.sp.jandira.vivaris.screens.videoCall
 import br.senai.sp.jandira.vivaris.security.TokenRepository
+import br.senai.sp.jandira.vivaris.service.PagamentoService
+import br.senai.sp.jandira.vivaris.service.RetrofitFactory
 import br.senai.sp.jandira.vivaris.ui.theme.VivarisTheme
 
 
@@ -71,7 +75,7 @@ class MainActivity : ComponentActivity() {
                             arguments = listOf(
                                 navArgument("id") { type = NavType.IntType },
                                 navArgument("isPsicologo") { type = NavType.BoolType },
-                                navArgument("nome") { type = NavType.StringType }  // Added this for the "nome" argument
+                                navArgument("nome") { type = NavType.StringType }
                             )
                         ) { backStackEntry ->
                             val userId = backStackEntry.arguments?.getInt("id") ?: 0
@@ -89,7 +93,7 @@ class MainActivity : ComponentActivity() {
                         composable("disponibilidade/{idPsicologo}") { backStackEntry ->
                             val idPsicologo = backStackEntry.arguments?.getString("idPsicologo")?.toIntOrNull()
                             if (idPsicologo != null) {
-                                DisponibilidadeScreenV3(controleDeNavegacao, idPsicologo)
+                                DisponibilidadeScreenV4(controleDeNavegacao, idPsicologo)
                             }
                         }
 
@@ -116,9 +120,19 @@ class MainActivity : ComponentActivity() {
                             AddCartao()
                         }
 
-                        composable(route = "pesquisapsicologo"){
-                            PsicologoPesquisa(controleDeNavegacao)
+                        composable(
+                            route = "pesquisapsicologo/{isPsicologo}",
+                            arguments = listOf(
+                                navArgument("isPsicologo") { type = NavType.BoolType }
+                            )
+                        ) { backStackEntry ->
+                            val isPsicologo = backStackEntry.arguments?.getBoolean("isPsicologo") ?: false
+                            PsicologoPesquisa(
+                                controleDeNavegacao = controleDeNavegacao,
+                                isPsicologo = isPsicologo
+                            )
                         }
+
 
                         composable(
                             route = "perfilcliente/{id}",
@@ -134,17 +148,34 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = "perfilpsicologo/{id}",
-                            arguments = listOf(navArgument("id") { type = NavType.IntType })
+                            route = "perfilpsicologo/{id}?isPsicologo={isPsicologo}",
+                            arguments = listOf(
+                                navArgument("id") { type = NavType.IntType },
+                                navArgument("isPsicologo") { type = NavType.BoolType; defaultValue = false } // Set a default value
+                            )
                         ) { backStackEntry ->
+                            val isPsicologo = backStackEntry.arguments?.getBoolean("isPsicologo") ?: false
                             val id = backStackEntry.arguments?.getInt("id")
                             if (id != null) {
-                                PerfilPsicologo(controleDeNavegacao, id)
+                                PerfilPsicologo(controleDeNavegacao, id, isPsicologo = isPsicologo)
                             }
+                        }
+                        composable(
+                            route = "pagamento/{sessionId}",
+                            arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val sessionId = backStackEntry.arguments?.getString("sessionId") ?: ""
+                            val pagamentoService = RetrofitFactory(context).getPagamentoService()
+
+                            PagamentoScreen(sessionId = sessionId, pagamentoService = pagamentoService)
                         }
 
                         composable(route = "videochamada"){
                             videoCall(modifier = Modifier, controleDeNavegacao)
+                        }
+
+                        composable(route = "desenvolvendo"){
+                            developing(modifier = Modifier, controleNavegacao = controleDeNavegacao)
                         }
 
                     }
