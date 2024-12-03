@@ -1,18 +1,14 @@
 package br.senai.sp.jandira.vivaris.screens
 
 import android.util.Log
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,9 +16,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.vivaris.model.Cliente
-import br.senai.sp.jandira.vivaris.model.ClienteResponse
 import br.senai.sp.jandira.vivaris.model.ClienteResponsebyID
 import br.senai.sp.jandira.vivaris.security.TokenRepository
 import br.senai.sp.jandira.vivaris.service.RetrofitFactory
@@ -77,69 +73,121 @@ fun PerfilCliente(controleDeNavegacao: NavHostController, id: Int) {
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Perfil do Cliente",
-                )
 
-                Box(
+
+                Spacer(modifier = Modifier.height(40.dp))
+                Row(
                     modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                    verticalAlignment = Alignment.CenterVertically ,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                    // Centraliza os itens verticalmente
                 ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Voltar",
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable {
+                                controleDeNavegacao.popBackStack()
+                            },
+                        tint = Color(0xFF52B693) // Verde
+                    )
 
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.Start
-                    ) {
+                    Text(
+                        text = "Seu perfil",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color(0xFF15A27A),
+                        modifier = Modifier
+                            .weight(1f)
+                            .align(Alignment.CenterVertically)
+                            .padding(end = 40.dp)
+                        ,
+                        textAlign = TextAlign.Center,
+                        fontSize = 32.sp
+                    )
+                }
 
+
+                Spacer(modifier = Modifier.height(40.dp))
+                // Card for Name
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .border(2.dp, Color(0xFF15A27A), RoundedCornerShape(16.dp)),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "Nome:",
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(vertical = 4.dp)
-                            )
-
-                        Text(text = clienteData.nome ?: "N/A",
-                            modifier = Modifier.padding(bottom = 12.dp)
+                            color = Color(0xFF15A27A)
                         )
+                        Text(text = clienteData.nome ?: "N/A")
+                    }
+                }
 
-                        // Email
+                // Card for Email
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .border(2.dp, Color(0xFF15A27A), RoundedCornerShape(16.dp)),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "Email:",
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(vertical = 4.dp)
+                            color = Color(0xFF15A27A)
                         )
-                        Text(
-                            text = clienteData.email ?: "N/A",
-                            modifier = Modifier.padding(bottom = 12.dp)
-                        )
+                        Text(text = clienteData.email ?: "N/A")
+                    }
+                }
 
-                        // Telefone
+                // Card for Telefone
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .border(2.dp, Color(0xFF15A27A), RoundedCornerShape(16.dp)),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "Telefone:",
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(vertical = 4.dp)
+                            color = Color(0xFF15A27A)
                         )
-                        Text(
-                            text = clienteData.telefone ?: "N/A",
-                            modifier = Modifier.padding(bottom = 12.dp)
-                        )
+                        Text(text = clienteData.telefone ?: "N/A")
+                    }
+                }
 
-                        // Instagram
+                // Card for Instagram
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .border(2.dp, Color(0xFF15A27A), RoundedCornerShape(16.dp)),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "Instagram:",
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(vertical = 4.dp)
+                            color = Color(0xFF15A27A)
                         )
-                        Text(
-                            text = clienteData.link_instagram ?: "Não informado",
-                            modifier = Modifier.padding(bottom = 12.dp)
-                        )
+                        Text(text = clienteData.link_instagram ?: "Não informado")
                     }
                 }
             }
         } ?: run {
-
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -148,11 +196,10 @@ fun PerfilCliente(controleDeNavegacao: NavHostController, id: Int) {
             ) {
                 Text(
                     text = "Cliente não encontrado.",
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = Color.Red
                 )
             }
         }
     }
 }
-
-

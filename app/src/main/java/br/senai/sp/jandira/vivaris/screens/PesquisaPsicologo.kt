@@ -173,6 +173,7 @@ fun PsicologoPesquisa(controleDeNavegacao: NavHostController, isPsicologo: Boole
         } else {
             if (filteredProfissionais.isEmpty()) {
                 // Mensagem quando não há resultados
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = "Nenhum psicólogo encontrado.",
                     modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -185,6 +186,7 @@ fun PsicologoPesquisa(controleDeNavegacao: NavHostController, isPsicologo: Boole
                     contentPadding = PaddingValues(bottom = 16.dp)
                 ) {
                     items(filteredProfissionais) { profissional ->
+                        Spacer(modifier = Modifier.height(10.dp))
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()

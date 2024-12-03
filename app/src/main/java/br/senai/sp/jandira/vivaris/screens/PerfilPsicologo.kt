@@ -210,7 +210,7 @@ fun PerfilPsicologo(controleDeNavegacao: NavHostController, id: Int, isPsicologo
 
                                                         if (response.isSuccessful) {
                                                             Toast.makeText(context, "Consulta agendada com sucesso!", Toast.LENGTH_SHORT).show()
-
+                                                            Log.d("Dados", "${response.body()?.data}")
                                                             val requestSession = response.body()?.data?.id?.let {
                                                                 session(
                                                                     id_consulta = it,

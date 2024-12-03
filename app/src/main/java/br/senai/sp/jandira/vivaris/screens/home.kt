@@ -107,7 +107,9 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
 
     Box(
         modifier = Modifier.fillMaxSize()
+            .padding(top = 23.dp)
     ) {
+
 
         Row(
             modifier = Modifier
@@ -118,7 +120,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
             horizontalArrangement = Arrangement.Center
         ) {
             Column (
-                modifier = Modifier.padding(12.dp),
+                modifier = Modifier.padding(12.dp, ),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {
@@ -141,14 +143,15 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
             }
 
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(47.dp))
             Image(
                 painter = painterResource(id = R.drawable.vivarislogo),
                 contentDescription = "Logo Vivaris",
                 modifier = Modifier
                     .size(80.dp)
                     .fillMaxWidth(),
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Fit,
+                alignment = Alignment.Center
             )
 
             Row(
@@ -213,7 +216,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                                 .width(250.dp)
                                 .background(Color(0xFF3FC19C))
                                 .padding(16.dp)
-                            .align(Alignment.TopEnd)
+                                .align(Alignment.TopEnd)
                         ) {
                             // Cabeçalho do perfil
                             Row(
@@ -280,7 +283,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                 Text("Carregando...")
             } else {
 
-                Spacer(modifier = Modifier.height(100.dp))
+                Spacer(modifier = Modifier.height(50.dp))
 
                 if (!isPsicologo){
 
@@ -680,7 +683,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
             contentDescription = "Logo Vivaris",
             modifier = Modifier
                 .size(250.dp)
-                .offset(x = -35.dp, y = 663.dp),
+                .offset(x = -35.dp, y = 632.dp),
             contentScale = ContentScale.Fit
         )
 

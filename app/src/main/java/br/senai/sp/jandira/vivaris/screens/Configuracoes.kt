@@ -3,6 +3,7 @@ package br.senai.sp.jandira.vivaris.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -42,7 +43,7 @@ fun Configuracoes(controleDeNavegacao: NavHostController, clearData: () -> Unit)
         .height(58.dp)
         .border(
             width = 2.dp,
-            color = Color(0xFF296856), // Cor da borda
+            color = Color(0xFF296856),
             shape = RoundedCornerShape(10.dp)
         )
 
@@ -55,15 +56,25 @@ fun Configuracoes(controleDeNavegacao: NavHostController, clearData: () -> Unit)
             TopAppBar(
                 modifier = Modifier
                     .background(color = Color(0xFF3E9C81))
-                    .height(80.dp)
+                    .height(100.dp)
                 ,
                 title = { Text("") },
                 navigationIcon = {
+
                     IconButton(onClick = {
                       //  controleDeNavegacao.navigate()
-                    }) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back",
-                            tint = Color(0xFFFFFFFFF))
+                    }) {//
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Voltar",
+                            modifier = Modifier
+                                .size(52.dp)
+                                .padding(start = 10.dp, bottom = 5.dp)
+                                .clickable {
+                                    controleDeNavegacao.popBackStack()
+                                },
+                            tint = Color.White // Verde
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

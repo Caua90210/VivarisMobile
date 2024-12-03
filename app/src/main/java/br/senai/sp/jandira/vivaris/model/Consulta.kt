@@ -17,11 +17,16 @@ data class consultaResponse(
 )
 
 data class consulta(
-  val id: Int,
-  val data_consulta: String,
-  val valor: Int,
-  val avaliacao: String,
-  val id_cliente: Int,
-  val id_psicologo: Int
+    val id: Int = 0,
+    val dataConsulta: String,
+    val valor: Int = 0,
+    val avaliacao: Avaliacao,
+    val cliente: Cliente,
+    val psicologo: Psicologo
+)
 
+data class Avaliacao(
+    val id: Int,
+    val avaliacao: String,
+    val cliente: Cliente
 )

@@ -695,7 +695,7 @@ fun AddHTimeDialog(
         confirmButton = {
             TextButton(onClick = {
                 onAddTime(horarioInicio, horarioFim, timeOfDay)
-                onDismiss() // Fecha o diálogo após adicionar o horário
+                onDismiss()
             }) {
                 Text("Adicionar")
             }
