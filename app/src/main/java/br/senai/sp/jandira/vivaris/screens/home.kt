@@ -244,13 +244,13 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
 
                             // Itens do menu
                             MenuItem(text = "Meus Grupos", icon = Icons.Default.People) {
-                                // Navegar para "meusGrupos"
+                                controleDeNavegacao.navigate("desenvolvendo")
                             }
                             MenuItem(text = "Posts Curtidos", icon = Icons.Default.Favorite) {
-                                // Navegar para "postsCurtidos"
+                                controleDeNavegacao.navigate("desenvolvendo")
                             }
                             MenuItem(text = "Minhas preferências", icon = Icons.Default.Tune) {
-                                // Navegar para "preferencias"
+                                controleDeNavegacao.navigate("desenvolvendo")
                             }
 
                             Spacer(modifier = Modifier.height(16.dp))
@@ -258,13 +258,13 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                             Spacer(modifier = Modifier.height(16.dp))
 
                             MenuItem(text = "Editar Perfil", icon = Icons.Default.Edit) {
-                                // Navegar para "editarPerfil"
+                                controleDeNavegacao.navigate("desenvolvendo")
                             }
                             MenuItem(text = "Configurações", icon = Icons.Default.Settings) {
                                 controleDeNavegacao.navigate("configuracoes")
                             }
                             MenuItem(text = "Denúncia", icon = Icons.Default.Report) {
-                                // Navegar para "denuncia"
+                                controleDeNavegacao.navigate("desenvolvendo")
                             }
 
                             Spacer(modifier = Modifier.height(16.dp))
@@ -272,7 +272,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                             Spacer(modifier = Modifier.height(16.dp))
 
                             MenuItem(text = "FAQ", icon = Icons.Default.Help) {
-                                // Navegar para "faq"
+                                controleDeNavegacao.navigate("desenvolvendo")
                             }
                         }
                     }
@@ -512,21 +512,21 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        FeatureButton("Blog", R.drawable.blog, onClick = { /* Ação */ }, fullWidth = false,
+                        FeatureButton("Blog", R.drawable.blog, onClick = {controleDeNavegacao.navigate("desenvolvendo")}, fullWidth = false,
                             isBold = true,
                             textSize = 16.sp,
                             textColor = Color(0xFF296856))
-                        FeatureButton("Gráfico de Humor", R.drawable.graficohumor, onClick = {  }, fullWidth = false,
+                        FeatureButton("Gráfico de Humor", R.drawable.graficohumor, onClick = {controleDeNavegacao.navigate("desenvolvendo")}, fullWidth = false,
                             isBold = true,
                             textSize = 10.sp,
                             textColor = Color(0xFF296856)
                             )
-                        FeatureButton("Diário", R.drawable.diario,onClick = { /* Ação */ }, fullWidth = false,
+                        FeatureButton("Diário", R.drawable.diario,onClick = {controleDeNavegacao.navigate("desenvolvendo")}, fullWidth = false,
                             isBold = true,
                             textSize = 16.sp,
                             textColor = Color(0xFF296856))
                     }     // Spacer(modifier = Modifier.height(32.dp))
-                    FeatureButton("Trilhas de Meditação", R.drawable.meditacao, onClick = { /* Ação */ },
+                    FeatureButton("Trilhas de Meditação", R.drawable.meditacao, onClick = {controleDeNavegacao.navigate("desenvolvendo")},
                         fullWidth = true,
                         isBold = true,
                         textSize = 16.sp,
@@ -551,7 +551,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
 
 
             //Spacer(modifier = Modifier.height(32.dp))
-            FeatureButton(label = "Lembrete", icon = R.drawable.bell, onClick = { /* Ação */ },
+            FeatureButton(label = "Lembrete", icon = R.drawable.bell, onClick = {controleDeNavegacao.navigate("desenvolvendo")},
                 fullWidth = true,
                 isBold = true,
                 textSize = 16.sp,
@@ -563,7 +563,7 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                 horizontalArrangement = Arrangement.End
             ){
                 FeatureButton("Meus Chat`s", R.drawable.chat,
-                    onClick = { /* Ação */ }, fullWidth = false,
+                    onClick = {controleDeNavegacao.navigate("desenvolvendo")}, fullWidth = false,
                     isBold = true,
                     textSize = 16.sp,
                     textColor = Color(0xFF296856))
@@ -642,8 +642,10 @@ fun Home(controleDeNavegacao: NavHostController, userId: Int, isPsicologo: Boole
                 Icon(
                     painter = painterResource(id = R.drawable.chatbot),
                     contentDescription = "inicio",
-                    modifier = Modifier.size(24.dp),
-                    tint = Color.Unspecified
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {controleDeNavegacao.navigate("desenvolvendo")},
+                    tint = Color.Unspecified,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text("Chatbot", fontSize = 12.sp, color = Color.White)
